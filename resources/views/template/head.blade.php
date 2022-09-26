@@ -61,18 +61,15 @@
 
         .nav-pills .nav-icon.active,
         .nav-pills .show>.nav-icon {
-            color: #fff;
+            color: #629779;
             background-color: transparent;
         }
 
         .nav-pills .nav-link.active,
         .nav-pills .show>.nav-link {
-            color: #fff;
+            color: #34364A;
             font-weight: bold;
-            background-color: #4640DE;
-            border-radius: 25px;
-            padding: 13px;
-
+            background-color: transparent;
         }
 
         table-info,
@@ -82,18 +79,20 @@
             color: white
         }
 
-        .btn-info {
-            background-color: #6675DF;
-            color: white
-        }
+
 
         .bg-costume {
-            background-color: #6675DF;
+            background-color: #629779;
             color: white
         }
 
-        :hover .btn-info {
-            background-color: #6675DF;
+        .btn-costume {
+            background-color: #629779;
+            color: white
+        }
+
+        :hover .btn-costume {
+            background-color: #629779;
             color: white
         }
     </style>

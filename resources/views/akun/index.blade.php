@@ -19,7 +19,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="col-lg-10">
-
+                @include('template.flash')
                 <div class="card">
                     <div class="card-header">
                         <h5 class="float-left">Data Akun</h5>
@@ -52,34 +52,12 @@
                                                 <td>{{ $a->no_akun }}</td>
                                                 <td>{{ $a->nm_akun }}</td>
                                                 <td>{{ $a->nm_kategori }}</td>
-                                                <td align="center"><button type="button" class="btn btn-info btn-sm  "
-                                                        data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <i class="fas fa-ellipsis-v"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item text-primary post_center" href="#"
-                                                            data-toggle="modal" data-target="#post_center"
-                                                            id_akun="<?= $a->id_akun ?>"><i
-                                                                class="far fa-clipboard"></i> &nbsp;Post Center</a>
-
-                                                        <a class="dropdown-item text-primary " href="#"
-                                                            data-toggle="modal"
-                                                            data-target="#akses<?= $a->id_akun ?>"><i
-                                                                class="fas fa-link"></i> &nbsp;Permission Akun</a>
-
-                                                        <a class="dropdown-item text-primary " href="#"
-                                                            data-toggle="modal"
-                                                            data-target="#relation<?= $a->id_akun ?>"><i
-                                                                class="fas fa-bars"></i> &nbsp;Relasi Penyesuaian</a>
-
-                                                        <a class="dropdown-item text-success" href="#"
-                                                            data-toggle="modal" data-target="#edit_akun"><i
-                                                                class="fas fa-pen"></i> &nbsp;Edit</a>
-
-                                                        <a class="dropdown-item text-danger" href="#"><i
-                                                                class="far fa-trash-alt"></i> &nbsp;Delete</a>
-                                                    </div>
+                                                <td align="center">
+                                                    <a href="#" class="btn btn-info btn-sm"><i class="fas fa-pen"></i>
+                                                    </a>
+                                                    <a href="{{route('delete_akun', ['id_akun' => $a->id_akun])}}"
+                                                        class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -234,11 +212,11 @@
                         <div class="col-md-6 lawan_penyesuaian">
                             <div class="form-group">
                                 <label for="list_kategori"><u>Kategori Asset</u></label>
-                                <select name="" id="" class="form-control select2 input_akun2">
+                                <select name="id_penyesuaian" id="" class="form-control select2 input_akun2" required>
                                     <option value="">--Pilih Kategori--</option>
-                                    <option value="">Umum</option>
-                                    <option value="">Aktiva</option>
-                                    <option value="">ATK</option>
+                                    <option value="1">Umum</option>
+                                    <option value="2">Aktiva</option>
+                                    <option value="3">ATK</option>
                                 </select>
                             </div>
                         </div>

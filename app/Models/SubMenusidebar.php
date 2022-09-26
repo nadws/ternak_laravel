@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Akun extends Model
+class SubMenusidebar extends Model
 {
     use HasFactory;
-    protected $table = 'tb_akun';
+    protected $table = 'tb_sub_menu';
     protected $fillable = [
-        'kd_akun', 'no_akun', 'nm_akun', 'id_kategori', 'id_penyesuaian'
+        'id_menu', 'sub_menu', 'url'
     ];
 }

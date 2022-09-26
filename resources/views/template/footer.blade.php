@@ -37,59 +37,58 @@
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <script>
     $(function() {
-                $('#example2').DataTable({
-                    "paging": true,
-                    "lengthChange": false,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": false,
-                    "responsive": true,
-                });
-                $('#example3').DataTable({
-                    // "paging": true,
-                    "bSort": true,
-                    "paging": true,
-                    "stateSave": true,
-                    "scrollCollapse": true,
-                    // "order": [[ 1, 'desc' ]],
-                    "fixedHeader": true,
-                });
-                $("#example1").DataTable({
-                    // "paging": true,
-                    "bSort": true,
-                    "paging": true,
-                    "stateSave": true,
-                    "scrollCollapse": true,
-                    // "order": [[ 1, 'desc' ]],
-                    "fixedHeader": true,
-                });
-                $('#tb_bkin').DataTable({
-                    "paging": false,
-                    "pageLength": 100,
-                    "scrollY": "350px",
-                    "lengthChange": false,
-                    // "ordering": false,
-                    "info": false,
-                    "stateSave": true,
-                    "autoWidth": true,
-                    // "order": [ 5, 'DESC' ],
-                    "searching": false,
-                });
-
-                
-
-                //Initialize Select2 Elements
-                $('.select2').select2()
-                $(function() {
-        $('.select').select2()
-        $('.select').one('select2:open', function(e) {
-            $('input.select2-search__field').prop('placeholder', 'Search...');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
         });
-    })
-                
-            });
+        $('#example3').DataTable({
+            // "paging": true,
+            "bSort": true,
+            "paging": true,
+            "stateSave": true,
+            "scrollCollapse": true,
+            // "order": [[ 1, 'desc' ]],
+            "fixedHeader": true,
+        });
+        $("#example1").DataTable({
+            // "paging": true,
+            "bSort": true,
+            "paging": true,
+            "stateSave": true,
+            "scrollCollapse": true,
+            // "order": [[ 1, 'desc' ]],
+            "fixedHeader": true,
+        });
+        $('#tb_bkin').DataTable({
+            "paging": false,
+            "pageLength": 100,
+            "scrollY": "350px",
+            "lengthChange": false,
+            // "ordering": false,
+            "info": false,
+            "stateSave": true,
+            "autoWidth": true,
+            // "order": [ 5, 'DESC' ],
+            "searching": false,
+        });
 
+
+
+        //Initialize Select2 Elements
+        $('.select2').select2()
+        $(function() {
+            $('.select').select2()
+            $('.select').one('select2:open', function(e) {
+                $('input.select2-search__field').prop('placeholder', 'Search...');
+            });
+        })
+
+    });
 </script>
 @yield('script')
 </body>

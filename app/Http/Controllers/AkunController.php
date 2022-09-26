@@ -48,13 +48,24 @@ class AkunController extends Controller
 
     public function add_akun(Request $r)
     {
-        $data = [
-            'no_akun' => $r->no_akun,
-            'kd_akun' => $r->kd_akun,
-            'nm_akun' => $r->nm_akun,
-            'id_kategori' => $r->id_kategori,
+        if (empty($r->id_penyesuaian)) {
+            $data = [
+                'no_akun' => $r->no_akun,
+                'kd_akun' => $r->kd_akun,
+                'nm_akun' => $r->nm_akun,
+                'id_kategori' => $r->id_kategori,
+            ];
+        } else {
+            $data = [
+                'no_akun' => $r->no_akun,
+                'kd_akun' => $r->kd_akun,
+                'nm_akun' => $r->nm_akun,
+                'id_kategori' => $r->id_kategori,
+                'id_penyesuaian' => $r->id_penyesuaian
 
-        ];
+            ];
+        }
+
         $akun = Akun::create($data);
 
         $id1 = $akun->id;
@@ -69,7 +80,7 @@ class AkunController extends Controller
                 'id_kategori' => $r->id_kategori2,
 
             ];
-            $akun2 = Akun::crete($data);
+            $akun2 = Akun::create($data);
             $id2 = $akun2->id;
         }
 
@@ -129,5 +140,22 @@ class AkunController extends Controller
 
 
         return redirect()->route("akun")->with('sukses', 'Sukses');
+    }
+
+    public function delete(Request $r)
+    {
+        $id = $r->id_akun;
+
+        $jurnal = DB::table('tb_jurnal')->where('id_akun', $id)->first();
+
+        if (empty($jurnal)) {
+
+            DB::table('tb_akun')->where('id_akun', $id)->delete();
+            DB::table('tb_permission_akun')->where('id_akun', $id)->delete();
+            DB::table('tb_relasi_akun')->where('id_akun', $id)->delete();
+            return redirect()->route("akun")->with('sukses', 'Sukses');
+        } else {
+            return redirect()->route("akun")->with('error', 'Gagal');
+        }
     }
 }

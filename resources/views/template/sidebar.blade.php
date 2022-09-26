@@ -72,7 +72,7 @@
                         <i class=" nav-icon <?= $m->icon ?>"></i>
                         <p>
                             <?= $m->menu ?>
-                            <i class="right fas fa-angle-left"></i>
+                            <i class="right fas fa-angle-left" style="vertical-align: middle"></i>
                         </p>
                     </a>
                     <?php $menu_p = DB::select(
@@ -172,7 +172,7 @@
                     <li class="nav-item">
                         <hr>
                         <button type="submit" class="nav-link btn" style="background: transparent">
-                            <i class="nav-icon fas fa-sign-out-alt"></i>
+                            <i class="nav-icon fas fa-power-off"></i>
                             <p>Logout</p>
                         </button>
                     </li>
