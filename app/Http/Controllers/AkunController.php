@@ -14,7 +14,6 @@ class AkunController extends Controller
             'title' => 'Akun',
             'akun' => DB::table('tb_akun as a')->join('tb_kategori_akun as b', 'a.id_kategori', 'b.id_kategori')->get(),
             'kategori' => DB::table('tb_kategori_akun')->get(),
-            'logout' => $request->session()->get('logout'),
         ];
 
         return view('akun/index', $data);

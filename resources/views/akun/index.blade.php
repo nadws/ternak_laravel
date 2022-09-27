@@ -7,7 +7,6 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ $title }}</h1>
                 </div><!-- /.col -->
                 <!-- /.col -->
             </div><!-- /.row -->
@@ -22,9 +21,9 @@
                 @include('template.flash')
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="float-left">Data Akun</h5>
+                        <h5 class="float-left">{{ $title }}</h5>
                         <a href="" data-toggle="modal" data-target="#tambah"
-                            class="btn btn-info btn-sm float-right mr-1"><i class="fas fa-plus"></i> Tambah
+                            class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-plus"></i> Tambah
                             Akun</a>
                     </div>
                     <div class="card-body">
@@ -53,7 +52,8 @@
                                                 <td>{{ $a->nm_akun }}</td>
                                                 <td>{{ $a->nm_kategori }}</td>
                                                 <td align="center">
-                                                    <a href="#" class="btn btn-info btn-sm"><i class="fas fa-pen"></i>
+                                                    <a href="#" class="btn btn-costume btn-sm"><i
+                                                            class="fas fa-pen"></i>
                                                     </a>
                                                     <a href="{{route('delete_akun', ['id_akun' => $a->id_akun])}}"
                                                         class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>

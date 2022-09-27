@@ -4,6 +4,8 @@ use App\Http\Controllers\AksesConttroller;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Jurnal_pengeluaran;
+use App\Http\Controllers\Neraca_saldo;
+use App\Http\Controllers\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,7 +31,8 @@ Route::has('password.request');
 
 Route::get('/dashboard', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/buku_besar', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('buku_besar');
-Route::get('/user', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('user');
+
+
 Route::get('/sidebar', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('sidebar');
 
 
@@ -53,5 +56,14 @@ Route::post('/save_urutan', [AksesConttroller::class, 'save_urutan'])->middlewar
 Route::get('/jurnal_pengeluaran', [Jurnal_pengeluaran::class, 'index'])->middleware(['auth', 'verified'])->name('jurnal_pengeluaran');
 Route::get('/get_isi_jurnal', [Jurnal_pengeluaran::class, 'get_isi_jurnal'])->middleware(['auth', 'verified'])->name('get_isi_jurnal');
 Route::get('/akun_kredit', [Jurnal_pengeluaran::class, 'akun_kredit'])->middleware(['auth', 'verified'])->name('akun_kredit');
+
+// user
+Route::get('/user', [User::class, 'index'])->middleware(['auth', 'verified'])->name('user');
+Route::get('/permission', [User::class, 'permission'])->name('permission');
+Route::post('/updatepermission', [User::class, 'updatepermission'])->name('updatepermission');
+
+
+// Neraca Saldo
+Route::get('/saldo', [Neraca_saldo::class, 'index'])->middleware(['auth', 'verified'])->name('saldo');
 
 require __DIR__ . '/auth.php';

@@ -200,8 +200,14 @@
     <!-- Control sidebar content goes here -->
 </aside>
 
-<script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
+{{-- <script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script> --}}
 
+
+
+
+<!-- /.control-sidebar -->
+@endsection
+@section('script')
 <script>
     $(document).ready(function() {
 
@@ -234,6 +240,4 @@
             });
         });
 </script>
-
-<!-- /.control-sidebar -->
 @endsection
