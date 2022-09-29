@@ -3,8 +3,8 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__wobble" src="{{ asset('assets') }}/menu/img/agrilaras.png" alt="AdminLTELogo"
-                height="80" width="100">
+            <img class="animation__wobble" src="{{ asset('assets') }}/menu/img/logo_agrika.png" alt="AdminLTELogo"
+                height="60" width="60">
         </div>
 
         <!-- Navbar -->

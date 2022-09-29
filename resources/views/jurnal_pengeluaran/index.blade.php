@@ -1,5 +1,6 @@
 @extends('template.master')
 @section('content')
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -96,9 +97,9 @@
         max-width: 1000px;
     }
 </style>
-<form action="" method="post">
-    <div class="modal fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+<form method="post" id="form-jurnal" action="">
+    @csrf
+    <div class="modal fade" id="tambah" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg-max" role="document">
 
             <div class="modal-content">
@@ -115,7 +116,6 @@
                                 <label for="list_kategori">Tanggal</label>
                                 <input class="form-control" type="date" name="tgl" id="tgl_peng"
                                     value="{{ date('Y-m-d') }}" required>
-                                <input type="hidden" class="plus">
                             </div>
                         </div>
                         <div class="mt-3 ml-1">
@@ -133,11 +133,12 @@
                                     <?php endforeach ?>
                                 </select>
                             </div>
+
                         </div>
                         <div class="col-sm-2 col-md-2">
                             <div class="form-group">
                                 <label for="list_kategori">Debit</label>
-                                <input type="number" class="form-control total ttl_rp" id="total" name="total" readonly>
+                                <input type="number" class="form-control  total" name="debit" readonly>
                             </div>
                         </div>
                         <div class="col-sm-2 col-md-2">
@@ -169,22 +170,22 @@
                         </div>
                         <div class="col-sm-2 col-md-2">
                             <div class="form-group">
-
-                                <input type="number" class="form-control total ttl_rp" id="total1" readonly>
+                                <input type="number" class="form-control total " name="kredit" readonly>
                             </div>
                         </div>
 
                         <div class="col-sm-3 col-md-3">
 
                         </div>
-                        <div id="input_jurnal">
 
-                        </div>
+                    </div>
+                    <div id="input_jurnal">
+
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-costume">Edit/Save</button>
+                    <button type="submit" class="btn btn-costume" action="">Edit/Save</button>
                 </div>
             </div>
         </div>
@@ -200,17 +201,12 @@
     <!-- Control sidebar content goes here -->
 </aside>
 
-{{-- <script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script> --}}
 
+<script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
 
-
-
-<!-- /.control-sidebar -->
-@endsection
-@section('script')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
-
             $('.id_debit').change(function() {
                 var id_debit = $(this).val();
                 $.ajax({
@@ -221,6 +217,20 @@
                     type: "GET",
                     success: function(data) {
                         $('.akun_kredit').html(data);
+                        $('.select').select2()
+                    }
+                });
+
+                $.ajax({
+                    url: "{{ route('get_save_jurnal') }}",
+                    data: {
+                        id_debit: id_debit
+                    },
+                    type: "GET",
+                    success: function(data) {
+                        if (data == 'biaya') {
+                            $("#form-jurnal").attr("action", "{{route('save_jurnal_biaya')}}");
+                        }
                     }
                 });
             });
@@ -238,6 +248,68 @@
                     }
                 });
             });
-        });
+            $(document).on('keyup', '.total_rp', function() {
+                var rupiah = parseFloat($(this).val());
+
+                var debit = 0;
+                $(".total_rp:not([disabled=disabled]").each(function() {
+                    debit += parseFloat($(this).val());
+                });
+                $('.total').val(debit);
+            });
+            $(document).on('click', '.remove_monitoring', function() {   
+                var delete_row = $(this).attr('count');
+
+                $('#row' + delete_row).remove();
+
+                var rupiah = parseFloat($('.total_rp').val());
+
+
+                var debit = 0;
+                $(".total_rp:not([disabled=disabled]").each(function() {
+                    debit += parseFloat($(this).val());
+                });
+                $('.total').val(debit);
+
+            });
+    
+            var count = 1;
+            $(document).on('click', '.tambah_input_jurnal', function() {
+                var id_akun = $(this).attr('id_akun');
+                count = count + 1;
+                    $.ajax({
+                        url: "{{ route('tambah_jurnal') }}?count=" + count + "&" + "id_akun=" + id_akun ,
+                        type: "Get",
+                        success: function(data) {
+                            $('#tambah_input_jurnal').append(data);
+                            $('.select').select2()
+                    }
+                });        
+            });
+
+            
+
+            // Aktiva
+
+            $(document).on('keyup', '.total_aktiva', function() {
+                var rupiah = parseFloat($(this).val());
+                var qty = parseFloat($('.qty_aktiva').val());
+                var ppn = (rupiah * qty) * 0.1;
+                var total = (rupiah * qty) + ppn;
+
+                $('.ppn').val(ppn);
+                $('.ppn_ttl_rp').val(total);
+
+                var debit = 0;
+                $(".ppn_ttl_rp:not([disabled=disabled]").each(function() {
+                    debit += parseFloat($(this).val());
+                });
+                $('.total').val(debit);
+            });
+    });
 </script>
+
+
+
+<!-- /.control-sidebar -->
 @endsection

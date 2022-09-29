@@ -12,6 +12,7 @@
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
+
     <!-- /.content-header -->
 
     <!-- Main content -->
@@ -178,6 +179,23 @@
         height: 450px;
         overflow-y: scroll;
     }
+
+    .form-control1 {
+        display: block;
+        width: 100%;
+        height: calc(2.25rem + -9px);
+        padding: .375rem .75rem;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        box-shadow: inset 0 0 0 transparent;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
 </style>
 <form action="" method="GET">
     <div class="modal fade" id="atur_saldo" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -195,8 +213,8 @@
                             <label for="">Tanggal</label>
                             <input type="date" name="tgl" id="tgl_neraca" class="form-control" required>
                         </div>
-                        <div class="scroll col-lg-12">
-                            <table class="table mt-2" width='100%'>
+                        <div class=" col-lg-12">
+                            <table class="table mt-2 " id="tb_bkin" width='100%'>
                                 <thead>
                                     <tr>
                                         <th width="3%">No</th>
@@ -204,7 +222,6 @@
                                         <th width="37%">Nama Akun</th>
                                         <th width="25%">Debit</th>
                                         <th width="25%">Kredit</th>
-                                        <th width="25%">Saldo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -217,7 +234,7 @@
                                     '$a->id_kategori' order by a.no_akun ASC")
                                     @endphp
                                     <tr>
-                                        <td colspan="6">
+                                        <td colspan="6" style="background-color: #F2F2F2">
                                             <dt>{{ $a->nm_kategori }}</dt>
                                         </td>
                                     </tr>
@@ -226,20 +243,44 @@
                                         <td>{{$i++}}</td>
                                         <td>{{$s->no_akun}}</td>
                                         <td>{{$s->nm_akun}}</td>
-                                        <td>Rp.0</td>
-                                        <td>Rp.0</td>
-                                        <td>Rp.0</td>
+                                        <td style="text-align: right;">
+                                            <p class="debit debit_akun{{$s->id_akun }}" id_akun="{{$s->id_akun }}">
+                                                Rp.0
+                                            </p>
+                                            <input type="number" name="debit[]" style="text-align: right;"
+                                                class="form-control1 debit_input debit_form_input{{$s->id_akun }}"
+                                                id_akun="{{$s->id_akun }}" value="0" autofocus>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <p class="kredit kredit_akun{{$s->id_akun }}" id_akun="{{$s->id_akun }}">
+                                                Rp.0
+                                            </p>
+                                            <input type="number" name="kredit[]" style="text-align: right;"
+                                                class="form-control1 kredit_input kredit_form_input{{$s->id_akun }}"
+                                                id_akun="{{$s->id_akun }}" value="0" autofocus>
+                                        </td>
                                     </tr>
                                     @endforeach
 
                                     @endforeach
                                 </tbody>
+                                <tfoot class="bg-costume">
+                                    <th>Total</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="text-align: right;"><input type="hidden" value="0" class="total_debit">
+                                        <p class="text_debit"></p>
+                                    </th>
+                                    <th style="text-align: right;"><input type="hidden" value="0" class="total_kredit">
+                                        <p class="text_kredit"></p>
+                                    </th>
+                                </tfoot>
                             </table>
                         </div>
 
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class=" modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-costume">Save</button>
                 </div>
@@ -252,3 +293,97 @@
 
 <!-- /.control-sidebar -->
 @endsection
+<script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        hide_input();
+
+        function hide_input() {
+            $(".debit_input").hide();
+            $(".kredit_input").hide();
+            // alert(id_distribusi);
+
+        }
+        $(document).on('click', '.debit', function() {
+            var id_akun = $(this).attr('id_akun');
+            $(".debit_akun" + id_akun).hide();
+            $(".debit_form_input" + id_akun).show();
+            $(".debit_form_input" + id_akun).focus();
+            $(".debit_form_input" + id_akun).select();
+            // $('.debit_hasil' + id_akun).val(debit);
+        });
+
+        $(document).on('click', '.debit_input', function() {
+            var id_akun = $(this).attr('id_akun');
+            $(".debit_form_input" + id_akun).hide();
+            $(".debit_akun" + id_akun).show();
+            var debit = $(".debit_akun" + id_akun).val();
+            // $('.debit_hasil' + id_akun).val(debit);
+        });
+        $(document).on('keyup', '.debit_input', function() {
+            var id_akun = $(this).attr('id_akun');
+
+            var debit = $(".debit_form_input" + id_akun).val();
+
+            var debit2 = parseFloat(debit);
+
+            var number = debit2.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+
+            var rupiah = "Rp. " + number;
+            $(".debit_akun" + id_akun).text(rupiah);
+
+
+            var total = 0;
+            $(".debit_input:not([disabled=disabled]").each(function() {
+                total += parseFloat($(this).val());
+            });
+            $('.total_debit').val(total);
+            var number_total = total.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+            var rupiah_total = "Rp. " + number_total;
+            $('.text_debit').text(rupiah_total);
+
+        });
+
+        // kredit saldo
+
+        $(document).on('click', '.kredit', function() {
+            var id_akun = $(this).attr('id_akun');
+            $(".kredit_akun" + id_akun).hide();
+            $(".kredit_form_input" + id_akun).show();
+            $(".kredit_form_input" + id_akun).focus();
+            $(".kredit_form_input" + id_akun).select();
+            $(".debit_form_input" + id_akun).hide();
+            $(".debit_akun" + id_akun).show();
+            var debit = $(".debit_akun" + id_akun).val();
+            // $('.debit_hasil' + id_akun).val(debit);
+        });
+        $(document).on('click', '.kredit_input', function() {
+            var id_akun = $(this).attr('id_akun');
+            $(".kredit_form_input" + id_akun).hide();
+            $(".kredit_akun" + id_akun).show();
+        });
+
+        $(document).on('keyup', '.kredit_input', function() {
+            var id_akun = $(this).attr('id_akun');
+
+            var kredit = $(".kredit_form_input" + id_akun).val();
+
+            var kredit2 = parseFloat(kredit);
+
+            var number = kredit2.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+
+            var rupiah = "Rp. " + number;
+            $(".kredit_akun" + id_akun).text(rupiah);
+
+            var total = 0;
+            $(".kredit_input:not([disabled=disabled]").each(function() {
+                total += parseFloat($(this).val());
+            });
+            $('.total_kredit').val(total);
+
+            var number_total = total.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+            var rupiah_total = "Rp. " + number_total;
+            $('.text_kredit').text(rupiah_total);
+        });
+    });
+</script>
