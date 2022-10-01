@@ -10,6 +10,6 @@ class Akun extends Model
     use HasFactory;
     protected $table = 'tb_akun';
     protected $fillable = [
-        'kd_akun', 'no_akun', 'nm_akun', 'id_kategori', 'id_penyesuaian'
+        'kd_akun', 'no_akun', 'nm_akun', 'id_kategori', 'id_penyesuaian', 'id_satuan'
     ];
 }

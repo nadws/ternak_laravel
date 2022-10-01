@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AksesConttroller;
 use App\Http\Controllers\AkunController;
+use App\Http\Controllers\Buku_besar;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Jurnal_pengeluaran;
 use App\Http\Controllers\Neraca_saldo;
@@ -57,8 +58,13 @@ Route::get('/jurnal_pengeluaran', [Jurnal_pengeluaran::class, 'index'])->middlew
 Route::get('/get_isi_jurnal', [Jurnal_pengeluaran::class, 'get_isi_jurnal'])->middleware(['auth', 'verified'])->name('get_isi_jurnal');
 Route::get('/akun_kredit', [Jurnal_pengeluaran::class, 'akun_kredit'])->middleware(['auth', 'verified'])->name('akun_kredit');
 Route::get('/tambah_jurnal', [Jurnal_pengeluaran::class, 'tambah_jurnal'])->middleware(['auth', 'verified'])->name('tambah_jurnal');
+Route::get('/tambah_umum', [Jurnal_pengeluaran::class, 'tambah_umum'])->middleware(['auth', 'verified'])->name('tambah_umum');
 Route::get('/get_save_jurnal', [Jurnal_pengeluaran::class, 'get_save_jurnal'])->middleware(['auth', 'verified'])->name('get_save_jurnal');
+Route::get('/delete_jurnal', [Jurnal_pengeluaran::class, 'delete_jurnal'])->middleware(['auth', 'verified'])->name('delete_jurnal');
+
+// Save Jurnal pengeluaran
 Route::post('/save_jurnal_biaya', [Jurnal_pengeluaran::class, 'save_jurnal_biaya'])->middleware(['auth', 'verified'])->name('save_jurnal_biaya');
+Route::post('/save_jurnal_umum', [Jurnal_pengeluaran::class, 'save_jurnal_umum'])->middleware(['auth', 'verified'])->name('save_jurnal_umum');
 
 // user
 Route::get('/user', [User::class, 'index'])->middleware(['auth', 'verified'])->name('user');
@@ -68,5 +74,8 @@ Route::post('/updatepermission', [User::class, 'updatepermission'])->name('updat
 
 // Neraca Saldo
 Route::get('/saldo', [Neraca_saldo::class, 'index'])->middleware(['auth', 'verified'])->name('saldo');
+
+// Buku Besar
+Route::get('/buku_besar', [Buku_besar::class, 'index'])->middleware(['auth', 'verified'])->name('buku_besar');
 
 require __DIR__ . '/auth.php';

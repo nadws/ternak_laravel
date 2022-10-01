@@ -12,7 +12,6 @@
 <script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
-
       $('.modal').on('hidden.bs.modal', function() {
         //If there are any visible
         if ($(".modal:visible").length > 0) {

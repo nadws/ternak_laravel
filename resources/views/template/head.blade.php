@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }}</title>
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets') }}/menu/img/logo_agrika.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets') }}/menu/img/agrilaras.png">
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"

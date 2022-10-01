@@ -132,7 +132,7 @@
 <form method="post" action="{{route('save_akun')}}">
     @csrf
     <div class="modal fade" id="tambah" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
 
             <div class="modal-content">
                 <div class="modal-header bg-costume">
@@ -147,7 +147,7 @@
 
                             <label for=""><u>Akun</u></label>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="list_kategori">No Akun</label>
                                 <input class="form-control" type="text" name="no_akun" id="no_akun"
@@ -155,7 +155,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="list_kategori">Kode Akun</label>
                                 <input class="form-control" type="text" name="kd_akun" id="kd_akun" required>
@@ -163,7 +163,7 @@
 
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="list_kategori">Nama Akun</label>
                                 <input class="form-control" type="text" name="nm_akun" id="nm_akun" required>
@@ -171,10 +171,10 @@
                         </div>
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="list_kategori">Kategori Akun</label>
-                                <select name="id_kategori" id="id_kategori" class="form-control select2bs4" required="">
+                                <select name="id_kategori" id="id_kategori" class="form-control select" required="">
                                     <option value="">--Pilih Akun--</option>
                                     <?php foreach ($kategori as $k) : ?>
                                     <option value="<?= $k->id_kategori ?>">
@@ -199,19 +199,14 @@
                             <input type="hidden" name="id_kas" id="id_kas" value="0">
                         </div>
 
-
-
-
-
-
                         <!-- batas -->
                         <div class="col-md-12 lawan_penyesuaian">
                             <hr>
                         </div>
-                        <div class="col-md-6 lawan_penyesuaian">
+                        <div class="col-md-4 lawan_penyesuaian">
                             <div class="form-group">
                                 <label for="list_kategori"><u>Kategori Asset</u></label>
-                                <select name="id_penyesuaian" id="" class="form-control select2 input_akun2" required>
+                                <select name="id_penyesuaian" id="" class="form-control select2 kat_akun" required>
                                     <option value="">--Pilih Kategori--</option>
                                     <option value="1">Umum</option>
                                     <option value="2">Aktiva</option>
@@ -219,12 +214,53 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-8 ">
+                            <div class="form-group keterangan">
+                                <label for="list_kategori"><u>Asset Umum</u></label>
+                                <p>Asset umum memuat data asset yang tunggal tidak memiliki produk</p>
+                                <p>Contoh Jurnal Penyesuaian:</p>
+                                <a href="#" data-target="#view_image_umum" data-toggle="modal">
+                                    <img src="{{asset('assets')}}/img/umum2.png" alt="" width="80%">
+                                </a>
+                            </div>
+                            <div class="form-group keterangan2">
+                                <label for="list_kategori"><u>Asset Aktiva</u></label>
+                                <p>Asset aktiva memuat data asset yang memiliki produk dan terjadi penurunan nilai asset
+                                    setiap bulannya</p>
+                                <p>Contoh Jurnal Penyesuaian:</p>
+                                <a href="#" data-target="#view_image_aktiva" data-toggle="modal">
+                                    <img src="{{asset('assets')}}/img/aktiva.png" alt="" width="80%">
+                                </a>
+
+                            </div>
+                            <div class="form-group keterangan3">
+                                <label for="list_kategori"><u>Asset ATK</u></label>
+                                <p>Asset aktiva memuat data asset yang memiliki produk dan akan di opname setiap
+                                    bulannya</p>
+                                <p>Contoh Jurnal Penyesuaian:</p>
+                                <a href="#" data-target="#view_image_atk" data-toggle="modal">
+                                    <img src="{{asset('assets')}}/img/atk.png" alt="" width="80%">
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 keterangan mb-2">
+                            <label for="">Satuan</label>
+                            <select name="id_satuan" class="form-control select satuan input_detail input_biaya"
+                                required>
+                                <option value="">-Pilih Satuan-</option>
+                                <?php foreach ($satuan as $p) : ?>
+                                <option value="{{ $p->id }}">{{ $p->nm_satuan }}</option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
                         <br>
                         <div class="col-md-12 lawan_penyesuaian">
                             <label for=""><u>Biaya Penyesuaian</u> </label>
                         </div>
 
-                        <div class="col-md-6 lawan_penyesuaian">
+                        <div class="col-md-3 lawan_penyesuaian">
                             <div class="form-group">
                                 <label for="list_kategori">No Akun</label>
                                 <input class="form-control input_akun2" type="text" name="no_akun2" id="no_akun2"
@@ -233,7 +269,7 @@
 
                         </div>
 
-                        <div class="col-md-6 lawan_penyesuaian">
+                        <div class="col-md-3 lawan_penyesuaian">
                             <div class="form-group">
                                 <label for="list_kategori">Kode Akun</label>
                                 <input class="form-control input_akun2" type="text" name="kd_akun2" id="kd_akun"
@@ -242,7 +278,7 @@
 
                         </div>
 
-                        <div class="col-md-6 lawan_penyesuaian">
+                        <div class="col-md-3 lawan_penyesuaian">
                             <div class="form-group">
                                 <label for="list_kategori">Nama Akun</label>
                                 <input class="form-control input_akun2" type="text" name="nm_akun2" id="nm_akun"
@@ -251,7 +287,7 @@
                         </div>
 
 
-                        <div class="col-md-6 lawan_penyesuaian">
+                        <div class="col-md-3 lawan_penyesuaian">
                             <div class="form-group">
                                 <label for="list_kategori">Kategori Akun</label>
                                 <input type="text " class="form-control input_akun2" value="Biaya" readonly>
@@ -271,6 +307,58 @@
     </div>
 </form>
 
+<style>
+    .modal-lg-max {
+        max-width: 1200px;
+    }
+</style>
+<div class="modal fade" id="view_image_umum" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg-max" role="document">
+
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <img src="{{asset('assets')}}/img/umum2.png" alt="" width="100%">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="view_image_aktiva" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg-max" role="document">
+
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <img src="{{asset('assets')}}/img/aktiva.png" alt="" width="100%">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="view_image_atk" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg-max" role="document">
+
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <img src="{{asset('assets')}}/img/atk.png" alt="" width="100%">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
@@ -285,6 +373,9 @@ function hide_default() {
     $('.asset').hide();
     $('.cash_flow').hide();
     $('.lawan_penyesuaian').hide();
+    $('.keterangan').hide();
+    $('.keterangan2').hide();
+    $('.keterangan3').hide();
     $('.input_akun2').attr('disabled', 'true');
     $('#id_kas').attr('disabled', 'true');
 }
@@ -441,6 +532,26 @@ $(document).on('click', '#switchbukukas', function() {
                 }
 
             });
+        });
+        $("body").on("change", ".kat_akun", function() {
+            var id_kat = $(this).val();
+            if (id_kat == '1') {
+                $('.keterangan').show();
+            } else {
+                $('.keterangan').hide();
+            }
+            if (id_kat == '2') {
+                $('.keterangan2').show();
+            } else {
+                $('.keterangan2').hide();
+            }
+            if (id_kat == '3') {
+                $('.keterangan3').show();
+            } else {
+                $('.keterangan3').hide();
+            }
+            
+        
         });
     });
 </script>

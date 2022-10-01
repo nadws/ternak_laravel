@@ -45,7 +45,7 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
-                <li class="nav-header">Jurnal</li>
+                <li class="nav-header">Accounting</li>
                 @php
                 $id_user = Auth::user()->id;
                 $sub = DB::table('tb_sub_menu')

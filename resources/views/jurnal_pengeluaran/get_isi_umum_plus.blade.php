@@ -1,5 +1,4 @@
-<hr>
-<div class="row">
+<div class="row" id="row{{$count}}">
     <div class="col-md-2">
         <div class="form-group">
             <label for="list_kategori">No id</label>
@@ -50,15 +49,12 @@
                 total_rp='1' required>
         </div>
     </div>
+    <div class="col-md-1">
+        <div class="form-group">
+            <label for="">Aksi</label> <br>
+            <button type="button" class="btn btn-danger btn-sm remove_monitoring" count="{{$count}}"><i
+                    class="fas fa-minus"></i></button>
+        </div>
+    </div>
 
-</div>
-
-
-<div id="tambah_umum">
-
-</div>
-
-<div align="right" class="mt-2">
-    <button type="button" class="btn btn-sm btn-costume tambah_umum" id_akun="{{$id_akun}}"><i
-            class="fas fa-plus"></i></button>
 </div>

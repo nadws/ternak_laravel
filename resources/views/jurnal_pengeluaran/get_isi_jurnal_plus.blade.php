@@ -38,7 +38,7 @@
             <select name="id_satuan[]" class="form-control select satuan input_detail input_biaya" required>
                 <?php foreach ($satuan as $p) : ?>
                 <option value="<?= $p->id ?>">
-                    <?= $p->n ?>
+                    <?= $p->nm_satuan ?>
                 </option>
                 <?php endforeach; ?>
             </select>

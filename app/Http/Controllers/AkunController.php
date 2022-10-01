@@ -14,6 +14,7 @@ class AkunController extends Controller
             'title' => 'Akun',
             'akun' => DB::table('tb_akun as a')->join('tb_kategori_akun as b', 'a.id_kategori', 'b.id_kategori')->get(),
             'kategori' => DB::table('tb_kategori_akun')->get(),
+            'satuan' => DB::table('tb_satuan')->get(),
         ];
 
         return view('akun/index', $data);
@@ -53,6 +54,7 @@ class AkunController extends Controller
                 'kd_akun' => $r->kd_akun,
                 'nm_akun' => $r->nm_akun,
                 'id_kategori' => $r->id_kategori,
+                'id_satuan' => empty($r->id_satuan) ? '0' : $r->id_satuan
             ];
         } else {
             $data = [
@@ -60,7 +62,8 @@ class AkunController extends Controller
                 'kd_akun' => $r->kd_akun,
                 'nm_akun' => $r->nm_akun,
                 'id_kategori' => $r->id_kategori,
-                'id_penyesuaian' => $r->id_penyesuaian
+                'id_penyesuaian' => $r->id_penyesuaian,
+                'id_satuan' => empty($r->id_satuan) ? '0' : $r->id_satuan
 
             ];
         }

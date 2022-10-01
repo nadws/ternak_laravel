@@ -1,4 +1,3 @@
-@include('template.head')
 @if ($pesan = Session::get('sukses'))
 <div class="alert alert-success alert-block">
     <button type="button" class="close" data-dismiss="alert">×</button>

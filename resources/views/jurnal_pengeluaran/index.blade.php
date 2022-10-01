@@ -26,7 +26,11 @@
                         <h5 class="float-left">Data {{ $title }}</h5>
                         <a href="" data-toggle="modal" data-target="#tambah"
                             class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-plus"></i> Tambah
-                            Jurnal</a>
+                            Jurnal
+                        </a>
+                        <a href="" data-toggle="modal" data-target="#view"
+                            class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-calendar-alt"></i> View
+                        </a>
                     </div>
                     <div class="card-body">
                         <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
@@ -67,7 +71,8 @@
                                                         <a href="#" class="btn btn-costume btn-sm"><i
                                                                 class="fas fa-pen"></i>
                                                         </a>
-                                                        <a href="#" class="btn btn-danger btn-sm"><i
+                                                        <a href="{{route('delete_jurnal', ['no_nota' => $a->no_nota])}}"
+                                                            class="btn btn-danger btn-sm"><i
                                                                 class="fas fa-trash-alt"></i>
                                                         </a>
 
@@ -191,6 +196,36 @@
         </div>
     </div>
 </form>
+<form method="get" action="">
+    <div class="modal fade" id="view" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+
+            <div class="modal-content">
+                <div class="modal-header bg-costume">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Jurnal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="">Dari</label>
+                            <input type="date" class="form-control" name="tgl1">
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="">Sampai</label>
+                            <input type="date" class="form-control" name="tgl2">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-costume" action="">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 
 
@@ -231,6 +266,24 @@
                         if (data == 'biaya') {
                             $("#form-jurnal").attr("action", "{{route('save_jurnal_biaya')}}");
                         }
+                        if (data == 'asset_umum') {
+                            $("#form-jurnal").attr("action", "{{route('save_jurnal_umum')}}");
+                        }
+                    }
+                });
+            });
+            
+            $('.id_debit').change(function() {
+                var id_debit = $(this).val();
+                $.ajax({
+                    url: "{{ route('get_isi_jurnal') }}",
+                    data: {
+                        id_debit: id_debit
+                    },
+                    type: "GET",
+                    success: function(data) {
+                        $('#input_jurnal').html(data);
+                        $('.select').select2()
                     }
                 });
             });
@@ -282,6 +335,20 @@
                         type: "Get",
                         success: function(data) {
                             $('#tambah_input_jurnal').append(data);
+                            $('.select').select2()
+                    }
+                });        
+            });
+
+            var count = 1;
+            $(document).on('click', '.tambah_umum', function() {
+                var id_akun = $(this).attr('id_akun');
+                count = count + 1;
+                    $.ajax({
+                        url: "{{ route('tambah_umum') }}?count=" + count + "&" + "id_akun=" + id_akun ,
+                        type: "Get",
+                        success: function(data) {
+                            $('#tambah_umum').append(data);
                             $('.select').select2()
                     }
                 });        
