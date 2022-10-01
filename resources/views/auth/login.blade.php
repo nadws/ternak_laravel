@@ -99,14 +99,14 @@
 
                     </div>
                     <div class="container-login100-form-btn mt-2">
-                        <a class="login100-form-btn" href=""
+                        <a class="login100-form-btn" href="{{ route('register') }}"
                             style="background-color: #FFFFFF;color: #62646A; border: #62646A;">
                             Creat New Account
                         </a>
 
                     </div>
                 </form>
-                <div class="login100-more" style="background-image: url('/assets/login/img/login.JPG');">
+                <div class="login100-more" style="background-image: url('/assets/login/img/login3.JPG');">
                 </div>
             </div>
         </div>
