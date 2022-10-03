@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    {{-- <h1 class="m-0">{{ $title }}</h1> --}}
+                    <h5 class="m-0">Data {{ $title }}</h5>
                 </div><!-- /.col -->
                 <!-- /.col -->
             </div><!-- /.row -->
@@ -23,7 +23,28 @@
                 @include('template.flash')
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="float-left">Data {{ $title }}</h5>
+                        <ul class="nav nav-tabs float-left" id="custom-tabs-one-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill"
+                                    href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home"
+                                    aria-selected="true">Pengeluaran</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill"
+                                    href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile"
+                                    aria-selected="false">Pemasukan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill"
+                                    href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages"
+                                    aria-selected="false">Penyesuaian</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill"
+                                    href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings"
+                                    aria-selected="false">Penutup</a>
+                            </li>
+                        </ul>
                         <a href="" data-toggle="modal" data-target="#tambah"
                             class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-plus"></i> Tambah
                             Jurnal
@@ -31,6 +52,7 @@
                         <a href="" data-toggle="modal" data-target="#view"
                             class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-calendar-alt"></i> View
                         </a>
+
                     </div>
                     <div class="card-body">
                         <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">

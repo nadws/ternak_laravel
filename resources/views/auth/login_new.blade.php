@@ -51,7 +51,7 @@
             min-height: 100vh;
             display: block;
             background-color: #F8F8F8;
-            padding: 173px 55px 55px;
+            padding: 100px 55px 55px;
         }
     </style>
 

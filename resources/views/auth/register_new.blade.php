@@ -52,7 +52,7 @@
             min-height: 100vh;
             display: block;
             background-color: #F8F8F8;
-            padding: 100px 55px 55px;
+            padding: 40px 55px 55px;
         }
     </style>
 
@@ -67,16 +67,20 @@
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100">
-                <form class="login100-form validate-form" action="{{ route('login') }}" method="post">
+                <form class="login100-form validate-form" action="{{ route('register') }}" method="post">
 
                     @csrf
                     <span class="login100-form-title p-b-43">
-                        Sign In
+                        Sign Up
                     </span>
                     <center>
                         <x-auth-validation-errors class="mb-4 text-danger" :errors="$errors" />
                     </center>
-
+                    <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                        <input class="input100" name="name" type="text" :value="old('name')" required>
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Name</span>
+                    </div>
                     <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                         <input class="input100" name="email" type="email" name="email" :value="old('email')" required>
                         <span class="focus-input100"></span>
@@ -88,25 +92,23 @@
                         <span class="focus-input100"></span>
                         <span class="label-input100">Password</span>
                     </div>
+                    <div class="wrap-input100 validate-input" data-validate="Password is required">
+                        <input class="input100" type="password" name="password_confirmation" required
+                            autocomplete="current-password">
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Confirm Password</span>
+                    </div>
                     <div>
-                        <a href="{{ route('password.request') }}" class="float-right">Forgot Password</a>
+                        <a href="{{ route('login') }}" class="float-right">Already registered?</a>
                     </div>
                     <br>
                     <div class="container-login100-form-btn mt-4">
                         <button class="login100-form-btn" type="submit">
-                            Login
+                            Register
                         </button>
-
-                    </div>
-                    <div class="container-login100-form-btn mt-2">
-                        <a class="login100-form-btn" href="{{ route('register') }}"
-                            style="background-color: #FFFFFF;color: #62646A; border: #62646A;">
-                            Creat New Account
-                        </a>
-
                     </div>
                 </form>
-                <div class="login100-more" style="background-image: url('/assets/login/img/login3.JPG');">
+                <div class="login100-more" style="background-image: url('/assets/login/img/register.JPG');">
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 @extends('template.master')
 @section('content')
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -30,7 +31,9 @@
                             <a href="" data-toggle="modal" data-target="#view"
                                 class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-calendar-alt"></i> View
                             </a>
+
                         </div>
+
                         <div class="card-body">
                             <table class="table text-center" id="example2">
                                 <thead>

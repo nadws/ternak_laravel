@@ -45,7 +45,12 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
-                <li class="nav-header">Accounting</li>
+                @php
+                $headline = DB::table('tb_headline')->get();
+                @endphp
+
+                @foreach ($headline as $h)
+                <li class="nav-header">{{$h->nm_headline}}</li>
                 @php
                 $id_user = Auth::user()->id;
                 $sub = DB::table('tb_sub_menu')
@@ -60,11 +65,11 @@
                 FROM tb_permission AS a
                 LEFT JOIN tb_sub_menu AS b ON b.id_sub_menu = a.permission
                 LEFT JOIN tb_menu AS c ON c.id_menu = b.id_menu
-                WHERE a.id_user ='$id_user'
+                WHERE a.id_user ='$id_user' and c.id_head_line = $h->id_head_line
                 GROUP BY b.id_menu
                 order by c.urutan ASC
                 "
-            )  ?>
+                )  ?>
                 <?php $i = 1; foreach ($menu as $m): ?>
 
                 <li class="nav-item  {{$i++}}">
@@ -110,7 +115,7 @@
                         FROM tb_permission AS a
                         LEFT JOIN tb_sub_menu AS b ON b.id_sub_menu = a.permission
                         LEFT JOIN tb_menu AS c ON c.id_menu = b.id_menu
-                        WHERE a.id_user ='$id_user'
+                        WHERE a.id_user ='$id_user' and c.id_head_line = $h->id_head_line
                         GROUP BY b.id_menu
                         order by c.urutan ASC
                         "
@@ -166,6 +171,10 @@
                 </li>
                 <?php endforeach ?>
                 <?php endif ?>
+                @endforeach
+
+
+
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

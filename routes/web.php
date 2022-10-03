@@ -6,7 +6,9 @@ use App\Http\Controllers\Buku_besar;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Jurnal_pengeluaran;
 use App\Http\Controllers\Neraca_saldo;
+use App\Http\Controllers\Penjualan;
 use App\Http\Controllers\User;
+use App\Http\Controllers\Verify;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +28,7 @@ Route::get('/', function () {
 
 Route::has('password.request');
 
+Route::get('/verify', [Verify::class, 'index'])->name('verify');
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth'])->name('dashboard');
@@ -77,5 +80,8 @@ Route::get('/saldo', [Neraca_saldo::class, 'index'])->middleware(['auth', 'verif
 
 // Buku Besar
 Route::get('/buku_besar', [Buku_besar::class, 'index'])->middleware(['auth', 'verified'])->name('buku_besar');
+
+// Penjualan
+Route::get('/p_telur', [Penjualan::class, 'index'])->middleware(['auth', 'verified'])->name('p_telur');
 
 require __DIR__ . '/auth.php';

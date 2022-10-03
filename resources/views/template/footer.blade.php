@@ -52,12 +52,12 @@
     $(function() {
         $('#example2').DataTable({
             "paging": true,
-            "lengthChange": false,
+            "lengthChange": true,
             "searching": true,
             "ordering": true,
             "info": true,
             "autoWidth": false,
-            "responsive": true,
+            "responsive": false,
         });
         $('#example3').DataTable({
             // "paging": true,
