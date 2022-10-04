@@ -83,5 +83,7 @@ Route::get('/buku_besar', [Buku_besar::class, 'index'])->middleware(['auth', 've
 
 // Penjualan
 Route::get('/p_telur', [Penjualan::class, 'index'])->middleware(['auth', 'verified'])->name('p_telur');
+Route::get('/add_telur', [Penjualan::class, 'add'])->middleware(['auth', 'verified'])->name('add_telur');
+Route::post('/save_kg', [Penjualan::class, 'save_kg'])->middleware(['auth', 'verified'])->name('save_kg');
 
 require __DIR__ . '/auth.php';
