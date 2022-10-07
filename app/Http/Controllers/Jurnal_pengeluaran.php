@@ -56,7 +56,7 @@ class Jurnal_pengeluaran extends Controller
             'post_center' => DB::table('tb_post_center')->where('id_akun', $id)->get(),
             'aktiva' => DB::table('tb_kelompok_aktiva')->get(),
             'id_akun' => $id,
-            'satuan' => $satuan
+            'satuan2' => $satuan
         ];
 
         if ($akun->id_kategori == '5') {

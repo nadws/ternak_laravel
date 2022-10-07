@@ -206,7 +206,8 @@
                         <div class="col-md-4 lawan_penyesuaian">
                             <div class="form-group">
                                 <label for="list_kategori"><u>Kategori Asset</u></label>
-                                <select name="id_penyesuaian" id="" class="form-control select2 kat_akun" required>
+                                <select name="id_penyesuaian" id="" class="form-control select2 kat_akun input_akun2"
+                                    required>
                                     <option value="">--Pilih Kategori--</option>
                                     <option value="1">Umum</option>
                                     <option value="2">Aktiva</option>
@@ -246,8 +247,8 @@
                         </div>
                         <div class="col-lg-4 keterangan mb-2">
                             <label for="">Satuan</label>
-                            <select name="id_satuan" class="form-control select satuan input_detail input_biaya"
-                                required>
+                            <select name="id_satuan"
+                                class="form-control select satuan input_detail input_akun2 input_biaya" required>
                                 <option value="">-Pilih Satuan-</option>
                                 <?php foreach ($satuan as $p) : ?>
                                 <option value="{{ $p->id }}">{{ $p->nm_satuan }}</option>

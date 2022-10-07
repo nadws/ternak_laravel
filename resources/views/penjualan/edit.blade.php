@@ -21,48 +21,39 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
-                        <div class="card-header">
-                            <ul class="nav nav-tabs float-left" id="custom-tabs-one-tab" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active h_kg" id="custom-tabs-one-home-tab" data-toggle="pill"
-                                        href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home"
-                                        aria-selected="true">Hitung Kg</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link h_pcs" id="custom-tabs-one-profile-tab" data-toggle="pill"
-                                        href="#custom-tabs-one-profile" role="tab"
-                                        aria-controls="custom-tabs-one-profile" aria-selected="false">Hitung Pcs</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <form action="{{ route('save_kg') }}" method="post">
+                        <form action="{{ route('edit_kg') }}" method="post">
                             @csrf
                             <div class="card-body hitung_kg">
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <label for="">Tanggal</label>
-                                        <input type="date" name="tgl" class="form-control" value="{{ date('Y-m-d') }}"
-                                            required>
+                                        <input type="date" name="tgl" class="form-control"
+                                            value="{{ date('Y-m-d',strtotime($nota2->tgl)) }}" required>
                                     </div>
                                     <div class="col-lg-3">
                                         <label for="">Costumer</label>
+                                        <input type="hidden" value="{{$nota2->no_nota}}" name="no_nota">
+                                        <input type="hidden" value="{{$nota2->id_post}}" name="id_post2">
+                                        <input type="hidden" value="{{$nota2->urutan}}" name="urutan">
                                         <select name="id_post" id="costumer" class="form-control select" required>
                                             <option value="">--Pilih Costumer--</option>
                                             @foreach ($costumer as $c)
-                                            <option value="{{ $c->id_post }}">{{ $c->nm_post }}</option>
+                                            <option value="{{ $c->id_post }}" {{$nota2->id_post == $c->id_post ?
+                                                'selected' : ''}}>{{ $c->nm_post }}</option>
                                             @endforeach
                                             <option value="Tambah">+ Customer</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-3">
                                         <label for="">Driver</label>
-                                        <input type="text" name="driver" class="form-control" required>
+                                        <input type="text" name="driver" class="form-control" value="{{$nota2->driver}}"
+                                            required>
                                     </div>
                                     <div class="col-lg-12">
                                         <hr>
                                     </div>
                                     <div class="col-lg-12">
-                                        <table class="table " style="white-space: nowrap">
+                                        <table class="table" style="white-space: nowrap">
                                             <thead>
                                                 <tr>
                                                     <th>Nama barang</th>
@@ -74,36 +65,51 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($jenis as $j)
+                                                @php
+                                                $total = 0;
+                                                @endphp
+                                                @foreach ($nota as $j)
                                                 <tr>
                                                     <td>{{ $j->jenis }}</td>
+                                                    <input type="hidden" name="id_telur[]"
+                                                        value="{{$j->id_invoice_telur}}">
                                                     <td><input type="text" name="pcs[]"
-                                                            class="form-control pcs pcs_kg{{ $j->id }}"
-                                                            id_jenis="{{ $j->id }}" value="0" style="text-align: right">
+                                                            class="form-control pcs pcs_kg{{ $j->id_jenis_telur }}"
+                                                            id_jenis="{{ $j->id_jenis_telur }}" value="{{$j->pcs}}"
+                                                            style="text-align: right">
                                                     </td>
                                                     <td><input type="text" name="kg[]"
-                                                            class="form-control kg kg{{ $j->id }}"
-                                                            id_jenis="{{ $j->id }}" value="0" style="text-align: right">
+                                                            class="form-control kg kg{{ $j->id_jenis_telur }}"
+                                                            id_jenis="{{ $j->id_jenis_telur }}" value="{{$j->kg}}"
+                                                            style="text-align: right">
                                                     </td>
-                                                    <td><input type="text" class="form-control ikat{{ $j->id }}"
-                                                            value="0" style="text-align: right" readonly></td>
+                                                    <td><input type="text"
+                                                            class="form-control ikat{{ $j->id_jenis_telur }}"
+                                                            value="{{$j->pcs / 180}}" style="text-align: right"
+                                                            readonly></td>
 
                                                     <td><input name="kg_jual[]" type="text"
-                                                            class="form-control  kg_rak{{ $j->id }}" value="0"
+                                                            class="form-control  kg_rak{{ $j->id_jenis_telur }}"
+                                                            value="{{ $j->kg - ($j->pcs/180) }}"
                                                             style="text-align: right" readonly></td>
                                                     <td>
                                                         <input type="text"
-                                                            class="form-control rupiah rupiah{{ $j->id }}" value="0"
-                                                            style="text-align: right" name="rupiah[]"
-                                                            id_jenis="{{ $j->id }}">
+                                                            class="form-control rupiah rupiah{{ $j->id_jenis_telur }}"
+                                                            value="{{ $j->rupiah }}" style="text-align: right"
+                                                            name="rupiah[]" id_jenis="{{ $j->id_jenis_telur }}">
 
                                                         <input type="hidden"
-                                                            class="form-control hasil hasil{{ $j->id }}" value="0"
+                                                            class="form-control hasil hasil{{ $j->id_jenis_telur }}"
+                                                            value="{{ $j->rupiah * ($j->kg - ($j->pcs/180)) }}"
                                                             style="text-align: right" name="rp_kg[]">
 
-                                                        <input type="hidden" name="id_jenis_telur[]" value="{{$j->id}}">
+                                                        <input type="hidden" name="id_jenis_telur[]"
+                                                            value="{{$j->id_jenis_telur}}">
                                                     </td>
                                                 </tr>
+                                                @php
+                                                $total += $j->rupiah * ($j->kg - ($j->pcs/180));
+                                                @endphp
                                                 @endforeach
                                             </tbody>
                                             <tfoot>
@@ -111,7 +117,7 @@
                                                     <th colspan="4"></th>
                                                     <th style="text-align: right;vertical-align: middle">Total:</th>
                                                     <th>
-                                                        <input type="text" class="form-control total" value="0"
+                                                        <input type="text" class="form-control total" value="{{$total}}"
                                                             style="text-align: right" readonly>
                                                     </th>
                                                 </tr>
@@ -127,74 +133,7 @@
                                     Save</button>
                             </div>
                         </form>
-                        <form action="">
-                            <div class="card-body hitung_pcs">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <label for="">Tanggal</label>
-                                        <input type="date" class="form-control input_pcs" value="{{ date('Y-m-d') }}">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label for="">Customer</label>
-                                        <select name="" id="" class="form-control select input_pcs">
-                                            <option value="">--Pilih Costumer--</option>
-                                            @foreach ($costumer as $c)
-                                            <option value="{{ $c->id_post }}">{{ $c->nm_post }}</option>
-                                            @endforeach
 
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label for="">Driver</label>
-                                        <input type="text" class="form-control input_pcs">
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <hr>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <table class="table " style="white-space: nowrap">
-                                            <thead>
-                                                <tr>
-                                                    <th>Nama barang</th>
-                                                    <th>Pcs</th>
-                                                    <th>Kg</th>
-                                                    <th>Rp/Kg</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($jenis as $j)
-                                                <tr>
-                                                    <td>{{ $j->jenis }}</td>
-                                                    <td><input type="text" class="form-control pcs input_pcs" value="0"
-                                                            style="text-align: right"></td>
-                                                    <td><input type="text" class="form-control kg input_pcs" value="0"
-                                                            style="text-align: right"></td>
-
-                                                    <td><input type="text" class="form-control input_pcs" value="0"
-                                                            style="text-align: right"></td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <th colspan="2"></th>
-                                                    <th style="text-align: right;vertical-align: middle">Total:</th>
-                                                    <th><input type="text" class="form-control input_pcs" value="0"
-                                                            style="text-align: right"></th>
-                                                </tr>
-
-
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer hitung_pcs">
-                                <button type="submit" class="btn float-right btn-costume"><i class="fas fa-save"></i>
-                                    Save
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -278,6 +217,21 @@
                 var ikat = parseFloat(pcs) / 180;
                 $(".ikat" + id_jenis).val(ikat.toFixed(1));
 
+                var kg = $('.kg' + id_jenis).val();
+                var rupiah = $('.rupiah' + id_jenis).val();
+                var kg_rak = parseFloat(kg) - parseFloat(ikat);
+
+                var bayar = rupiah * kg_rak;
+                $(".hasil" + id_jenis).val(bayar);
+
+                var ttl_rp = 0;
+                $(".hasil").each(function() {
+                    ttl_rp += parseInt($(this).val());
+                });
+
+
+                $('.total').val(ttl_rp);
+
 
             });
             $(document).on('keyup', '.kg', function() {
@@ -288,9 +242,23 @@
                 var ikat = $('.ikat' + id_jenis).val();
 
 
-
+                var rupiah = $('.rupiah' + id_jenis).val();
                 var kg_rak = parseFloat(kg) - parseFloat(ikat);
                 $(".kg_rak" + id_jenis).val(kg_rak.toFixed(1));
+
+                var bayar = rupiah * kg_rak;
+
+                $(".hasil" + id_jenis).val(bayar);
+
+
+
+                var ttl_rp = 0;
+                $(".hasil").each(function() {
+                    ttl_rp += parseInt($(this).val());
+                });
+
+
+                $('.total').val(ttl_rp);
 
 
             });

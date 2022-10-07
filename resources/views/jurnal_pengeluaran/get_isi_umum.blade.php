@@ -36,7 +36,7 @@
     <div class="col-md-2">
         <div class="form-group">
             <label for="list_kategori">Satuan</label>
-            <input type="text" class="form-control" readonly value="{{$satuan->nm_satuan}}">
+            <input type="text" class="form-control" readonly value="{{$satuan2->nm_satuan}}">
 
         </div>
     </div>

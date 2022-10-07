@@ -38,6 +38,7 @@
                                             <th>Kg Jual <br> ({{$j->jenis}})</th>
                                             @endforeach
                                             <th>Total Rp</th>
+                                            <th>Status</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -60,10 +61,12 @@
                                             <td>{{empty($kg->kg_jual) ? '0' : $kg->kg_jual}}</td>
                                             @endforeach
                                             <td>{{number_format($i->ttl_rp,0)}}</td>
+                                            <td>{{$i->lunas == 'Y' ?'Paid' : 'Unpaid'}}</td>
                                             <td>
-                                                <a href="" class="btn btn-sm btn-costume"><i class="fas fa-pen"></i></a>
-                                                <a href="" class="btn btn-sm btn-danger"><i
-                                                        class="fas fa-trash-alt"></i></a>
+                                                <a href="{{route('edit_telur',['nota'=>$i->no_nota,'jenis' => $i->jenis_penjualan ])}}"
+                                                    class="btn btn-sm btn-costume"><i class="fas fa-pen"></i></a>
+                                                <a href="{{route('delete_p',['nota'=>$i->no_nota ])}}"
+                                                    class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></a>
                                             </td>
 
                                         </tr>

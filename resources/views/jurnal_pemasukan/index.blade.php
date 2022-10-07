@@ -25,29 +25,22 @@
                     <div class="card-header">
                         <ul class="nav nav-tabs float-left" id="custom-tabs-one-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill"
-                                    href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home"
-                                    aria-selected="true">Pengeluaran</a>
+                                <a class="nav-link " href="{{route('jurnal_pengeluaran')}}" role="tab"
+                                    aria-controls="custom-tabs-one-home" aria-selected="true">Pengeluaran</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{route('j_pemasukan')}}" role="tab"
-                                    aria-controls="custom-tabs-one-profile" aria-selected="false">Pemasukan</a>
+                                <a class="nav-link active" href="" role="tab" aria-controls="custom-tabs-one-profile"
+                                    aria-selected="false">Pemasukan</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill"
-                                    href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages"
-                                    aria-selected="false">Penyesuaian</a>
+                                <a class="nav-link" href="#custom-tabs-one-messages" role="tab"
+                                    aria-controls="custom-tabs-one-messages" aria-selected="false">Penyesuaian</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill"
-                                    href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings"
-                                    aria-selected="false">Penutup</a>
+                                <a class="nav-link" href="#custom-tabs-one-settings" role="tab"
+                                    aria-controls="custom-tabs-one-settings" aria-selected="false">Penutup</a>
                             </li>
                         </ul>
-                        <a href="" data-toggle="modal" data-target="#tambah"
-                            class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-plus"></i> Tambah
-                            Jurnal
-                        </a>
                         <a href="" data-toggle="modal" data-target="#view"
                             class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-calendar-alt"></i> View
                         </a>
@@ -70,7 +63,7 @@
                                                     <th>Debit <br> ({{ number_format($total_jurnal->debit, 0) }})</th>
                                                     <th>Kredit <br> ({{ number_format($total_jurnal->kredit, 0) }})</th>
                                                     <th>Admin</th>
-                                                    <th class="text-center">Aksi</th>
+                                                    {{-- <th class="text-center">Aksi</th> --}}
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -88,7 +81,7 @@
                                                     <td>{{ number_format($a->debit, 0) }}</td>
                                                     <td>{{ number_format($a->kredit, 0) }}</td>
                                                     <td>{{ $a->admin }}</td>
-                                                    <td align="center" style="white-space: nowrap">
+                                                    {{-- <td align="center" style="white-space: nowrap">
                                                         <a href="#" class="btn btn-costume btn-sm"><i
                                                                 class="fas fa-pen"></i>
                                                         </a>
@@ -97,7 +90,7 @@
                                                                 class="fas fa-trash-alt"></i>
                                                         </a>
 
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                                 @endforeach
                                             </tbody>
