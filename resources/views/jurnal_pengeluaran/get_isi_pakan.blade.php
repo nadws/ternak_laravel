@@ -15,12 +15,13 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <label for="list_kategori">Post Center</label>
-            <select name="id_post_center[]" class="form-control   select input_biaya">
-                <option value="">--Pilih Post Center--</option>
-                @foreach ($post_center as $p)
-                <option value="{{$p->id_post}}">{{$p->nm_post}}</option>
+            <label for="list_kategori">Pilih Barang</label>
+            <select name="id_barang[]" class="form-control get_barang get_barang1  select input_biaya" count="1">
+                <option value="">--Pilih Barang--</option>
+                @foreach ($barang as $p)
+                <option value="{{$p->id_barang}}">{{$p->nm_barang}}</option>
                 @endforeach
+                <option value="pls_barang">+Barang</option>
             </select>
         </div>
     </div>
@@ -35,12 +36,9 @@
     <div class="col-md-2">
         <div class="form-group">
             <label for="list_kategori">Satuan</label>
-            <select name="id_satuan[]" class="form-control select satuan input_detail input_biaya" required>
-                <?php foreach ($satuan as $p) : ?>
-                <option value="<?= $p->id ?>">
-                    <?= $p->nm_satuan ?>
-                </option>
-                <?php endforeach; ?>
+            <select name="id_satuan[]" class="form-control satuan_barang1 select satuan input_detail input_biaya"
+                required>
+
             </select>
 
         </div>
@@ -58,11 +56,11 @@
 </div>
 
 
-<div id="tambah_input_jurnal">
+<div id="tambah_input_vitamin">
 
 </div>
 
 <div align="right" class="mt-2">
-    <button type="button" class="btn btn-sm btn-costume tambah_input_jurnal" id_akun="{{$id_akun}}"><i
+    <button type="button" class="btn btn-sm btn-costume tambah_input_vitamin" id_akun="{{$id_akun}}"><i
             class="fas fa-plus"></i></button>
 </div>

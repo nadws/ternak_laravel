@@ -212,6 +212,7 @@
                                     <option value="1">Umum</option>
                                     <option value="2">Aktiva</option>
                                     <option value="3">ATK</option>
+                                    <option value="4">Pakan/Vitamin</option>
                                 </select>
                             </div>
                         </div>
@@ -236,7 +237,17 @@
                             </div>
                             <div class="form-group keterangan3">
                                 <label for="list_kategori"><u>Asset ATK</u></label>
-                                <p>Asset aktiva memuat data asset yang memiliki produk dan akan di opname setiap
+                                <p>Asset atk memuat data asset yang memiliki produk dan akan di opname setiap
+                                    bulannya</p>
+                                <p>Contoh Jurnal Penyesuaian:</p>
+                                <a href="#" data-target="#view_image_atk" data-toggle="modal">
+                                    <img src="{{asset('assets')}}/img/atk.png" alt="" width="80%">
+                                </a>
+
+                            </div>
+                            <div class="form-group keterangan4">
+                                <label for="list_kategori"><u>Asset Pakan/Vitamin</u></label>
+                                <p>Asset pakan memuat data asset yang memiliki produk dan akan di opname setiap
                                     bulannya</p>
                                 <p>Contoh Jurnal Penyesuaian:</p>
                                 <a href="#" data-target="#view_image_atk" data-toggle="modal">
@@ -248,7 +259,7 @@
                         <div class="col-lg-4 keterangan mb-2">
                             <label for="">Satuan</label>
                             <select name="id_satuan"
-                                class="form-control select satuan input_detail input_akun2 input_biaya" required>
+                                class="form-control select satuan input_detail satuan_umum  input_biaya" required>
                                 <option value="">-Pilih Satuan-</option>
                                 <?php foreach ($satuan as $p) : ?>
                                 <option value="{{ $p->id }}">{{ $p->nm_satuan }}</option>
@@ -301,7 +312,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save/Edit</button>
+                    <button type="submit" class="btn btn-costume">Save/Edit</button>
                 </div>
             </div>
         </div>
@@ -377,7 +388,9 @@ function hide_default() {
     $('.keterangan').hide();
     $('.keterangan2').hide();
     $('.keterangan3').hide();
+    $('.keterangan4').hide();
     $('.input_akun2').attr('disabled', 'true');
+    $('.satuan_umum').attr('disabled', 'true');
     $('#id_kas').attr('disabled', 'true');
 }
 $(document).on('change', '#id_kategori', function() {
@@ -385,7 +398,6 @@ $(document).on('change', '#id_kategori', function() {
     if (id_kategori == '1') {
         $('.asset').show();
         $('.cash_flow').show();
-
         $('#id_kas').removeAttr('disabled', 'true');
 
     } else {
@@ -538,6 +550,7 @@ $(document).on('click', '#switchbukukas', function() {
             var id_kat = $(this).val();
             if (id_kat == '1') {
                 $('.keterangan').show();
+                $('.satuan_umum').removeAttr('disabled', 'true');
             } else {
                 $('.keterangan').hide();
             }
@@ -550,6 +563,11 @@ $(document).on('click', '#switchbukukas', function() {
                 $('.keterangan3').show();
             } else {
                 $('.keterangan3').hide();
+            }
+            if (id_kat == '4') {
+                $('.keterangan4').show();
+            } else {
+                $('.keterangan4').hide();
             }
             
         

@@ -19,7 +19,7 @@ class Jurnal_pengeluaran extends Controller
         }
         $jurnal = DB::select("SELECT * FROM tb_jurnal as a left join tb_akun as b on a.id_akun = b.id_akun where a.id_buku = '3' and a.tgl between '$tgl1' and '$tgl2' order by a.id_jurnal DESC");
         $data = [
-            'title' => 'Jurnal',
+            'title' => 'Jurnal Pengeluaran',
             'akun' => DB::table('tb_akun as a')->join('tb_kategori_akun as b', 'a.id_kategori', 'b.id_kategori')->get(),
             'jurnal' => $jurnal,
 
@@ -54,6 +54,7 @@ class Jurnal_pengeluaran extends Controller
         $data = [
             'satuan' => DB::table('tb_satuan')->get(),
             'post_center' => DB::table('tb_post_center')->where('id_akun', $id)->get(),
+            'barang' => DB::table('tb_barang_pv')->where('id_akun', $id)->get(),
             'aktiva' => DB::table('tb_kelompok_aktiva')->get(),
             'id_akun' => $id,
             'satuan2' => $satuan
@@ -68,6 +69,8 @@ class Jurnal_pengeluaran extends Controller
                 return view('jurnal_pengeluaran/get_isi_aktiva', $data);
             } elseif ($akun->id_penyesuaian == '3') {
                 return view('jurnal_pengeluaran/get_isi_atk', $data);
+            } elseif ($akun->id_penyesuaian == '4') {
+                return view('jurnal_pengeluaran/get_isi_pakan', $data);
             }
         }
     }
@@ -84,36 +87,13 @@ class Jurnal_pengeluaran extends Controller
                 echo "asset_umum";
             } elseif ($akun->id_penyesuaian == '2') {
             } elseif ($akun->id_penyesuaian == '3') {
+            } elseif ($akun->id_penyesuaian == '4') {
+                echo "asset_pakan";
             }
         }
     }
 
-    public function tambah_jurnal(Request $r)
-    {
 
-        $data = [
-            'title' => 'Absensi',
-            'count' => $r->count,
-            'satuan' => DB::table('tb_satuan')->get(),
-            'post_center' => DB::table('tb_post_center')->where('id_akun', $r->id_akun)->get()
-
-        ];
-        return view('jurnal_pengeluaran/get_isi_jurnal_plus', $data);
-    }
-    public function tambah_umum(Request $r)
-    {
-        $akun = DB::table('tb_akun')->where('id_akun', $r->id_akun)->first();
-        $satuan = DB::table('tb_satuan')->where('id', $akun->id_satuan)->first();
-        $data = [
-            'title' => 'Absensi',
-            'count' => $r->count,
-            'satuan' => DB::table('tb_satuan')->get(),
-            'post_center' => DB::table('tb_post_center')->where('id_akun', $r->id_akun)->get(),
-            'satuan' => $satuan
-
-        ];
-        return view('jurnal_pengeluaran/get_isi_umum_plus', $data);
-    }
     public function delete_jurnal(Request $r)
     {
         DB::table('tb_jurnal')->where('no_nota', $r->no_nota)->delete();
@@ -121,117 +101,41 @@ class Jurnal_pengeluaran extends Controller
         return redirect()->route("jurnal_pengeluaran")->with('sukses', 'Sukses');
     }
 
-    public function save_jurnal_biaya(Request $r)
+
+
+    public function print_jurnal(Request $r)
     {
-
-        $no_id = $r->no_id;
-        $ttl_rp = $r->ttl_rp;
-        $ket = $r->keterangan;
-        $id_post = $r->id_post_center;
-        $qty = $r->qty;
-
-        $akun = DB::table('tb_akun')->where('id_akun', $r->id_akun)->first();
-        $urutan = DB::selectOne("SELECT max(a.urutan) as urutan FROM tb_jurnal as a ");
-
-        if (empty($urutan->urutan)) {
-            $no_urutan = '1001';
-        } else {
-            $no_urutan = $urutan->urutan + 1;
-        }
-
-
+        $nota = $r->nota;
 
         $data = [
-            'id_akun' => $r->id_akun_kredit,
-            'id_buku' => '3',
-            'urutan' => $no_urutan,
-            'no_nota' => 'AGR-' . $no_urutan,
-            'tgl' => $r->tgl,
-            'ket' => 'Pengeluaran' . ' ' . $akun->nm_akun,
-            'kredit' => $r->kredit,
-            'admin' => Auth::user()->name
+            'nota' => $nota,
+            'jurnal2' => DB::selectOne("SELECT * FROM tb_jurnal as a left join tb_akun as b on b.id_akun = a.id_akun where a.no_nota = '$nota' group by a.no_nota"),
+            'jurnal' => DB::select("SELECT * FROM tb_jurnal as a left join tb_akun as b on b.id_akun = a.id_akun where a.no_nota = '$nota'")
         ];
-        DB::table('tb_jurnal')->insert($data);
 
-
-        for ($x = 0; $x < count($ttl_rp); $x++) {
-            $data = [
-                'id_akun' => $r->id_akun,
-                'id_buku' => '3',
-                'urutan' => $no_urutan,
-                'no_nota' => 'AGR-' . $no_urutan,
-                'tgl' => $r->tgl,
-                'debit' => $ttl_rp[$x],
-                'ket' => $ket[$x],
-                'qty' => $qty[$x],
-                'id_post' => $id_post[$x],
-                'no_id' =>  $no_id[$x],
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data);
-        }
-
-        return redirect()->route("jurnal_pengeluaran")->with('sukses', 'Sukses');
+        return view('jurnal_pengeluaran/view_print', $data);
     }
-    public function save_jurnal_umum(Request $r)
+    public function print_jurnal2(Request $r)
     {
-
-        $no_id = $r->no_id;
-        $ttl_rp = $r->ttl_rp;
-        $ket = $r->keterangan;
-        $id_post = $r->id_post_center;
-        $qty = $r->qty;
-
-        $akun = DB::table('tb_akun')->where('id_akun', $r->id_akun)->first();
-        $urutan = DB::selectOne("SELECT max(a.urutan) as urutan FROM tb_jurnal as a ");
-
-        if (empty($urutan->urutan)) {
-            $no_urutan = '1001';
-        } else {
-            $no_urutan = $urutan->urutan + 1;
-        }
-
-
+        $nota = $r->nota;
 
         $data = [
-            'id_akun' => $r->id_akun_kredit,
-            'id_buku' => '3',
-            'urutan' => $no_urutan,
-            'no_nota' => 'AGR-' . $no_urutan,
-            'tgl' => $r->tgl,
-            'ket' => 'Pengeluaran' . ' ' . $akun->nm_akun,
-            'kredit' => $r->kredit,
-            'admin' => Auth::user()->name
+            'nota' => $nota,
+            'jurnal2' => DB::selectOne("SELECT * FROM tb_jurnal as a left join tb_akun as b on b.id_akun = a.id_akun where a.no_nota = '$nota' group by a.no_nota"),
+            'jurnal' => DB::select("SELECT * FROM tb_jurnal as a left join tb_akun as b on b.id_akun = a.id_akun where a.no_nota = '$nota'")
         ];
-        DB::table('tb_jurnal')->insert($data);
 
+        return view('jurnal_pengeluaran/view_print2', $data);
+    }
 
-        for ($x = 0; $x < count($ttl_rp); $x++) {
-            $data = [
-                'id_akun' => $r->id_akun,
-                'id_buku' => '3',
-                'urutan' => $no_urutan,
-                'no_nota' => 'AGR-' . $no_urutan,
-                'tgl' => $r->tgl,
-                'debit' => $ttl_rp[$x],
-                'ket' => $ket[$x],
-                'qty' => $qty[$x],
-                'id_post' => $id_post[$x],
-                'no_id' =>  $no_id[$x],
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data);
+    public function get_barang(Request $r)
+    {
+        $barang = DB::table("tb_barang_pv")->where('id_barang', $r->id_barang)->first();
 
-            $data_asset = [
-                'id_akun' => $r->id_akun,
-                'tgl' => $r->tgl,
-                'debit' => $qty[$x],
-                'no_nota' => 'AGR-' . $no_urutan,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_asset_umum')->insert($data_asset);
+        $satuan = DB::table("tb_satuan")->where('id', $barang->id_satuan)->get();
+
+        foreach ($satuan as $k) {
+            echo "<option value='" . $k->id . "'>" . $k->nm_satuan . "</option>";
         }
-
-        return redirect()->route("jurnal_pengeluaran")->with('sukses', 'Sukses');
     }
 }

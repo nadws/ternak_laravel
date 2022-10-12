@@ -4,8 +4,10 @@ use App\Http\Controllers\AksesConttroller;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\Buku_besar;
 use App\Http\Controllers\Dashboard;
+use App\Http\Controllers\Isi_jurnalpengeluaran;
 use App\Http\Controllers\Jurnal_pemasukan;
 use App\Http\Controllers\Jurnal_pengeluaran;
+use App\Http\Controllers\Jurnal_penyesuaian;
 use App\Http\Controllers\Neraca_saldo;
 use App\Http\Controllers\Penjualan;
 use App\Http\Controllers\Piutang_telur;
@@ -62,14 +64,24 @@ Route::post('/save_urutan', [AksesConttroller::class, 'save_urutan'])->middlewar
 Route::get('/jurnal_pengeluaran', [Jurnal_pengeluaran::class, 'index'])->middleware(['auth', 'verified'])->name('jurnal_pengeluaran');
 Route::get('/get_isi_jurnal', [Jurnal_pengeluaran::class, 'get_isi_jurnal'])->middleware(['auth', 'verified'])->name('get_isi_jurnal');
 Route::get('/akun_kredit', [Jurnal_pengeluaran::class, 'akun_kredit'])->middleware(['auth', 'verified'])->name('akun_kredit');
-Route::get('/tambah_jurnal', [Jurnal_pengeluaran::class, 'tambah_jurnal'])->middleware(['auth', 'verified'])->name('tambah_jurnal');
-Route::get('/tambah_umum', [Jurnal_pengeluaran::class, 'tambah_umum'])->middleware(['auth', 'verified'])->name('tambah_umum');
+
 Route::get('/get_save_jurnal', [Jurnal_pengeluaran::class, 'get_save_jurnal'])->middleware(['auth', 'verified'])->name('get_save_jurnal');
 Route::get('/delete_jurnal', [Jurnal_pengeluaran::class, 'delete_jurnal'])->middleware(['auth', 'verified'])->name('delete_jurnal');
+Route::get('/get_barang', [Jurnal_pengeluaran::class, 'get_barang'])->middleware(['auth', 'verified'])->name('get_barang');
+
+Route::get('/print_j', [Jurnal_pengeluaran::class, 'print_jurnal'])->middleware(['auth', 'verified'])->name('print_j');
+Route::get('/print_jurnal2', [Jurnal_pengeluaran::class, 'print_jurnal2'])->middleware(['auth', 'verified'])->name('print_jurnal2');
 
 // Save Jurnal pengeluaran
-Route::post('/save_jurnal_biaya', [Jurnal_pengeluaran::class, 'save_jurnal_biaya'])->middleware(['auth', 'verified'])->name('save_jurnal_biaya');
-Route::post('/save_jurnal_umum', [Jurnal_pengeluaran::class, 'save_jurnal_umum'])->middleware(['auth', 'verified'])->name('save_jurnal_umum');
+Route::post('/save_jurnal_biaya', [Isi_jurnalpengeluaran::class, 'save_jurnal_biaya'])->middleware(['auth', 'verified'])->name('save_jurnal_biaya');
+Route::post('/save_jurnal_umum', [Isi_jurnalpengeluaran::class, 'save_jurnal_umum'])->middleware(['auth', 'verified'])->name('save_jurnal_umum');
+Route::post('/save_jurnal_pv', [Isi_jurnalpengeluaran::class, 'save_jurnal_pv'])->middleware(['auth', 'verified'])->name('save_jurnal_pv');
+
+// Tambah Jurnal
+
+Route::get('/tambah_jurnal', [Isi_jurnalpengeluaran::class, 'tambah_jurnal'])->middleware(['auth', 'verified'])->name('tambah_jurnal');
+Route::get('/tambah_umum', [Isi_jurnalpengeluaran::class, 'tambah_umum'])->middleware(['auth', 'verified'])->name('tambah_umum');
+Route::get('/tambah_input_vitamin', [Isi_jurnalpengeluaran::class, 'tambah_input_vitamin'])->middleware(['auth', 'verified'])->name('tambah_input_vitamin');
 
 // user
 Route::get('/user', [User::class, 'index'])->middleware(['auth', 'verified'])->name('user');
@@ -105,6 +117,12 @@ Route::get('/piutang_telur', [Piutang_telur::class, 'index'])->middleware(['auth
 Route::get('/bayar_telur', [Piutang_telur::class, 'bayar'])->middleware(['auth', 'verified'])->name('bayar_telur');
 Route::get('/tambah_piutang', [Piutang_telur::class, 'tambah_piutang'])->middleware(['auth', 'verified'])->name('tambah_piutang');
 Route::post('/save_piutang_t', [Piutang_telur::class, 'save_piutang_t'])->middleware(['auth', 'verified'])->name('save_piutang_t');
+
+// Jurnal Penyesuaian
+Route::get('/j_penyesuaian', [Jurnal_penyesuaian::class, 'index'])->middleware(['auth', 'verified'])->name('j_penyesuaian');
+Route::get('/p_stok', [Jurnal_penyesuaian::class, 'penyesuaian_stok'])->middleware(['auth', 'verified'])->name('p_stok');
+Route::get('/pakan_stok', [Jurnal_penyesuaian::class, 'pakan_stok'])->middleware(['auth', 'verified'])->name('pakan_stok');
+Route::post('/save_penyesuaian_stok', [Jurnal_penyesuaian::class, 'save_penyesuaian_stok'])->middleware(['auth', 'verified'])->name('save_penyesuaian_stok');
 
 
 

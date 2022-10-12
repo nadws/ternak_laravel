@@ -23,7 +23,7 @@
                 @include('template.flash')
                 <div class="card">
                     <div class="card-header">
-                        <ul class="nav nav-tabs float-left" id="custom-tabs-one-tab" role="tablist">
+                        {{-- <ul class="nav nav-tabs float-left" id="custom-tabs-one-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill"
                                     href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home"
@@ -43,9 +43,9 @@
                                     href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings"
                                     aria-selected="false">Penutup</a>
                             </li>
-                        </ul>
+                        </ul> --}}
                         <a href="" data-toggle="modal" data-target="#tambah"
-                            class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-plus"></i> Tambah
+                            class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-plus"></i>
                             Jurnal
                         </a>
                         <a href="" data-toggle="modal" data-target="#view"
@@ -89,6 +89,10 @@
                                                     <td>{{ number_format($a->kredit, 0) }}</td>
                                                     <td>{{ $a->admin }}</td>
                                                     <td align="center" style="white-space: nowrap">
+                                                        <a href="#" data-toggle="modal" data-target="#print"
+                                                            class="btn btn-costume btn-sm print"
+                                                            nota="{{$a->no_nota}}"><i class="fas fa-print"></i>
+                                                        </a>
                                                         <a href="#" class="btn btn-costume btn-sm"><i
                                                                 class="fas fa-pen"></i>
                                                         </a>
@@ -248,6 +252,32 @@
     </div>
 </form>
 
+<style>
+    .modal-lg-max2 {
+        max-width: 1000px;
+    }
+</style>
+<div class="modal fade" id="print" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg-max2" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header bg-costume">
+                <h5 class="modal-title" id="exampleModalLabel">Print Nota</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="print_nota">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 
@@ -287,6 +317,9 @@
                         }
                         if (data == 'asset_umum') {
                             $("#form-jurnal").attr("action", "{{route('save_jurnal_umum')}}");
+                        }
+                        if (data == 'asset_pakan') {
+                            $("#form-jurnal").attr("action", "{{route('save_jurnal_pv')}}");
                         }
                     }
                 });
@@ -373,6 +406,20 @@
                 });        
             });
 
+            var count = 1;
+            $(document).on('click', '.tambah_input_vitamin', function() {
+                var id_akun = $(this).attr('id_akun');
+                count = count + 1;
+                    $.ajax({
+                        url: "{{ route('tambah_input_vitamin') }}?count=" + count + "&" + "id_akun=" + id_akun ,
+                        type: "Get",
+                        success: function(data) {
+                            $('#tambah_input_vitamin').append(data);
+                            $('.select').select2()
+                    }
+                });        
+            });
+
             
 
             // Aktiva
@@ -391,6 +438,28 @@
                     debit += parseFloat($(this).val());
                 });
                 $('.total').val(debit);
+            });
+
+            $(document).on('click', '.print', function() {
+                var nota = $(this).attr('nota');
+                $.ajax({
+                    url: "{{ route('print_j') }}?nota=" + nota ,
+                    type: "Get",
+                    success: function(data) {
+                    $('#print_nota').html(data);
+                    }
+                });
+            });
+            $(document).on('change', '.get_barang', function() {
+                var id_barang = $(this).val();
+                var count = $(this).attr('count');
+                $.ajax({
+                    url: "{{ route('get_barang') }}?id_barang=" + id_barang ,
+                    type: "Get",
+                    success: function(data) {
+                    $('.satuan_barang' + count).html(data);
+                    }
+                });
             });
     });
 </script>

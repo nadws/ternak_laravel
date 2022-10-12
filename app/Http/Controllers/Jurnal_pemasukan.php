@@ -18,7 +18,7 @@ class Jurnal_pemasukan extends Controller
         }
         $jurnal = DB::select("SELECT * FROM tb_jurnal as a left join tb_akun as b on a.id_akun = b.id_akun where a.id_buku = '1' and a.tgl between '$tgl1' and '$tgl2' order by a.id_jurnal DESC");
         $data = [
-            'title' => 'Jurnal',
+            'title' => 'Jurnal Pemasukan',
             'akun' => DB::table('tb_akun as a')->join('tb_kategori_akun as b', 'a.id_kategori', 'b.id_kategori')->get(),
             'jurnal' => $jurnal,
 
