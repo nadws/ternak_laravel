@@ -98,8 +98,8 @@ class Isi_jurnalpengeluaran extends Controller
             ];
             DB::table('tb_jurnal')->insert($data);
         }
-
-        return redirect()->route("jurnal_pengeluaran")->with('sukses', 'Sukses');
+        $tgl1 = date('Y-m-01', strtotime($r->tgl));
+        return redirect()->route("jurnal_pengeluaran", ['tgl1' => $tgl1, 'tgl2' => $r->tgl])->with('sukses', 'Sukses');
     }
     public function save_jurnal_umum(Request $r)
     {
@@ -159,8 +159,8 @@ class Isi_jurnalpengeluaran extends Controller
             ];
             DB::table('tb_asset_umum')->insert($data_asset);
         }
-
-        return redirect()->route("jurnal_pengeluaran")->with('sukses', 'Sukses');
+        $tgl1 = date('Y-m-01', strtotime($r->tgl));
+        return redirect()->route("jurnal_pengeluaran", ['tgl1' => $tgl1, 'tgl2' => $r->tgl])->with('sukses', 'Sukses');
     }
 
     public function save_jurnal_pv(Request $r)
@@ -207,6 +207,7 @@ class Isi_jurnalpengeluaran extends Controller
                 'ket' => $ket[$x],
                 'qty' => $qty[$x],
                 'no_id' =>  $no_id[$x],
+                'id_barang_pv' => $id_barang[$x],
                 'admin' => Auth::user()->name
             ];
             DB::table('tb_jurnal')->insert($data);
@@ -222,6 +223,7 @@ class Isi_jurnalpengeluaran extends Controller
             DB::table('tb_asset_pv')->insert($data_asset);
         }
 
-        return redirect()->route("jurnal_pengeluaran")->with('sukses', 'Sukses');
+        $tgl1 = date('Y-m-01', strtotime($r->tgl));
+        return redirect()->route("jurnal_pengeluaran", ['tgl1' => $tgl1, 'tgl2' => $r->tgl])->with('sukses', 'Sukses');
     }
 }

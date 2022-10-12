@@ -66,7 +66,7 @@
                                                     <th>Debit <br> ({{ number_format($total_jurnal->debit, 0) }})</th>
                                                     <th>Kredit <br> ({{ number_format($total_jurnal->kredit, 0) }})</th>
                                                     <th>Admin</th>
-                                                    {{-- <th class="text-center">Aksi</th> --}}
+                                                    <th class="text-center">Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -81,19 +81,19 @@
                                                     <td>{{ $a->no_nota }}</td>
                                                     <td>{{ $a->nm_akun }}</td>
                                                     <td>{{ $a->ket }}</td>
-                                                    <td>{{ number_format($a->debit, 0) }}</td>
-                                                    <td>{{ number_format($a->kredit, 0) }}</td>
+                                                    <td align="right">{{ number_format($a->debit, 0) }}</td>
+                                                    <td align="right">{{ number_format($a->kredit, 0) }}</td>
                                                     <td>{{ $a->admin }}</td>
-                                                    {{-- <td align="center" style="white-space: nowrap">
+                                                    <td align="center" style="white-space: nowrap">
                                                         <a href="#" class="btn btn-costume btn-sm"><i
                                                                 class="fas fa-pen"></i>
                                                         </a>
-                                                        <a href="{{route('delete_jurnal', ['no_nota' => $a->no_nota])}}"
+                                                        <a href="{{route('delete_penyesuaian', ['no_nota' => $a->no_nota])}}"
                                                             class="btn btn-danger btn-sm"><i
                                                                 class="fas fa-trash-alt"></i>
                                                         </a>
 
-                                                    </td> --}}
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -140,8 +140,6 @@
                             id="nav-profile-tab " data-toggle="tab" href="#nav-profile" role="tab"
                             aria-controls="nav-profile" aria-selected="false">{{$a->nm_akun}}</a>
                         @endforeach
-
-
                         <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
                             role="tab" aria-controls="nav-contact" aria-selected="false">Pullet</a>
 
@@ -245,6 +243,29 @@
 
             $('.selisih' + id_akun).val(selisih);
             $('.debit' + id_akun).val(rupiah);
+
+            
+        });  
+
+        $(document).on('keyup', '.qty_aktual_pv', function() {
+            var id_barang = $(this).attr('id_barang');
+            var qty_pro = $('.qty_a_pv' + id_barang).val()
+            var qty_akt = $('.qty_aktual_pv' + id_barang).val()
+            var h_satuan = $('.h_satuan_pv' + id_barang).val()
+
+            var selisih = parseInt(qty_pro) - parseInt(qty_akt);
+            var rupiah = parseInt(h_satuan) * selisih;
+
+
+            $('.slsh_pv' + id_barang).val(selisih);
+            $('.ttl_pv' + id_barang).val(rupiah);
+
+            var debit = 0;
+            $(".ttl_pv").each(function() {
+                debit += parseFloat($(this).val());
+            });
+            
+            $('.ttl_debit_p').val(debit);
 
             
         });                

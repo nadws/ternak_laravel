@@ -123,6 +123,8 @@ Route::get('/j_penyesuaian', [Jurnal_penyesuaian::class, 'index'])->middleware([
 Route::get('/p_stok', [Jurnal_penyesuaian::class, 'penyesuaian_stok'])->middleware(['auth', 'verified'])->name('p_stok');
 Route::get('/pakan_stok', [Jurnal_penyesuaian::class, 'pakan_stok'])->middleware(['auth', 'verified'])->name('pakan_stok');
 Route::post('/save_penyesuaian_stok', [Jurnal_penyesuaian::class, 'save_penyesuaian_stok'])->middleware(['auth', 'verified'])->name('save_penyesuaian_stok');
+Route::post('/save_pv', [Jurnal_penyesuaian::class, 'save_pv'])->middleware(['auth', 'verified'])->name('save_pv');
+Route::get('/delete_penyesuaian', [Jurnal_penyesuaian::class, 'delete_penyesuaian'])->middleware(['auth', 'verified'])->name('delete_penyesuaian');
 
 
 
