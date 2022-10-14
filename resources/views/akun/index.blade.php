@@ -442,11 +442,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div id="kelompok_akun">
 
-                    </div>
+                <div id="kelompok_akun">
+
                 </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -454,6 +454,65 @@
         </div>
     </div>
 </div>
+
+
+<form id="save_kelompok_baru">
+    <div class="modal fade" id="tambah_k_aktiva" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg-max" role="document">
+
+            <div class="modal-content">
+                <div class="modal-header bg-costume">
+                    <h5 class="modal-title" id="exampleModalLabel">Kelompok Akun</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" class="form-control id_akun_kelompok_baru" name="id_akun" required>
+                        <div class="col-lg-3">
+                            <label for="">Nama Kelompok</label>
+                            <input type="text" class="form-control " name="nm_kelompok[]" required>
+                        </div>
+                        <div class="col-lg-1">
+                            <label for="">Umur</label>
+                            <input type="text" class="form-control " name="umur[]" required>
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="">satuan</label>
+                            <Select name="satuan_aktiva[]" class="form-control  select" required>
+                                <option value="">Pilih Satuan</option>
+                                <option value="1">Bulan</option>
+                                <option value="2">Tahun</option>
+                            </Select>
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="">Nilai/tahun (%)</label>
+                            <input type="text" class="form-control " name="tarif[]" required>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="">Contoh Barang</label>
+                            <input type="text" class="form-control " name="barang[]" required>
+                        </div>
+                        <div class="col-lg-1">
+                            <label for="">Aksi</label> <br>
+                            <button type="button" class="btn btn-sm btn-costume tbh_kelompok_edit"><i
+                                    class="fas fa-plus"></i></button>
+                        </div>
+
+                    </div>
+                    <div id="tbh_kelompok_edit">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-costume">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 
 <!-- Control Sidebar -->
@@ -683,11 +742,87 @@ $(document).on('click', '#switchbukukas', function() {
             });  
 
         });
+        var count = 1;
+        $(document).on('click', '.tbh_kelompok_edit', function() {
+           
+            count = count + 1;
+            $.ajax({
+                url: "{{ route('tambah_kelompok_aktiva') }}?count=" + count ,
+                type: "Get",
+                success: function(data) {
+                    $('#tbh_kelompok_edit').append(data);
+                    $('.select').select2()
+                }                    
+            });  
+
+        });
 
         $(document).on('click', '.remove_kelompok', function() {   
                 var delete_row = $(this).attr('count');
                 $('#row' + delete_row).remove();
+        });
+        $(document).on('click', '.tambah_k_aktiva', function() {   
+                var id_akun = $(this).attr('id_akun');
+                
+
+                $('.id_akun_kelompok_baru').val(id_akun);
+                
+        });
+
+        $(document).on('submit', '#save_kelompok_baru', function(event) {
+                event.preventDefault();
+               
+                var id_akun = $('.id_akun_kelompok_baru').val();
+                var pesanan_new = $("#save_kelompok_baru").serialize()
+
+                $.ajax({
+                    url: "{{ route('save_kelompok_baru') }}?" + pesanan_new,
+                    method: 'GET',
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            icon: 'success',
+                            title: 'Pesanan berhasil ditambahkan'
+                        });
+                        var url = "{{route('kelompok_akun')}}?id_akun=" + id_akun;
+
+                        $('#kelompok_akun').load(url);
+                        $('#tambah_k_aktiva').modal('toggle');
+                    }
+                });
+
+        });
+        $(document).on('click', '.delete_kelompok_baru', function() {
+            var id_kelompok = $(this).attr("id_kelompok");
+            var id_akun_kelompok = $(this).attr("id_akun_kelompok");
+            $.ajax({
+                type: "GET",
+                url: "{{route('delete_kelompok_baru')}}",
+                data: {
+                    id_kelompok: id_kelompok
+                },
+                success: function(response) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        icon: 'success',
+                        title: 'Delete post center berhasil'
+                    });
+                    var url = "{{route('kelompok_akun')}}?id_akun=" + id_akun_kelompok;
+                    $('#kelompok_akun').load(url);
+
+                    
+                }
             });
+
+        });
     });
     $(function () {
      $('[data-toggle="tooltip"]').tooltip()

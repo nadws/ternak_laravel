@@ -259,7 +259,7 @@ class Isi_jurnalpengeluaran extends Controller
         DB::table('tb_jurnal')->insert($data);
         $data = [
             'no_id' => $no_id,
-            'id_akun' => $r->id_akun_kredit,
+            'id_akun' => $r->id_akun,
             'id_buku' => '3',
             'urutan' => $no_urutan,
             'no_nota' => 'AGR-' . $no_urutan,
@@ -285,7 +285,8 @@ class Isi_jurnalpengeluaran extends Controller
             'id_satuan' => $id_satuan,
             'debit_aktiva' => $debit,
             'b_penyusutan' => (($debit * $qty) * $susut) / 12,
-            'admin' => Auth::user()->name
+            'admin' => Auth::user()->name,
+            'id_akun' => $r->id_akun
         ];
         DB::table('aktiva')->insert($data);
 

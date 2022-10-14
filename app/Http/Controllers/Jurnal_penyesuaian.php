@@ -189,6 +189,17 @@ class Jurnal_penyesuaian extends Controller
         } else {
             $no_urutan = $urutan->urutan + 1;
         }
+        $data = [
+            'tgl' => $tgl_pv,
+            'id_buku' => '4',
+            'urutan' => $no_urutan,
+            'no_nota' => 'PNY-' . $no_urutan,
+            'id_akun' => $id_akun_kredit_pv,
+            'kredit' => $kredit_pv,
+            'ket' => 'Penyesuaian ' . $nm_akun_kredit_pv,
+            'admin' =>  Auth::user()->name
+        ];
+        DB::table('tb_jurnal')->insert($data);
 
         $data = [
             'tgl' => $tgl_pv,
@@ -201,17 +212,7 @@ class Jurnal_penyesuaian extends Controller
             'admin' =>  Auth::user()->name
         ];
         DB::table('tb_jurnal')->insert($data);
-        $data = [
-            'tgl' => $tgl_pv,
-            'id_buku' => '4',
-            'urutan' => $no_urutan,
-            'no_nota' => 'PNY-' . $no_urutan,
-            'id_akun' => $id_akun_kredit_pv,
-            'kredit' => $kredit_pv,
-            'ket' => 'Penyesuaian ' . $nm_akun_kredit_pv,
-            'admin' =>  Auth::user()->name
-        ];
-        DB::table('tb_jurnal')->insert($data);
+
 
 
         $id_barang = $r->id_barang;

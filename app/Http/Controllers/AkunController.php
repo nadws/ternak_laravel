@@ -196,7 +196,35 @@ class AkunController extends Controller
     {
         $data = [
             'aktiva' => DB::table('tb_kelompok_aktiva')->where('id_akun', $r->id_akun)->orderBy('id_kelompok', 'ASC')->get(),
+            'id_akun' => $r->id_akun
         ];
         return view('akun/edit_kelompok', $data);
+    }
+
+    public function save_kelompok_baru(Request $r)
+    {
+        $nm_kelompok = $r->nm_kelompok;
+        $umur = $r->umur;
+        $satuan_aktiva = $r->satuan_aktiva;
+        $tarif = $r->tarif;
+        $barang = $r->barang;
+
+        for ($x = 0; $x < count($nm_kelompok); $x++) {
+            $t_tarif =  $tarif[$x] / 100;
+            $data = [
+                'nm_kelompok' => $nm_kelompok[$x],
+                'umur' => $umur[$x],
+                'satuan' => $satuan_aktiva[$x],
+                'tarif' => $t_tarif,
+                'barang_kelompok' => $barang[$x],
+                'id_akun' => $r->id_akun
+            ];
+            DB::table('tb_kelompok_aktiva')->insert($data);
+        }
+    }
+
+    public function delete_kelompok_baru(Request $r)
+    {
+        DB::table('tb_kelompok_aktiva')->where('id_kelompok', $r->id_kelompok)->delete();
     }
 }

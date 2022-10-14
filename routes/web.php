@@ -8,6 +8,7 @@ use App\Http\Controllers\Isi_jurnalpengeluaran;
 use App\Http\Controllers\Jurnal_pemasukan;
 use App\Http\Controllers\Jurnal_pengeluaran;
 use App\Http\Controllers\Jurnal_penyesuaian;
+use App\Http\Controllers\Jurnal_penyesuaian2;
 use App\Http\Controllers\Neraca_saldo;
 use App\Http\Controllers\Penjualan;
 use App\Http\Controllers\Piutang_telur;
@@ -54,6 +55,8 @@ Route::get('/tambah_post', [AkunController::class, 'tambah_post'])->middleware([
 Route::get('/tambah_kelompok_aktiva', [AkunController::class, 'tambah_kelompok_aktiva'])->middleware(['auth', 'verified'])->name('tambah_kelompok_aktiva');
 Route::post('/save_akun', [AkunController::class, 'add_akun'])->middleware(['auth', 'verified'])->name('save_akun');
 Route::get('/kelompok_akun', [AkunController::class, 'kelompok_akun'])->middleware(['auth', 'verified'])->name('kelompok_akun');
+Route::get('/save_kelompok_baru', [AkunController::class, 'save_kelompok_baru'])->middleware(['auth', 'verified'])->name('save_kelompok_baru');
+Route::get('/delete_kelompok_baru', [AkunController::class, 'delete_kelompok_baru'])->middleware(['auth', 'verified'])->name('delete_kelompok_baru');
 
 
 // Sidebar
@@ -130,6 +133,12 @@ Route::get('/pakan_stok', [Jurnal_penyesuaian::class, 'pakan_stok'])->middleware
 Route::post('/save_penyesuaian_stok', [Jurnal_penyesuaian::class, 'save_penyesuaian_stok'])->middleware(['auth', 'verified'])->name('save_penyesuaian_stok');
 Route::post('/save_pv', [Jurnal_penyesuaian::class, 'save_pv'])->middleware(['auth', 'verified'])->name('save_pv');
 Route::get('/delete_penyesuaian', [Jurnal_penyesuaian::class, 'delete_penyesuaian'])->middleware(['auth', 'verified'])->name('delete_penyesuaian');
+
+
+// Jurnal penyesuaian2
+Route::get('/j_penyesuaian2', [Jurnal_penyesuaian2::class, 'index'])->middleware(['auth', 'verified'])->name('j_penyesuaian2');
+Route::get('/aktiva_penyesuaian', [Jurnal_penyesuaian2::class, 'aktiva_penyesuaian'])->middleware(['auth', 'verified'])->name('aktiva_penyesuaian');
+Route::post('/save_aktiva', [Jurnal_penyesuaian2::class, 'save_aktiva'])->middleware(['auth', 'verified'])->name('save_aktiva');
 
 
 
