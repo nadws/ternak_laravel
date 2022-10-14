@@ -58,7 +58,7 @@
                                     <tr>
                                         <td>{{$i++}}</td>
                                         <td>{{$b->no_akun}}</td>
-                                        <td><a href="">{{$b->nm_akun}}</a></td>
+                                        <td style="text-align: left"><a href="">{{$b->nm_akun}}</a></td>
                                         <td style="text-align: right">{{number_format($b->debit,0)}}</td>
                                         <td style="text-align: right">{{number_format($b->kredit,0)}}</td>
                                         <td style="text-align: right">{{number_format($b->debit - $b->kredit,0)}}</td>

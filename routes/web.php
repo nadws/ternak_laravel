@@ -51,7 +51,9 @@ Route::get('/delete_akun', [AkunController::class, 'delete'])->middleware(['auth
 Route::get('/get_no_akun', [AkunController::class, 'get_no_akun'])->middleware(['auth', 'verified'])->name('get_no_akun');
 Route::get('/post_center_akun', [AkunController::class, 'post_center_akun'])->middleware(['auth', 'verified'])->name('post_center_akun');
 Route::get('/tambah_post', [AkunController::class, 'tambah_post'])->middleware(['auth', 'verified'])->name('tambah_post');
+Route::get('/tambah_kelompok_aktiva', [AkunController::class, 'tambah_kelompok_aktiva'])->middleware(['auth', 'verified'])->name('tambah_kelompok_aktiva');
 Route::post('/save_akun', [AkunController::class, 'add_akun'])->middleware(['auth', 'verified'])->name('save_akun');
+Route::get('/kelompok_akun', [AkunController::class, 'kelompok_akun'])->middleware(['auth', 'verified'])->name('kelompok_akun');
 
 
 // Sidebar
@@ -71,11 +73,14 @@ Route::get('/get_barang', [Jurnal_pengeluaran::class, 'get_barang'])->middleware
 
 Route::get('/print_j', [Jurnal_pengeluaran::class, 'print_jurnal'])->middleware(['auth', 'verified'])->name('print_j');
 Route::get('/print_jurnal2', [Jurnal_pengeluaran::class, 'print_jurnal2'])->middleware(['auth', 'verified'])->name('print_jurnal2');
+Route::get('/get_post_aktiva', [Jurnal_pengeluaran::class, 'get_post_aktiva'])->middleware(['auth', 'verified'])->name('get_post_aktiva');
+Route::get('/get_ttl_aktiva', [Jurnal_pengeluaran::class, 'get_ttl_aktiva'])->middleware(['auth', 'verified'])->name('get_ttl_aktiva');
 
 // Save Jurnal pengeluaran
 Route::post('/save_jurnal_biaya', [Isi_jurnalpengeluaran::class, 'save_jurnal_biaya'])->middleware(['auth', 'verified'])->name('save_jurnal_biaya');
 Route::post('/save_jurnal_umum', [Isi_jurnalpengeluaran::class, 'save_jurnal_umum'])->middleware(['auth', 'verified'])->name('save_jurnal_umum');
 Route::post('/save_jurnal_pv', [Isi_jurnalpengeluaran::class, 'save_jurnal_pv'])->middleware(['auth', 'verified'])->name('save_jurnal_pv');
+Route::post('/save_aktiva', [Isi_jurnalpengeluaran::class, 'save_aktiva'])->middleware(['auth', 'verified'])->name('save_aktiva');
 
 // Tambah Jurnal
 

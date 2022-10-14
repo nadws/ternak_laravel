@@ -22,6 +22,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h5 class="float-left">{{ $title }}</h5>
+
                         <a href="" data-toggle="modal" data-target="#tambah"
                             class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-plus"></i> Tambah
                             Akun</a>
@@ -51,12 +52,24 @@
                                                 <td>{{ $a->no_akun }}</td>
                                                 <td>{{ $a->nm_akun }}</td>
                                                 <td>{{ $a->nm_kategori }}</td>
-                                                <td align="center">
-                                                    <a href="#" class="btn btn-costume btn-sm"><i
-                                                            class="fas fa-pen"></i>
+                                                <td align="right">
+                                                    @if ($a->id_penyesuaian == '2')
+                                                    <a type="button" class="btn btn-costume btn-sm edit_kelompok"
+                                                        id_akun="{{$a->id_akun}}" data-toggle="tooltip"
+                                                        data-placement="top" title="Kelompok"><i
+                                                            class="fas fa-sitemap"></i>
+                                                    </a>
+                                                    @else
+
+                                                    @endif
+
+                                                    <a href="#" class="btn btn-costume btn-sm" data-toggle="tooltip"
+                                                        data-placement="top" title="Edit"><i class="fas fa-pen"></i>
                                                     </a>
                                                     <a href="{{route('delete_akun', ['id_akun' => $a->id_akun])}}"
-                                                        class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>
+                                                        class="btn btn-danger btn-sm" data-toggle="tooltip"
+                                                        data-placement="top" title="Delete"><i
+                                                            class="fas fa-trash-alt"></i>
                                                     </a>
                                                 </td>
                                             </tr>
@@ -129,10 +142,16 @@
     </div>
 </form>
 
+<style>
+    .modal-lg-max2 {
+        max-width: 1000px;
+    }
+</style>
+
 <form method="post" action="{{route('save_akun')}}">
     @csrf
     <div class="modal fade" id="tambah" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-lg-max2" role="document">
 
             <div class="modal-content">
                 <div class="modal-header bg-costume">
@@ -262,13 +281,57 @@
                                 class="form-control select satuan input_detail satuan_umum  input_biaya" required>
                                 <option value="">-Pilih Satuan-</option>
                                 <?php foreach ($satuan as $p) : ?>
-                                <option value="{{ $p->id }}">{{ $p->nm_satuan }}</option>
+                                <option value="{{ $p->id_satuan }}">{{ $p->nm_satuan }}</option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <div class="col-lg-12 keterangan2">
+
+                            <label for="list_kategori"><u>Table Kelompok</u></label>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <label for="">Nama Kelompok</label>
+                                    <input type="text" class="form-control kelompok" name="nm_kelompok[]" required>
+                                </div>
+                                <div class="col-lg-1">
+                                    <label for="">Umur</label>
+                                    <input type="text" class="form-control kelompok" name="umur[]" required>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label for="">satuan</label>
+                                    <Select name="satuan_aktiva[]" class="form-control kelompok select" required>
+                                        <option value="">Pilih Satuan</option>
+                                        <option value="1">Bulan</option>
+                                        <option value="2">Tahun</option>
+                                    </Select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label for="">Nilai/tahun (%)</label>
+                                    <input type="text" class="form-control kelompok" name="tarif[]" required>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label for="">Contoh Barang</label>
+                                    <input type="text" class="form-control kelompok" name="barang[]" required>
+                                </div>
+                                <div class="col-lg-1">
+                                    <label for="">Aksi</label> <br>
+                                    <button type="button" class="btn btn-sm btn-costume tbh_kelompok"><i
+                                            class="fas fa-plus"></i></button>
+                                </div>
+
+                            </div>
+                            <div id="tbh_kelompok">
+
+                            </div>
+
+
+
+
+                        </div>
 
                         <br>
-                        <div class="col-md-12 lawan_penyesuaian">
+                        <br>
+                        <div class="col-md-12 lawan_penyesuaian mt-4">
                             <label for=""><u>Biaya Penyesuaian</u> </label>
                         </div>
 
@@ -369,6 +432,28 @@
         </div>
     </div>
 </div>
+<div class="modal fade show_kelompok" id="" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-costume">
+                <h5 class="modal-title" id="exampleModalLabel">Kelompok Akun</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="kelompok_akun">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- Control Sidebar -->
@@ -390,6 +475,7 @@ function hide_default() {
     $('.keterangan3').hide();
     $('.keterangan4').hide();
     $('.input_akun2').attr('disabled', 'true');
+    $('.kelompok').attr('disabled', 'true');
     $('.satuan_umum').attr('disabled', 'true');
     $('#id_kas').attr('disabled', 'true');
 }
@@ -526,6 +612,15 @@ $(document).on('click', '#switchbukukas', function() {
             $("#id_akun").val(id_akun);
 
         });
+        $(document).on('click', '.edit_kelompok', function() {
+            var id_akun = $(this).attr("id_akun");
+            var url = "{{route('kelompok_akun')}}?id_akun=" + id_akun;
+
+            $('#kelompok_akun').load(url);
+            $('.show_kelompok').modal('show');
+
+            
+        });
 
         $("body").on("change", "#id_kategori", function() {
             var id_pilih = $(this).val();
@@ -556,6 +651,7 @@ $(document).on('click', '#switchbukukas', function() {
             }
             if (id_kat == '2') {
                 $('.keterangan2').show();
+                $('.kelompok').removeAttr('disabled', 'true');
             } else {
                 $('.keterangan2').hide();
             }
@@ -572,6 +668,29 @@ $(document).on('click', '#switchbukukas', function() {
             
         
         });
+
+        var count = 1;
+        $(document).on('click', '.tbh_kelompok', function() {
+           
+            count = count + 1;
+            $.ajax({
+                url: "{{ route('tambah_kelompok_aktiva') }}?count=" + count ,
+                type: "Get",
+                success: function(data) {
+                    $('#tbh_kelompok').append(data);
+                    $('.select').select2()
+                }                    
+            });  
+
+        });
+
+        $(document).on('click', '.remove_kelompok', function() {   
+                var delete_row = $(this).attr('count');
+                $('#row' + delete_row).remove();
+            });
+    });
+    $(function () {
+     $('[data-toggle="tooltip"]').tooltip()
     });
 </script>
 

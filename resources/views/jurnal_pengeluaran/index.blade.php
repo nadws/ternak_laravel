@@ -291,6 +291,19 @@
 <script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
+      $('.modal').on('hidden.bs.modal', function() {
+        //If there are any visible
+        if ($(".modal:visible").length > 0) {
+          //Slap the class on it (wait a moment for things to settle)
+          setTimeout(function() {
+            $('body').addClass('modal-open');
+          }, 200)
+        }
+      });
+    })
+</script>
+<script>
+    $(document).ready(function() {
             $('.id_debit').change(function() {
                 var id_debit = $(this).val();
                 $.ajax({
@@ -320,6 +333,9 @@
                         }
                         if (data == 'asset_pakan') {
                             $("#form-jurnal").attr("action", "{{route('save_jurnal_pv')}}");
+                        }
+                        if (data == 'asset_aktiva') {
+                            $("#form-jurnal").attr("action", "{{route('save_aktiva')}}");
                         }
                     }
                 });
@@ -432,12 +448,7 @@
 
                 $('.ppn').val(ppn);
                 $('.ppn_ttl_rp').val(total);
-
-                var debit = 0;
-                $(".ppn_ttl_rp:not([disabled=disabled]").each(function() {
-                    debit += parseFloat($(this).val());
-                });
-                $('.total').val(debit);
+                $('.total').val(total);
             });
 
             $(document).on('click', '.print', function() {
@@ -460,6 +471,48 @@
                     $('.satuan_barang' + count).html(data);
                     }
                 });
+            });
+            $(document).on('change', '.akun_kredit', function() {
+                var id_akun = $(this).val();
+                $.ajax({
+                    url: "{{ route('get_post_aktiva') }}?id_akun=" + id_akun ,
+                    type: "Get",
+                    success: function(data) {
+                    $('.pos_aktiva').html(data);
+                    }
+                });
+            });
+            
+            $(document).on('change', '.pos_aktiva', function() {
+                var id_post = $(this).val();
+                $.ajax({
+                    url: "{{ route('get_ttl_aktiva') }}?id_post=" + id_post ,
+                    type: "Get",
+                    success: function(data) {
+                        $('.total_aktiva').val(data);
+                        var rupiah = parseFloat($('.total_aktiva').val());
+                        var qty = parseFloat($('.qty_aktiva').val());
+                        var ppn = (rupiah * qty) * 0.1;
+                        var total = (rupiah * qty) + ppn;
+
+                        $('.ppn').val(ppn);
+                        $('.ppn_ttl_rp').val(total);
+                        $('.total').val(total);
+                        
+                    }
+                });
+            });
+            $(document).on('keyup', '.ppn', function() {
+                var ppn = $(this).val();
+                var ppn_ttl_rp = $('.total_aktiva').val();
+
+                var total = parseInt(ppn_ttl_rp) + parseInt(ppn);
+                $('.ppn_ttl_rp').val(total);
+                $('.total').val(total);
+
+
+
+                
             });
     });
 </script>

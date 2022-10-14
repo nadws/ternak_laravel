@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\Echo_;
 
 class Jurnal_pengeluaran extends Controller
 {
@@ -49,15 +50,19 @@ class Jurnal_pengeluaran extends Controller
     {
         $id = $r->id_debit;
         $akun = DB::table('tb_akun')->where('id_akun', $id)->first();
-        $satuan = DB::table('tb_satuan')->where('id', $akun->id_satuan)->first();
+        $satuan = DB::table('tb_satuan')->where('id_satuan', $akun->id_satuan)->first();
 
         $data = [
             'satuan' => DB::table('tb_satuan')->get(),
-            'post_center' => DB::table('tb_post_center')->where('id_akun', $id)->get(),
+
+            'post_center' => DB::select("SELECT *
+                FROM tb_post_center AS a
+                WHERE a.id_akun = '$id' AND a.id_post NOT IN(SELECT b.id_post FROM aktiva AS b)"),
             'barang' => DB::table('tb_barang_pv')->where('id_akun', $id)->get(),
-            'aktiva' => DB::table('tb_kelompok_aktiva')->get(),
+            'aktiva' => DB::table('tb_kelompok_aktiva')->where('id_akun', $id)->orderBy('id_kelompok', 'ASC')->get(),
             'id_akun' => $id,
-            'satuan2' => $satuan
+            'satuan2' => $satuan,
+
         ];
 
         if ($akun->id_kategori == '5') {
@@ -86,6 +91,7 @@ class Jurnal_pengeluaran extends Controller
             if ($akun->id_penyesuaian == '1') {
                 echo "asset_umum";
             } elseif ($akun->id_penyesuaian == '2') {
+                echo "asset_aktiva";
             } elseif ($akun->id_penyesuaian == '3') {
             } elseif ($akun->id_penyesuaian == '4') {
                 echo "asset_pakan";
@@ -132,10 +138,31 @@ class Jurnal_pengeluaran extends Controller
     {
         $barang = DB::table("tb_barang_pv")->where('id_barang', $r->id_barang)->first();
 
-        $satuan = DB::table("tb_satuan")->where('id', $barang->id_satuan)->get();
+        $satuan = DB::table("tb_satuan")->where('id_satuan', $barang->id_satuan)->get();
 
         foreach ($satuan as $k) {
-            echo "<option value='" . $k->id . "'>" . $k->nm_satuan . "</option>";
+            echo "<option value='" . $k->id_satuan . "'>" . $k->nm_satuan . "</option>";
         }
+    }
+
+    public function get_post_aktiva(Request $r)
+    {
+        $post = DB::select("SELECT *
+        FROM tb_post_center AS a
+        WHERE a.id_akun = '$r->id_akun' AND a.id_post NOT IN(SELECT b.id_post FROM aktiva AS b)");
+
+        echo "<option value=''>Pilih Post Center</option>";
+        foreach ($post as $k) {
+            echo "<option value='" . $k->id_post . "'>" . $k->nm_post . "</option>";
+        }
+    }
+
+    public function get_ttl_aktiva(Request $r)
+    {
+        $debit = DB::selectOne("SELECT SUM(a.debit) AS debit 
+        FROM tb_jurnal AS a
+        WHERE a.id_post = '$r->id_post'");
+
+        echo $debit->debit;
     }
 }

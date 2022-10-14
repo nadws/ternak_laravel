@@ -12,7 +12,7 @@ class AkunController extends Controller
     {
         $data = [
             'title' => 'Akun',
-            'akun' => DB::table('tb_akun as a')->join('tb_kategori_akun as b', 'a.id_kategori', 'b.id_kategori')->get(),
+            'akun' => DB::table('tb_akun as a')->join('tb_kategori_akun as b', 'a.id_kategori', 'b.id_kategori')->orderBy('id_akun', 'DESC')->get(),
             'kategori' => DB::table('tb_kategori_akun')->get(),
             'satuan' => DB::table('tb_satuan')->get(),
         ];
@@ -56,6 +56,9 @@ class AkunController extends Controller
                 'id_kategori' => $r->id_kategori,
                 'id_satuan' => empty($r->id_satuan) ? '0' : $r->id_satuan
             ];
+            $akun = Akun::create($data);
+
+            $id1 = $akun->id;
         } else {
             $data = [
                 'no_akun' => $r->no_akun,
@@ -66,11 +69,33 @@ class AkunController extends Controller
                 'id_satuan' => empty($r->id_satuan) ? '0' : $r->id_satuan
 
             ];
+            $akun = Akun::create($data);
+
+            $id1 = $akun->id;
+
+            if ($r->id_penyesuaian == '2') {
+                $nm_kelompok = $r->nm_kelompok;
+                $umur = $r->umur;
+                $satuan_aktiva = $r->satuan_aktiva;
+                $tarif = $r->tarif;
+                $barang = $r->barang;
+
+                for ($x = 0; $x < count($nm_kelompok); $x++) {
+                    $t_tarif =  $tarif[$x] / 100;
+                    $data = [
+                        'nm_kelompok' => $nm_kelompok[$x],
+                        'umur' => $umur[$x],
+                        'satuan' => $satuan_aktiva[$x],
+                        'tarif' => $t_tarif,
+                        'barang_kelompok' => $barang[$x],
+                        'id_akun' => $id1
+                    ];
+                    DB::table('tb_kelompok_aktiva')->insert($data);
+                }
+            }
         }
 
-        $akun = Akun::create($data);
 
-        $id1 = $akun->id;
 
         if (empty($r->no_akun2)) {
             # code...
@@ -159,5 +184,19 @@ class AkunController extends Controller
         } else {
             return redirect()->route("akun")->with('error', 'Gagal');
         }
+    }
+
+    public function tambah_kelompok_aktiva(Request $r)
+    {
+        $data = ['count' => $r->count];
+        return view('akun/kelompok', $data);
+    }
+
+    public function kelompok_akun(Request $r)
+    {
+        $data = [
+            'aktiva' => DB::table('tb_kelompok_aktiva')->where('id_akun', $r->id_akun)->orderBy('id_kelompok', 'ASC')->get(),
+        ];
+        return view('akun/edit_kelompok', $data);
     }
 }

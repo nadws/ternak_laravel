@@ -226,4 +226,70 @@ class Isi_jurnalpengeluaran extends Controller
         $tgl1 = date('Y-m-01', strtotime($r->tgl));
         return redirect()->route("jurnal_pengeluaran", ['tgl1' => $tgl1, 'tgl2' => $r->tgl])->with('sukses', 'Sukses');
     }
+
+    public function save_aktiva(Request $r)
+    {
+        $no_id = $r->no_id_aktiva;
+        $ttl_rp = $r->ttl_rp_aktiva;
+        $ket = $r->keterangan_aktiva;
+        $id_post = $r->id_post_center_aktiva;
+        $qty = $r->qty_aktiva;
+        $id_satuan = $r->id_satuan_aktiva;
+        $debit = $r->debit;
+
+        $akun = DB::table('tb_akun')->where('id_akun', $r->id_akun)->first();
+        $urutan = DB::selectOne("SELECT max(a.urutan) as urutan FROM tb_jurnal as a where a.id_buku = '3'");
+
+        if (empty($urutan->urutan)) {
+            $no_urutan = '1001';
+        } else {
+            $no_urutan = $urutan->urutan + 1;
+        }
+        $data = [
+
+            'id_akun' => $r->id_akun_kredit,
+            'id_buku' => '3',
+            'urutan' => $no_urutan,
+            'no_nota' => 'AGR-' . $no_urutan,
+            'tgl' => $r->tgl,
+            'ket' => 'Pengeluaran' . ' ' . $akun->nm_akun,
+            'kredit' => $r->kredit,
+            'admin' => Auth::user()->name
+        ];
+        DB::table('tb_jurnal')->insert($data);
+        $data = [
+            'no_id' => $no_id,
+            'id_akun' => $r->id_akun_kredit,
+            'id_buku' => '3',
+            'urutan' => $no_urutan,
+            'no_nota' => 'AGR-' . $no_urutan,
+            'tgl' => $r->tgl,
+            'ket' => $ket,
+            'debit' => $r->kredit,
+            'admin' => Auth::user()->name
+        ];
+        DB::table('tb_jurnal')->insert($data);
+
+
+        $id_kelompok = $r->id_kelompok;
+
+        $kelompok = DB::table('tb_kelompok_aktiva')->where('id_kelompok', $id_kelompok)->first();
+        $susut = $kelompok->tarif;
+
+        $data = [
+            'tgl' => $r->tgl,
+            'id_post' => $id_post,
+            'id_kelompok' => $id_kelompok,
+            'qty' => $qty,
+            'no_nota' => 'AGR-' . $no_urutan,
+            'id_satuan' => $id_satuan,
+            'debit_aktiva' => $debit,
+            'b_penyusutan' => (($debit * $qty) * $susut) / 12,
+            'admin' => Auth::user()->name
+        ];
+        DB::table('aktiva')->insert($data);
+
+        $tgl1 = date('Y-m-01', strtotime($r->tgl));
+        return redirect()->route("jurnal_pengeluaran", ['tgl1' => $tgl1, 'tgl2' => $r->tgl])->with('sukses', 'Sukses');
+    }
 }
