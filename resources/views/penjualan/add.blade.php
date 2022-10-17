@@ -127,16 +127,18 @@
                                     Save</button>
                             </div>
                         </form>
-                        <form action="">
+                        <form action="{{route('save_pcs')}}" method="post">
+                            @csrf
                             <div class="card-body hitung_pcs">
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <label for="">Tanggal</label>
-                                        <input type="date" class="form-control input_pcs" value="{{ date('Y-m-d') }}">
+                                        <input type="date" name="tgl" class="form-control input_pcs"
+                                            value="{{ date('Y-m-d') }}" required>
                                     </div>
                                     <div class="col-lg-3">
                                         <label for="">Customer</label>
-                                        <select name="" id="" class="form-control select input_pcs">
+                                        <select name="id_post" id="" class="form-control select input_pcs" required>
                                             <option value="">--Pilih Costumer--</option>
                                             @foreach ($costumer as $c)
                                             <option value="{{ $c->id_post }}">{{ $c->nm_post }}</option>
@@ -146,7 +148,7 @@
                                     </div>
                                     <div class="col-lg-3">
                                         <label for="">Driver</label>
-                                        <input type="text" class="form-control input_pcs">
+                                        <input type="text" name="driver" class="form-control input_pcs" required>
                                     </div>
                                     <div class="col-lg-12">
                                         <hr>
@@ -165,13 +167,23 @@
                                                 @foreach ($jenis as $j)
                                                 <tr>
                                                     <td>{{ $j->jenis }}</td>
-                                                    <td><input type="text" class="form-control pcs input_pcs" value="0"
-                                                            style="text-align: right"></td>
-                                                    <td><input type="text" class="form-control kg input_pcs" value="0"
-                                                            style="text-align: right"></td>
+                                                    <td><input type="text" name="pcs[]"
+                                                            class="form-control pcs_pcs pcs_pcs{{$j->id}} input_pcs"
+                                                            value="0" style="text-align: right" id_jenis="{{ $j->id }}">
+                                                    </td>
+                                                    <td><input type="text" class="form-control kg input_pcs"
+                                                            name="kg_jual[]" value="0" style="text-align: right"></td>
 
-                                                    <td><input type="text" class="form-control input_pcs" value="0"
-                                                            style="text-align: right"></td>
+                                                    <td>
+                                                        <input type="text"
+                                                            class="form-control rp_pcs rp_pcs{{$j->id}} input_pcs"
+                                                            name="rupiah[]" id_jenis="{{ $j->id }}" value="0"
+                                                            style="text-align: right">
+                                                        <input type="hidden"
+                                                            class="form-control rupiah_tl  rupiah_tl{{$j->id}} input_pcs"
+                                                            value="0" style="text-align: right" name="rp_kg[]">
+                                                        <input type="hidden" name="id_jenis_telur[]" value="{{$j->id}}">
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -179,8 +191,8 @@
                                                 <tr>
                                                     <th colspan="2"></th>
                                                     <th style="text-align: right;vertical-align: middle">Total:</th>
-                                                    <th><input type="text" class="form-control input_pcs" value="0"
-                                                            style="text-align: right"></th>
+                                                    <th><input type="text" class="form-control total_pcs input_pcs"
+                                                            value="0" style="text-align: right" readonly></th>
                                                 </tr>
 
 
@@ -279,6 +291,49 @@
                 $(".ikat" + id_jenis).val(ikat.toFixed(1));
 
 
+            });
+            $(document).on('keyup', '.pcs_pcs', function() {
+
+                var id_jenis = $(this).attr('id_jenis');
+
+                var pcs = $('.pcs_pcs' + id_jenis).val();
+                var rp = $('.rp_pcs' + id_jenis).val();
+
+                var total = parseInt(pcs) * parseInt(rp);
+                
+                var rupiah_tl = $('.rupiah_tl'+ id_jenis).val(total);
+
+                var ttl_rp = 0;
+                $(".rupiah_tl").each(function() {
+                    ttl_rp += parseInt($(this).val());
+                });
+
+                $('.total_pcs').val(ttl_rp)
+
+
+                // var ikat = parseFloat(pcs) / 180;
+                // $(".ikat" + id_jenis).val(ikat.toFixed(1));
+            });
+            $(document).on('keyup', '.rp_pcs', function() {
+
+                var id_jenis = $(this).attr('id_jenis');
+
+                var pcs = $('.pcs_pcs' + id_jenis).val();
+                var rp = $('.rp_pcs' + id_jenis).val();
+
+                var total = parseInt(pcs) * parseInt(rp);
+                var rupiah_tl = $('.rupiah_tl'+ id_jenis).val(total);
+
+                var ttl_rp = 0;
+                $(".rupiah_tl").each(function() {
+                    ttl_rp += parseInt($(this).val());
+                });
+
+                $('.total_pcs').val(ttl_rp)
+
+
+                // var ikat = parseFloat(pcs) / 180;
+                // $(".ikat" + id_jenis).val(ikat.toFixed(1));
             });
             $(document).on('keyup', '.kg', function() {
 

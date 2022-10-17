@@ -60,48 +60,28 @@
                                 <thead>
                                     <tr>
                                         <th>Nama Barang</th>
-                                        <th>Pcs</th>
+                                        <th>Ekor</th>
                                         <th>Timbangan <br> (Kg)</th>
-                                        <th>Ikat</th>
                                         <th>Harga Satuan</th>
                                         <th>Jumlah</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                    $ttl =0;
-
-                                    @endphp
-                                    @foreach ($isi_nota as $s)
-                                    @if ($s->kg_jual != '0')
-
-                                    <tr>
-                                        <td>{{$s->jenis}}</td>
-                                        <td>{{$s->pcs}}</td>
-                                        <td>{{$s->kg_jual}}</td>
-                                        <td>{{number_format($s->pcs/180,1)}}</td>
-                                        <td>{{number_format($s->rupiah,0)}}</td>
-                                        <td>{{number_format($s->rp_kg,0)}}</td>
-                                    </tr>
-                                    @else
-
-                                    @endif
-
-
-                                    @php
-                                    $ttl += $s->rp_kg
-                                    @endphp
-                                    @endforeach
+                                    <th>Ayam</th>
+                                    <td>{{number_format($nota->ekor,0)}}</td>
+                                    <td>{{number_format($nota->berat,2)}}</td>
+                                    <td>{{number_format($nota->harga,0)}}</td>
+                                    <td>{{number_format($nota->ttl_harga,0)}}</td>
                                 </tbody>
                                 <tfoot>
                                     <th colspan="3"></th>
                                     <th>TOTAL</th>
-                                    <th>{{number_format($ttl,0)}}</th>
+                                    <th>{{number_format($nota->ttl_harga,0)}}</th>
                                 </tfoot>
                             </table>
                         </div>
                         <div class="card-footer">
-                            <form action="{{route('save_jurnal')}}" method="post">
+                            <form action="{{route('save_jurnal_ayam')}}" method="post">
                                 @csrf
                                 <div class="row">
                                     <div class="col-lg-8"></div>
@@ -114,7 +94,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <input type="hidden" name="total" value="{{$ttl}}">
+                                    <input type="hidden" name="total" value="{{$nota->ttl_harga}}">
                                     <input type="hidden" name="no_nota" value="{{$nota->no_nota}}">
                                     <input type="hidden" name="tgl" value="{{$nota->tgl}}">
                                     <input type="hidden" name="id_post" value="{{$nota->id_post}}">

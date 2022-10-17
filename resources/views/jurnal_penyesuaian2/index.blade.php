@@ -93,7 +93,6 @@
                                                             class="btn btn-danger btn-sm"><i
                                                                 class="fas fa-trash-alt"></i>
                                                         </a>
-
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -217,21 +216,10 @@
         });                             
         
 
-        $(document).on('keyup', '.qty_aktual_pv', function() {
-            var id_barang = $(this).attr('id_barang');
-            var qty_pro = $('.qty_a_pv' + id_barang).val()
-            var qty_akt = $('.qty_aktual_pv' + id_barang).val()
-            var h_satuan = $('.h_satuan_pv' + id_barang).val()
-
-            var selisih = parseInt(qty_pro) - parseInt(qty_akt);
-            var rupiah = parseInt(h_satuan) * selisih;
-
-
-            $('.slsh_pv' + id_barang).val(selisih);
-            $('.ttl_pv' + id_barang).val(rupiah);
+        $(document).on('keyup', '.b_penyusutan', function() {
 
             var debit = 0;
-            $(".ttl_pv").each(function() {
+            $(".b_penyusutan").each(function() {
                 debit += parseFloat($(this).val());
             });
             

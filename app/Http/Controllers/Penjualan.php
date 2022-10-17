@@ -23,6 +23,7 @@ class Penjualan extends Controller
         left join tb_post_center as b on b.id_post = a.id_post
         where a.tgl between '$tgl1' and '$tgl2'
         group by a.no_nota
+        order by a.no_nota DESC
          ");
         $data = [
             'title' => 'Penjualan Telur',
@@ -86,6 +87,49 @@ class Penjualan extends Controller
                 'urutan' => $urutan,
                 'id_jenis_telur' => $id_jenis_telur[$x],
                 'jenis_penjualan' => 'kg',
+            ];
+            DB::table('invoice_telur')->insert($data);
+        }
+        return redirect()->route("nota", ['nota' => $no_nota])->with('sukses', 'Sukses');
+    }
+    public function save_pcs(Request $r)
+    {
+        $tgl = $r->tgl;
+        $id_post = $r->id_post;
+        $driver = $r->driver;
+
+        $pcs = $r->pcs;
+        $kg_jual = $r->kg_jual;
+        $rupiah = $r->rupiah;
+        $rp_kg = $r->rp_kg;
+        $id_jenis_telur = $r->id_jenis_telur;
+
+        $nota = DB::selectOne("SELECT max(a.no_nota) as nota FROM invoice_telur as a");
+        $rutan = DB::selectOne("SELECT max(a.urutan) as urutan FROM invoice_telur as a where a.id_post = '$id_post'");
+        if (empty($nota->nota)) {
+            $no_nota = '1001';
+        } else {
+            $no_nota = $nota->nota + 1;
+        }
+        if (empty($rutan->urutan)) {
+            $urutan = '1';
+        } else {
+            $urutan = $rutan->urutan + 1;
+        }
+
+        for ($x = 0; $x < count($pcs); $x++) {
+            $data = [
+                'tgl' => $tgl,
+                'id_post' => $id_post,
+                'driver' => $driver,
+                'no_nota' => $no_nota,
+                'pcs' => $pcs[$x],
+                'kg_jual' => $kg_jual[$x],
+                'rupiah' => $rupiah[$x],
+                'rp_kg' => $rp_kg[$x],
+                'urutan' => $urutan,
+                'id_jenis_telur' => $id_jenis_telur[$x],
+                'jenis_penjualan' => 'pcs',
             ];
             DB::table('invoice_telur')->insert($data);
         }

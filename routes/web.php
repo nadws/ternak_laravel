@@ -11,6 +11,8 @@ use App\Http\Controllers\Jurnal_penyesuaian;
 use App\Http\Controllers\Jurnal_penyesuaian2;
 use App\Http\Controllers\Neraca_saldo;
 use App\Http\Controllers\Penjualan;
+use App\Http\Controllers\Penjualan_ayam;
+use App\Http\Controllers\Piutang_ayam;
 use App\Http\Controllers\Piutang_telur;
 use App\Http\Controllers\User;
 use App\Http\Controllers\Verify;
@@ -107,6 +109,7 @@ Route::get('/buku_besar', [Buku_besar::class, 'index'])->middleware(['auth', 've
 Route::get('/p_telur', [Penjualan::class, 'index'])->middleware(['auth', 'verified'])->name('p_telur');
 Route::get('/add_telur', [Penjualan::class, 'add'])->middleware(['auth', 'verified'])->name('add_telur');
 Route::post('/save_kg', [Penjualan::class, 'save_kg'])->middleware(['auth', 'verified'])->name('save_kg');
+Route::post('/save_pcs', [Penjualan::class, 'save_pcs'])->middleware(['auth', 'verified'])->name('save_pcs');
 Route::post('/save_jurnal', [Penjualan::class, 'save_jurnal'])->middleware(['auth', 'verified'])->name('save_jurnal');
 Route::get('/nota', [Penjualan::class, 'nota'])->middleware(['auth', 'verified'])->name('nota');
 Route::post('/tb_post', [Penjualan::class, 'tb_post'])->middleware(['auth', 'verified'])->name('tb_post');
@@ -140,7 +143,15 @@ Route::get('/j_penyesuaian2', [Jurnal_penyesuaian2::class, 'index'])->middleware
 Route::get('/aktiva_penyesuaian', [Jurnal_penyesuaian2::class, 'aktiva_penyesuaian'])->middleware(['auth', 'verified'])->name('aktiva_penyesuaian');
 Route::post('/save_aktiva', [Jurnal_penyesuaian2::class, 'save_aktiva'])->middleware(['auth', 'verified'])->name('save_aktiva');
 
+// Penjualan Ayam
+Route::get('/pen_ayam', [Penjualan_ayam::class, 'index'])->middleware(['auth', 'verified'])->name('pen_ayam');
+Route::get('/add_ayam', [Penjualan_ayam::class, 'add_ayam'])->middleware(['auth', 'verified'])->name('add_ayam');
+Route::post('/save_ayam', [Penjualan_ayam::class, 'save_ayam'])->middleware(['auth', 'verified'])->name('save_ayam');
+Route::get('/nota_ayam', [Penjualan_ayam::class, 'nota_ayam'])->middleware(['auth', 'verified'])->name('nota_ayam');
+Route::post('/save_jurnal_ayam', [Penjualan_ayam::class, 'save_jurnal'])->middleware(['auth', 'verified'])->name('save_jurnal_ayam');
 
+// Piutang Ayam
+Route::get('/piutang_ayam', [Piutang_ayam::class, 'index'])->middleware(['auth', 'verified'])->name('piutang_ayam');
 
 
 

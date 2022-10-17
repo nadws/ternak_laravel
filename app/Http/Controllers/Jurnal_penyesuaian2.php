@@ -60,7 +60,7 @@ class Jurnal_penyesuaian2 extends Controller
         SUM(a.kredit_aktiva) AS kredit,a.b_penyusutan
         FROM aktiva AS a
         LEFT JOIN tb_post_center AS b ON b.id_post = a.id_post
-        WHERE a.id_akun ='$id_akun' AND a.tgl < '$tgl'
+        WHERE a.id_akun ='$id_akun' AND a.tgl < '$tgl' 
         GROUP BY a.id_post");
 
         $data = [
