@@ -105,6 +105,9 @@ Route::post('/updatepermission', [User::class, 'updatepermission'])->name('updat
 
 // Neraca Saldo
 Route::get('/saldo', [Neraca_saldo::class, 'index'])->middleware(['auth', 'verified'])->name('saldo');
+Route::post('/save_saldo', [Neraca_saldo::class, 'save_saldo'])->middleware(['auth', 'verified'])->name('save_saldo');
+Route::get('/get_penutup', [Neraca_saldo::class, 'get_penutup'])->middleware(['auth', 'verified'])->name('get_penutup');
+Route::post('/edit_saldo', [Neraca_saldo::class, 'edit_saldo'])->middleware(['auth', 'verified'])->name('edit_saldo');
 
 // Buku Besar
 Route::get('/buku_besar', [Buku_besar::class, 'index'])->middleware(['auth', 'verified'])->name('buku_besar');

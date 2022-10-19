@@ -69,7 +69,7 @@
         $('#tb_bkin').DataTable({
             "paging": false,
             "pageLength": 100,
-            "scrollY": "350px",
+            "scrollY": "300px",
             "lengthChange": false,
             // "ordering": false,
             "info": false,
@@ -78,6 +78,7 @@
             // "order": [ 5, 'DESC' ],
             "searching": false,
         });
+        
 
 
 
