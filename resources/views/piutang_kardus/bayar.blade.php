@@ -21,9 +21,9 @@
             FROM tb_jurnal AS a
             LEFT JOIN (SELECT b.no_nota, b.urutan, b.id_post FROM invoice_telur AS b GROUP BY b.no_nota ) AS
             b ON
-            concat('T-',b.no_nota) = a.no_nota
+            concat('K-',b.no_nota) = a.no_nota
             LEFT JOIN tb_post_center AS c ON c.id_post = b.id_post
-            WHERE a.id_akun = '31' and a.no_nota = '$nota[$x]'
+            WHERE a.id_akun = '54' and a.no_nota = '$nota[$x]'
             GROUP BY a.no_nota")
 
 

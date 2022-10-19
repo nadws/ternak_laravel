@@ -88,7 +88,7 @@
         max-width: 1000px;
     }
 </style>
-<form method="post" action="{{route('save_piutang_t')}}">
+<form method="post" action="{{route('save_piutang_a')}}">
     @csrf
     <div class="modal fade" id="bayar" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg-max" role="document">
@@ -137,7 +137,7 @@
                 });
                 console.log(no_nota);
                 $.ajax({
-                    url: "{{route('bayar_telur')}}",
+                    url: "{{route('bayar_ayam')}}",
                     method: "GET",
                     data: {
                         no_nota: no_nota
@@ -169,7 +169,7 @@
              
 
                 $('.sisa').val(sisa);
-                if (sisa < 1) {
+                if (sisa == 0) {
                     $('#btn_bayar').removeAttr('disabled');
                     // alert('tes')
                 } else {
@@ -198,7 +198,7 @@
 
                 $('.sisa').val(sisa);
 
-                if (sisa < 1) {
+                if (sisa == 0) {
                     $('#btn_bayar').removeAttr('disabled');
                     // alert('tes')
                 } else {
@@ -228,7 +228,7 @@
 
                 $('.sisa').val(sisa);
 
-                if (sisa < 1) {
+                if (sisa == 0) {
                     $('#btn_bayar').removeAttr('disabled');
                     // alert('tes')
                 } else {
@@ -277,6 +277,8 @@
             });
     });
 </script>
+
+
 
 
 

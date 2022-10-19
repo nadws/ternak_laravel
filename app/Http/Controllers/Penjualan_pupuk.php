@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class Penjualan_ayam extends Controller
+class Penjualan_pupuk extends Controller
 {
     public function index(Request $r)
     {
@@ -17,7 +17,7 @@ class Penjualan_ayam extends Controller
             $tgl1 = $r->tgl1;
             $tgl2 = $r->tgl2;
         }
-        $invoice = DB::select("SELECT a.*,b.nm_post FROM invoice_ayam as a 
+        $invoice = DB::select("SELECT a.*,b.nm_post FROM invoice_pupuk as a 
         left join tb_post_center as b on b.id_post = a.id_post
         where a.tgl between '$tgl1' and '$tgl2'
         group by a.no_nota
@@ -26,38 +26,38 @@ class Penjualan_ayam extends Controller
 
 
         $data = [
-            'title' => 'Penjualan Ayam',
-            'jenis' => DB::table('tb_jenis_telur')->get(),
+            'title' => 'Penjualan Pupuk',
             'invoice' => $invoice,
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
         ];
 
-        return view('penjualan_ayam/index', $data);
+        return view('penjualan_pupuk/index', $data);
     }
-
-    public function add_ayam(Request $r)
+    public function add_pupuk(Request $r)
     {
         $data = [
-            'title' => 'Penjualan Ayam',
+            'title' => 'Penjualan Pupuk',
             'costumer' => DB::table('tb_post_center')->where('id_akun', '18')->get(),
         ];
 
-        return view('penjualan_ayam/add', $data);
+        return view('penjualan_pupuk/add', $data);
     }
 
-    public function save_ayam(Request $r)
+    public function save_pupuk(Request $r)
     {
         $tgl = $r->tgl;
         $id_post = $r->id_post;
         $driver = $r->driver;
 
-        $berat = $r->berat;
-        $ekor = $r->ekor;
-        $h_satuan = $r->h_satuan;
+        $full = $r->full;
+        $h_full = $r->h_full;
+        $setengah = $r->setengah;
+        $h_setengah = $r->h_setengah;
+        $ttl = $r->ttl;
 
-        $nota = DB::selectOne("SELECT max(a.no_nota) as nota FROM invoice_ayam as a");
-        $rutan = DB::selectOne("SELECT max(a.urutan) as urutan FROM invoice_ayam as a where a.id_post = '$id_post'");
+        $nota = DB::selectOne("SELECT max(a.no_nota) as nota FROM invoice_pupuk as a");
+        $rutan = DB::selectOne("SELECT max(a.urutan) as urutan FROM invoice_pupuk as a where a.id_post = '$id_post'");
         if (empty($nota->nota)) {
             $no_nota = '1001';
         } else {
@@ -72,36 +72,36 @@ class Penjualan_ayam extends Controller
         $data = [
             'tgl' => $tgl,
             'id_post' => $id_post,
-            'driver' => $driver,
             'no_nota' => $no_nota,
             'urutan' => $urutan,
-            'berat' => $berat,
-            'ekor' => $ekor,
-            'harga' => $h_satuan,
-            'ttl_harga' => $h_satuan * $ekor,
+            'full' => $full,
+            'h_full' => $h_full,
+            'setengah' => $setengah,
+            'h_setengah' => $h_setengah,
+            'ttl_harga' => $ttl,
             'admin' => Auth::user()->name
         ];
-        DB::table('invoice_ayam')->insert($data);
-        return redirect()->route("nota_ayam", ['nota' => $no_nota])->with('sukses', 'Sukses');
+        DB::table('invoice_pupuk')->insert($data);
+        return redirect()->route("nota_pupuk", ['nota' => $no_nota])->with('sukses', 'Sukses');
     }
 
-    public function nota_ayam(Request $r)
+    public function nota_pupuk(Request $r)
     {
         $data = [
-            'title' => 'Nota Ayam',
-            'nota' => DB::selectOne("SELECT a.tgl, a.id_post, a.no_nota, a.urutan, b.nm_post, a.driver,a.ekor, a.berat, a.harga, a.ttl_harga, a.admin
-            FROM invoice_ayam as a 
+            'title' => 'Nota Pupuk',
+            'nota' => DB::selectOne("SELECT a.tgl, a.id_post, a.no_nota, a.urutan, b.nm_post,a.full, a.h_full, a.setengah,a.h_setengah, a.admin, a.ttl_harga
+            FROM invoice_pupuk as a 
             left join tb_post_center as b on b.id_post = a.id_post
             where a.no_nota = '$r->nota' 
             group by a.no_nota"),
-            'akun' => DB::table('tb_akun')->where('id_akun', '52')->first(),
+            'akun' => DB::table('tb_akun')->where('id_akun', '53')->first(),
             'akun2' => DB::table('tb_akun as a')->join('tb_permission_akun as b', 'a.id_akun', 'b.id_akun')->where('id_sub_menu_akun', '28')->get()
         ];
 
-        return view('penjualan_ayam/nota', $data);
+        return view('penjualan_pupuk/nota', $data);
     }
 
-    public function save_jurnal(Request $r)
+    public function save_jurnal_pupuk(Request $r)
     {
         $id_akun = $r->id_akun;
         $total = $r->total;
@@ -109,13 +109,13 @@ class Penjualan_ayam extends Controller
         $tgl = $r->tgl;
         $id_post = $r->id_post;
 
-        if ($id_akun == '52') {
+        if ($id_akun == '53') {
             $data_kredit = [
                 'tgl' => $tgl,
-                'no_nota' => 'A-' . $no_nota,
+                'no_nota' => 'P-' . $no_nota,
                 'id_buku' => '1',
-                'id_akun' => '19',
-                'ket' => 'Piutang ayam',
+                'id_akun' => '20',
+                'ket' => 'Piutang Pupuk',
                 'kredit' => $total,
                 'id_post' => $id_post,
                 'admin' => Auth::user()->name
@@ -123,10 +123,10 @@ class Penjualan_ayam extends Controller
             DB::table('tb_jurnal')->insert($data_kredit);
             $data_debit = [
                 'tgl' => $tgl,
-                'no_nota' => 'A-' . $no_nota,
+                'no_nota' => 'P-' . $no_nota,
                 'id_buku' => '1',
                 'id_akun' => $id_akun,
-                'ket' => 'Piutang ayam',
+                'ket' => 'Piutang Pupuk',
                 'debit' => $total,
                 'admin' => Auth::user()->name
             ];
@@ -134,10 +134,10 @@ class Penjualan_ayam extends Controller
         } else {
             $data_kredit = [
                 'tgl' => $tgl,
-                'no_nota' => 'A-' . $no_nota,
+                'no_nota' => 'P-' . $no_nota,
                 'id_buku' => '1',
-                'id_akun' => '19',
-                'ket' => 'Penjualan ayam',
+                'id_akun' => '20',
+                'ket' => 'Piutang Pupuk',
                 'kredit' => $total,
                 'id_post' => $id_post,
                 'admin' => Auth::user()->name
@@ -145,17 +145,17 @@ class Penjualan_ayam extends Controller
             DB::table('tb_jurnal')->insert($data_kredit);
             $data_debit = [
                 'tgl' => $tgl,
-                'no_nota' => 'A-' . $no_nota,
+                'no_nota' => 'P-' . $no_nota,
                 'id_buku' => '1',
                 'id_akun' => $id_akun,
-                'ket' => 'Penjualan ayam',
+                'ket' => 'Piutang Pupuk',
                 'debit' => $total,
                 'admin' => Auth::user()->name
             ];
             DB::table('tb_jurnal')->insert($data_debit);
 
-            DB::table('invoice_ayam')->where('no_nota', $no_nota)->update(['lunas' => 'Y']);
+            DB::table('invoice_pupuk')->where('no_nota', $no_nota)->update(['lunas' => 'Y']);
         }
-        return redirect()->route("pen_ayam")->with('sukses', 'Sukses');
+        return redirect()->route("pen_pupuk")->with('sukses', 'Sukses');
     }
 }

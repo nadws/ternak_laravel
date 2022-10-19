@@ -12,7 +12,11 @@ use App\Http\Controllers\Jurnal_penyesuaian2;
 use App\Http\Controllers\Neraca_saldo;
 use App\Http\Controllers\Penjualan;
 use App\Http\Controllers\Penjualan_ayam;
+use App\Http\Controllers\Penjualan_kardus;
+use App\Http\Controllers\Penjualan_pupuk;
 use App\Http\Controllers\Piutang_ayam;
+use App\Http\Controllers\Piutang_kardus;
+use App\Http\Controllers\Piutang_pupuk;
 use App\Http\Controllers\Piutang_telur;
 use App\Http\Controllers\User;
 use App\Http\Controllers\Verify;
@@ -152,6 +156,33 @@ Route::post('/save_jurnal_ayam', [Penjualan_ayam::class, 'save_jurnal'])->middle
 
 // Piutang Ayam
 Route::get('/piutang_ayam', [Piutang_ayam::class, 'index'])->middleware(['auth', 'verified'])->name('piutang_ayam');
+Route::get('/bayar_ayam', [Piutang_ayam::class, 'bayar'])->middleware(['auth', 'verified'])->name('bayar_ayam');
+Route::post('/save_piutang_a', [Piutang_ayam::class, 'save_piutang_a'])->middleware(['auth', 'verified'])->name('save_piutang_a');
+
+// Penjualan Pupuk
+Route::get('/pen_pupuk', [Penjualan_pupuk::class, 'index'])->middleware(['auth', 'verified'])->name('pen_pupuk');
+Route::get('/add_pupuk', [Penjualan_pupuk::class, 'add_pupuk'])->middleware(['auth', 'verified'])->name('add_pupuk');
+Route::post('/save_pupuk', [Penjualan_pupuk::class, 'save_pupuk'])->middleware(['auth', 'verified'])->name('save_pupuk');
+Route::get('/nota_pupuk', [Penjualan_pupuk::class, 'nota_pupuk'])->middleware(['auth', 'verified'])->name('nota_pupuk');
+Route::post('/save_jurnal_pupuk', [Penjualan_pupuk::class, 'save_jurnal_pupuk'])->middleware(['auth', 'verified'])->name('save_jurnal_pupuk');
+
+// penjualan kardus
+Route::get('/pen_kardus', [Penjualan_kardus::class, 'index'])->middleware(['auth', 'verified'])->name('pen_kardus');
+Route::get('/add_kardus', [Penjualan_kardus::class, 'add_kardus'])->middleware(['auth', 'verified'])->name('add_kardus');
+Route::post('/save_kardus', [Penjualan_kardus::class, 'save_kardus'])->middleware(['auth', 'verified'])->name('save_kardus');
+Route::get('/nota_kardus', [Penjualan_kardus::class, 'nota_kardus'])->middleware(['auth', 'verified'])->name('nota_kardus');
+Route::post('/save_jurnal_kardus', [Penjualan_kardus::class, 'save_jurnal_kardus'])->middleware(['auth', 'verified'])->name('save_jurnal_kardus');
+
+// Piutang Pupuk
+Route::get('/p_pupuk', [Piutang_pupuk::class, 'index'])->middleware(['auth', 'verified'])->name('p_pupuk');
+Route::get('/bayar_pupuk', [Piutang_pupuk::class, 'bayar'])->middleware(['auth', 'verified'])->name('bayar_pupuk');
+Route::post('/save_piutang_p', [Piutang_pupuk::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('save_piutang_p');
+
+// Piutang Kardus
+Route::get('/p_kardus', [Piutang_kardus::class, 'index'])->middleware(['auth', 'verified'])->name('p_kardus');
+Route::get('/bayar_kardus', [Piutang_kardus::class, 'bayar'])->middleware(['auth', 'verified'])->name('bayar_kardus');
+Route::post('/save_piutang_k', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('save_piutang_k');
+
 
 
 
