@@ -35,35 +35,40 @@
                         </div>
 
                         <div class="card-body">
-                            <table class="table text-center" id="example2">
+                            <table class="table " id="example2">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>No Akun</th>
-                                        <th>Post Akun</th>
-                                        <th>Debit <br> ({{ number_format($total_jurnal->debit, 0) }})
+                                        <th>Tanggal</th>
+                                        <th>No Nota</th>
+                                        <th>Keterangan</th>
+                                        <th style="text-align: center">Debit <br>
+                                            ({{number_format($total_jurnal->debit,0)}})</th>
+                                        <th style="text-align: center">Kredit <br>
+                                            ({{number_format($total_jurnal->kredit,0)}})</th>
+                                        <th style="text-align: center">Saldo <br> ({{number_format($total_jurnal->debit
+                                            -
+                                            $total_jurnal->kredit,0)}})
                                         </th>
-                                        <th>Kredit <br> ({{ number_format($total_jurnal->kredit, 0) }})
-                                        </th>
-                                        <th>Saldo <br> ({{ number_format($total_jurnal->debit -
-                                            $total_jurnal->kredit,
-                                            0) }})</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php
                                     $i=1;
+                                    $saldo =0;
                                     @endphp
                                     @foreach ($buku as $b)
+                                    @php
+                                    $saldo +=$b->debit - $b->kredit;
+                                    @endphp
                                     <tr>
                                         <td>{{$i++}}</td>
-                                        <td>{{$b->no_akun}}</td>
-                                        <td style="text-align: left"><a
-                                                href="{{route('detail_buku_besar',['id_akun'=> $b->id_akun,'tgl1'=>$tgl1,'tgl2'=> $tgl2])}}">{{$b->nm_akun}}</a>
-                                        </td>
+                                        <td>{{date('d-m-Y',strtotime($b->tgl))}}</td>
+                                        <td>{{$b->no_nota}}</td>
+                                        <td>{{$b->ket}}</td>
                                         <td style="text-align: right">{{number_format($b->debit,0)}}</td>
                                         <td style="text-align: right">{{number_format($b->kredit,0)}}</td>
-                                        <td style="text-align: right">{{number_format($b->debit - $b->kredit,0)}}</td>
+                                        <td style="text-align: right">{{number_format($saldo,0)}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

@@ -98,4 +98,10 @@ class Neraca_saldo extends Controller
         }
         return redirect()->route("saldo", ['month' => $r->bulan, 'year' => $r->tahun])->with('sukses', 'Sukses');
     }
+
+    public function delete_saldo(Request $r)
+    {
+        DB::table('tb_jurnal')->whereMonth('tgl', $r->month)->whereYear('tgl', $r->year)->where('id_buku', '6')->delete();
+        return redirect()->route("saldo", ['month' => $r->month, 'year' => $r->year])->with('sukses', 'Sukses');
+    }
 }

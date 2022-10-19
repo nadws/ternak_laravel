@@ -108,9 +108,11 @@ Route::get('/saldo', [Neraca_saldo::class, 'index'])->middleware(['auth', 'verif
 Route::post('/save_saldo', [Neraca_saldo::class, 'save_saldo'])->middleware(['auth', 'verified'])->name('save_saldo');
 Route::get('/get_penutup', [Neraca_saldo::class, 'get_penutup'])->middleware(['auth', 'verified'])->name('get_penutup');
 Route::post('/edit_saldo', [Neraca_saldo::class, 'edit_saldo'])->middleware(['auth', 'verified'])->name('edit_saldo');
+Route::get('/delete_saldo', [Neraca_saldo::class, 'delete_saldo'])->middleware(['auth', 'verified'])->name('delete_saldo');
 
 // Buku Besar
 Route::get('/buku_besar', [Buku_besar::class, 'index'])->middleware(['auth', 'verified'])->name('buku_besar');
+Route::get('/detail_buku_besar', [Buku_besar::class, 'detail'])->middleware(['auth', 'verified'])->name('detail_buku_besar');
 
 // Penjualan
 Route::get('/p_telur', [Penjualan::class, 'index'])->middleware(['auth', 'verified'])->name('p_telur');

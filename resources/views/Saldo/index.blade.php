@@ -42,6 +42,12 @@
                             </a>
                             @if (empty($sldo))
                             @else
+                            {{-- <a href="{{route('delete_saldo',['month'=> $bulan,'year'=> $tahun])}}"
+                                class="btn btn-danger btn-sm mr-1 float-right"><i class="fas fa-dumpster-fire"></i>
+                                Delete</a> --}}
+                            <a href="#" class="btn btn-danger delete btn-sm mr-1 float-right" bulan="{{$bulan}}"
+                                tahun="{{$tahun}}"><i class="fas fa-dumpster-fire"></i>
+                                Delete</a>
                             <button type="submit" class="btn btn-sm float-right btn-costume mr-1"><i
                                     class="fas fa-save"></i> Edit
                                 saldo</button>
@@ -528,6 +534,40 @@
         });
 
         // kredit saldo
+
+        $(document).on('click', '.delete', function(event) {
+                    var bulan = $(this).attr('bulan');
+                    var tahun = $(this).attr('tahun');
+                Swal.fire({
+                    title: 'Apakah anda yakin ingin menghapus saldo bulan ' + bulan + '-' + tahun + ' ?',
+                    text: "Pastikan data yang dihapus sudah benar",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#1596AA',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Lanjutkan'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    
+                    $.ajax({
+                        url: "{{route('delete_saldo')}}?month="+bulan+"&year="+tahun,
+                        type: "Get",
+                        success: function(data) {
+                            window.location = "{{route('saldo')}}?month="+bulan+"&year="+tahun;
+                        }
+                    });
+                    Swal.fire(
+                    'Suksess',
+                    'Data berhasil dihapus',
+                    'success'
+                    )
+                } else {
+                    return false;
+                }
+                })
+               
+
+        });
 
         
         
