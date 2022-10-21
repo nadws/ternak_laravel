@@ -87,6 +87,7 @@ class Penjualan extends Controller
                 'urutan' => $urutan,
                 'id_jenis_telur' => $id_jenis_telur[$x],
                 'jenis_penjualan' => 'kg',
+                'lunas' => 'Y'
             ];
             DB::table('invoice_telur')->insert($data);
         }
@@ -130,10 +131,11 @@ class Penjualan extends Controller
                 'urutan' => $urutan,
                 'id_jenis_telur' => $id_jenis_telur[$x],
                 'jenis_penjualan' => 'pcs',
+                'lunas' => 'Y'
             ];
             DB::table('invoice_telur')->insert($data);
         }
-        return redirect()->route("nota", ['nota' => $no_nota])->with('sukses', 'Sukses');
+        return redirect()->route("nota", ['nota' => $no_nota])->with('sukses', 'Data berhasil di input');
     }
 
     public function nota(Request $r)
@@ -159,55 +161,41 @@ class Penjualan extends Controller
         $no_nota = $r->no_nota;
         $tgl = $r->tgl;
         $id_post = $r->id_post;
+        $debit = $r->debit;
 
-        if ($id_akun == '31') {
-            $data_kredit = [
-                'tgl' => $tgl,
-                'no_nota' => 'T-' . $no_nota,
-                'id_buku' => '1',
-                'id_akun' => '18',
-                'ket' => 'Piutang telur',
-                'kredit' => $total,
-                'id_post' => $id_post,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data_kredit);
+        DB::table('tb_jurnal')->where('no_nota', 'T-' . $no_nota)->delete();
+
+        $data_kredit = [
+            'tgl' => $tgl,
+            'no_nota' => 'T-' . $no_nota,
+            'id_buku' => '1',
+            'id_akun' => '18',
+            'ket' => 'Penjualan telur',
+            'kredit' => $total,
+            'id_post' => $id_post,
+            'admin' => Auth::user()->name
+        ];
+        DB::table('tb_jurnal')->insert($data_kredit);
+
+        for ($x = 0; $x < count($id_akun); $x++) {
+            $id_akun2 = $id_akun[$x];
+            $akun = DB::table('tb_akun')->where('id_akun', $id_akun2)->first();
             $data_debit = [
                 'tgl' => $tgl,
                 'no_nota' => 'T-' . $no_nota,
                 'id_buku' => '1',
-                'id_akun' => $id_akun,
-                'ket' => 'Piutang telur',
-                'debit' => $total,
+                'id_akun' => $id_akun[$x],
+                'ket' => 'Penjualan telur',
+                'debit' => $debit[$x],
                 'admin' => Auth::user()->name
             ];
             DB::table('tb_jurnal')->insert($data_debit);
-        } else {
-            $data_kredit = [
-                'tgl' => $tgl,
-                'no_nota' => 'T-' . $no_nota,
-                'id_buku' => '1',
-                'id_akun' => '18',
-                'ket' => 'Penjualan telur',
-                'kredit' => $total,
-                'id_post' => $id_post,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data_kredit);
-            $data_debit = [
-                'tgl' => $tgl,
-                'no_nota' => 'T-' . $no_nota,
-                'id_buku' => '1',
-                'id_akun' => $id_akun,
-                'ket' => 'Penjualan telur',
-                'debit' => $total,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data_debit);
-
-            DB::table('invoice_telur')->where('no_nota', $no_nota)->update(['lunas' => 'Y']);
+            if ($akun->id_akun == '31') {
+                DB::table('invoice_telur')->where('no_nota', $no_nota)->update(['lunas' => 'T']);
+            } else {
+            }
         }
-        return redirect()->route("p_telur")->with('sukses', 'Sukses');
+        return redirect()->route("p_telur")->with('sukses', 'Data berhasil di input');
     }
 
     public function tb_post(Request $r)
@@ -219,14 +207,14 @@ class Penjualan extends Controller
             'npwp' => $r->npwp
         ];
         DB::table('tb_post_center')->insert($data);
-        return redirect()->route("add_telur")->with('sukses', 'Sukses');
+        return redirect()->route("add_telur")->with('sukses', 'Data berhasil di input');
     }
 
     public function delete(Request $r)
     {
         DB::table('invoice_telur')->where('no_nota', $r->nota)->delete();
         DB::table('tb_jurnal')->where('no_nota', 'T-' . $r->nota)->delete();
-        return redirect()->route("p_telur")->with('sukses', 'Sukses');
+        return redirect()->route("p_telur")->with('sukses', 'Data berhasil di hapus');
     }
 
     public function edit_telur(Request $r)
@@ -296,7 +284,7 @@ class Penjualan extends Controller
             ];
             DB::table('invoice_telur')->where('id_invoice_telur', $id_telur[$x])->update($data);
         }
-        return redirect()->route("nota2", ['nota' => $no_nota])->with('sukses', 'Sukses');
+        return redirect()->route("nota2", ['nota' => $no_nota])->with('sukses', 'Data berhasil di edit');
     }
 
     public function nota2(Request $r)
@@ -374,6 +362,16 @@ class Penjualan extends Controller
 
             DB::table('invoice_telur')->where('no_nota', $no_nota)->update(['lunas' => 'Y']);
         }
-        return redirect()->route("p_telur")->with('sukses', 'Sukses');
+        return redirect()->route("p_telur")->with('sukses', 'Data berhasil di input');
+    }
+
+    public function tambah_pembayaran(Request $r)
+    {
+        $data = [
+            'count' => $r->count,
+            'akun' => DB::table('tb_akun')->where('id_akun', '31')->first(),
+            'akun2' => DB::table('tb_akun as a')->join('tb_permission_akun as b', 'a.id_akun', 'b.id_akun')->where('id_sub_menu_akun', '28')->get()
+        ];
+        return view('penjualan/tambah', $data);
     }
 }

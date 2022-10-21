@@ -104,7 +104,7 @@ class Jurnal_pengeluaran extends Controller
     {
         DB::table('tb_jurnal')->where('no_nota', $r->no_nota)->delete();
         DB::table('tb_asset_umum')->where('no_nota', $r->no_nota)->delete();
-        return redirect()->route("jurnal_pengeluaran")->with('sukses', 'Sukses');
+        return redirect()->route("jurnal_pengeluaran")->with('sukses', 'Data berhasil di hapus');
     }
 
 

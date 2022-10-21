@@ -20,7 +20,6 @@
     <section class="content">
         <div class="container-fluid">
             <div class="col-lg-12">
-                @include('template.flash')
                 <div class="card">
                     <div class="card-header">
                         {{-- <ul class="nav nav-tabs float-left" id="custom-tabs-one-tab" role="tablist">
@@ -254,7 +253,7 @@
 
 <style>
     .modal-lg-max2 {
-        max-width: 1000px;
+        max-width: 1200px;
     }
 </style>
 <div class="modal fade" id="print" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -289,6 +288,7 @@
 
 
 <script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
+<script src="{{ asset('assets') }}/izitoast/dist/js/iziToast.min.js" type="text/javascript"></script>
 <script>
     $(document).ready(function() {
       $('.modal').on('hidden.bs.modal', function() {
@@ -514,8 +514,17 @@
 
                 
             });
+            
+            
+            
+                
+                
+            
     });
 </script>
+
+
+
 
 
 

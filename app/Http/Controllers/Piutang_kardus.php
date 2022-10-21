@@ -86,6 +86,6 @@ class Piutang_kardus extends Controller
             ];
             DB::table('tb_jurnal')->insert($data);
         }
-        return redirect()->route("p_kardus")->with('sukses', 'Sukses');
+        return redirect()->route("p_kardus")->with('sukses', 'Data berhasil di input');
     }
 }

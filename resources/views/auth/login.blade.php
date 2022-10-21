@@ -46,7 +46,6 @@
             font-weight: 500;
         }
 
-
         .login100-form {
             width: 560px;
             min-height: 100vh;
@@ -71,7 +70,7 @@
 
                     @csrf
                     <span class="login100-form-title p-b-43">
-                        Sign In
+                        Sign In <br>
                     </span>
                     <center>
                         <x-auth-validation-errors class="mb-4 text-danger" :errors="$errors" />
@@ -93,20 +92,20 @@
                     </div>
                     <br>
                     <div class="container-login100-form-btn mt-4">
-                        <button class="login100-form-btn" type="submit">
+                        <button class="login100-form-btn" type="submit" style="background-color: #629779">
                             Login
                         </button>
 
                     </div>
                     <div class="container-login100-form-btn mt-2">
                         <a class="login100-form-btn" href="{{ route('register') }}"
-                            style="background-color: #FFFFFF;color: #62646A; border: #62646A;">
+                            style="background-color: #FFFFFF;color: #62646A; border: 1px solid #62646A;">
                             Creat New Account
                         </a>
 
                     </div>
                 </form>
-                <div class="login100-more" style="background-image: url('/assets/login/img/login3.JPG');">
+                <div class="login100-more" style="background-image: url('/assets/login/img/9814.JPG');">
                 </div>
             </div>
         </div>

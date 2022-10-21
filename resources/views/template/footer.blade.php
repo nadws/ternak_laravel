@@ -36,6 +36,8 @@
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/dist/bootstrap-switch-button.min.js">
 </script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<script src="{{ asset('assets') }}/izitoast/dist/js/iziToast.min.js" type="text/javascript"></script>
+
 
 <script>
     $(function() {
@@ -76,7 +78,7 @@
             "stateSave": true,
             "autoWidth": true,
             // "order": [ 5, 'DESC' ],
-            "searching": false,
+            "searching": true,
         });
         
 
@@ -92,6 +94,22 @@
         })
 
     });
+</script>
+<script>
+    <?php if (session()->has('sukses')) : ?>
+        iziToast.success({
+                title: 'Success',
+                message: "{{ Session::get('sukses') }}",
+                position: 'topRight'
+            });
+    <?php endif; ?>
+    <?php if (session()->has('eror')) : ?>
+        iziToast.error();({
+                title: 'Gagal',
+                message: "{{ Session::get('gagal') }}",
+                position: 'topRight'
+            });
+    <?php endif; ?>
 </script>
 @yield('script')
 </body>

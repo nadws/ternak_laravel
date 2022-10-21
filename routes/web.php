@@ -18,6 +18,7 @@ use App\Http\Controllers\Piutang_ayam;
 use App\Http\Controllers\Piutang_kardus;
 use App\Http\Controllers\Piutang_pupuk;
 use App\Http\Controllers\Piutang_telur;
+use App\Http\Controllers\Setoran_telur;
 use App\Http\Controllers\User;
 use App\Http\Controllers\Verify;
 use Illuminate\Support\Facades\Route;
@@ -125,6 +126,11 @@ Route::post('/tb_post', [Penjualan::class, 'tb_post'])->middleware(['auth', 'ver
 Route::get('/delete_p', [Penjualan::class, 'delete'])->middleware(['auth', 'verified'])->name('delete_p');
 Route::get('/edit_telur', [Penjualan::class, 'edit_telur'])->middleware(['auth', 'verified'])->name('edit_telur');
 
+Route::get('/tambah_pembayaran', [Penjualan::class, 'tambah_pembayaran'])->middleware(['auth', 'verified'])->name('tambah_pembayaran');
+Route::get('/tambah_pembayaran_kardus', [Penjualan_kardus::class, 'tambah_pembayaran_kardus'])->middleware(['auth', 'verified'])->name('tambah_pembayaran_kardus');
+Route::get('/tambah_pembayaran_ayam', [Penjualan_ayam::class, 'tambah_pembayaran_ayam'])->middleware(['auth', 'verified'])->name('tambah_pembayaran_ayam');
+Route::get('/tambah_pembayaran_pupuk', [Penjualan_pupuk::class, 'tambah_pembayaran_pupuk'])->middleware(['auth', 'verified'])->name('tambah_pembayaran_pupuk');
+
 Route::post('/edit_kg', [Penjualan::class, 'edit_kg'])->middleware(['auth', 'verified'])->name('edit_kg');
 Route::get('/nota2', [Penjualan::class, 'nota2'])->middleware(['auth', 'verified'])->name('nota2');
 Route::post('/save_jurnal2', [Penjualan::class, 'save_jurnal2'])->middleware(['auth', 'verified'])->name('save_jurnal2');
@@ -187,6 +193,17 @@ Route::post('/save_piutang_p', [Piutang_pupuk::class, 'save_piutang_p'])->middle
 Route::get('/p_kardus', [Piutang_kardus::class, 'index'])->middleware(['auth', 'verified'])->name('p_kardus');
 Route::get('/bayar_kardus', [Piutang_kardus::class, 'bayar'])->middleware(['auth', 'verified'])->name('bayar_kardus');
 Route::post('/save_piutang_k', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('save_piutang_k');
+
+// Penyetoran Telur
+Route::get('/setor_telur', [Setoran_telur::class, 'index'])->middleware(['auth', 'verified'])->name('setor_telur');
+Route::get('/rencana_telur', [Setoran_telur::class, 'rencana_telur'])->middleware(['auth', 'verified'])->name('rencana_telur');
+
+// Penyetroran Ayam
+Route::get('/setor_ayam', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_ayam');
+// Penyetroran Pupuk
+Route::get('/setor_pupuk', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_pupuk');
+// Penyetroran kardus
+Route::get('/setor_kardus', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_kardus');
 
 
 

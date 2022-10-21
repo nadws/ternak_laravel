@@ -84,9 +84,9 @@
                             <form action="{{route('save_jurnal_ayam')}}" method="post">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-lg-8"></div>
-                                    <div class="col-lg-4 mb-2">
-                                        <select name="id_akun" id="" class="form-control select">
+                                    <div class="col-lg-5"></div>
+                                    <div class="col-lg-3 mb-2">
+                                        <select name="id_akun[]" id="" class="form-control select" required>
                                             <option value="">--Pilih Akun--</option>
                                             <option value="{{$akun->id_akun}}">{{$akun->nm_akun}}</option>
                                             @foreach ($akun2 as $a)
@@ -94,13 +94,39 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <input type="hidden" name="total" value="{{$nota->ttl_harga}}">
-                                    <input type="hidden" name="no_nota" value="{{$nota->no_nota}}">
-                                    <input type="hidden" name="tgl" value="{{$nota->tgl}}">
-                                    <input type="hidden" name="id_post" value="{{$nota->id_post}}">
-                                    <div class="col-lg-12">
-                                        <button class="btn btn-costume  float-right">Save</button>
+                                    <div class="col-lg-3 mb-2">
+                                        <input type="text" class="form-control bayar" name="debit[]"
+                                            style="text-align: right" required>
                                     </div>
+                                    <div class="col-lg-1 mb-2">
+                                        <button type="button" class="btn btn-costume btn-sm tbh_pembayaran"><i
+                                                class="fas fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div id="tambah">
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-5"></div>
+                                    <div class="col-lg-7">
+                                        <hr style="border: 1px solid black">
+                                    </div>
+                                    <div class="col-lg-5"></div>
+                                    <div class="col-lg-3">
+                                        <em class="float-right">Total :</em>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <em class="float-right"><strong id="total_bayar">Rp. 0</strong></em>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" class="total_asli" name="total" value="{{$nota->ttl_harga}}">
+                                <input type="hidden" class="total_hitung">
+                                <input type="hidden" name="no_nota" value="{{$nota->no_nota}}">
+                                <input type="hidden" name="tgl" value="{{$nota->tgl}}">
+                                <input type="hidden" name="id_post" value="{{$nota->id_post}}">
+                                <div class="col-lg-12 mt-4">
+                                    <button id="btn_bayar" class="btn btn-costume  float-right">Save</button>
                                 </div>
                             </form>
                         </div>
@@ -119,4 +145,73 @@
     <!-- Control sidebar content goes here -->
 </aside>
 <!-- /.control-sidebar -->
+<script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(document).on('keyup', '.bayar', function() {
+            var bayar =  $(this).val();
+            var ttl_rp = 0;
+            $(".bayar").each(function() {
+                ttl_rp += parseInt($(this).val());
+            });
+
+            var number_total = ttl_rp.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+            var rupiah_total = "Rp. " + number_total;
+            $('#total_bayar').text(rupiah_total);
+            $('.total_hitung').val(ttl_rp);
+
+
+           var hitung = $('.total_hitung').val();
+            var asli = $('.total_asli').val();
+
+            if (hitung == asli) {
+                    $('#btn_bayar').removeAttr('disabled');
+                    // alert('tes')
+                } else {
+                    // alert('tes1')
+                    $('#btn_bayar').attr('disabled', 'true');
+            }
+        });
+        var count = 1;
+        $(document).on('click', '.tbh_pembayaran', function() {
+            count = count + 1;
+            $.ajax({
+                url: "{{ route('tambah_pembayaran_ayam') }}?count=" + count ,
+                type: "Get",
+                    success: function(data) {
+                            $('#tambah').append(data);
+                            $('.select').select2()
+                    }
+            }); 
+                
+        });
+        $(document).on('click', '.remove', function() {
+                var delete_row = $(this).attr('count');
+                $('#row' + delete_row).remove();
+
+                var ttl_rp = 0;
+            $(".bayar").each(function() {
+                ttl_rp += parseInt($(this).val());
+            });
+
+            var number_total = ttl_rp.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+            var rupiah_total = "Rp. " + number_total;
+            $('#total_bayar').text(rupiah_total);
+            $('.total_hitung').val(ttl_rp);
+
+
+           var hitung = $('.total_hitung').val();
+            var asli = $('.total_asli').val();
+
+            if (hitung == asli) {
+                    $('#btn_bayar').removeAttr('disabled');
+                    // alert('tes')
+                } else {
+                    // alert('tes1')
+                    $('#btn_bayar').attr('disabled', 'true');
+            }
+                
+        });
+    });
+</script>
 @endsection

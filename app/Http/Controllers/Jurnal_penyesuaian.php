@@ -244,7 +244,7 @@ class Jurnal_penyesuaian extends Controller
         }
 
         $tgl1 = date('Y-m-01', strtotime($tgl_pv));
-        return redirect()->route("j_penyesuaian", ['tgl1' => $tgl1, 'tgl2' => $tgl_pv])->with('sukses', 'Sukses');
+        return redirect()->route("j_penyesuaian", ['tgl1' => $tgl1, 'tgl2' => $tgl_pv])->with('sukses', 'Data berhasil di input');
     }
 
     public function delete_penyesuaian(Request $r)

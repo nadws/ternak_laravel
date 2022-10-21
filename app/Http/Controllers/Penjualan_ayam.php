@@ -79,10 +79,11 @@ class Penjualan_ayam extends Controller
             'ekor' => $ekor,
             'harga' => $h_satuan,
             'ttl_harga' => $h_satuan * $ekor,
-            'admin' => Auth::user()->name
+            'admin' => Auth::user()->name,
+            'lunas' => 'Y'
         ];
         DB::table('invoice_ayam')->insert($data);
-        return redirect()->route("nota_ayam", ['nota' => $no_nota])->with('sukses', 'Sukses');
+        return redirect()->route("nota_ayam", ['nota' => $no_nota])->with('sukses', 'Data berhasil di input');
     }
 
     public function nota_ayam(Request $r)
@@ -108,54 +109,50 @@ class Penjualan_ayam extends Controller
         $no_nota = $r->no_nota;
         $tgl = $r->tgl;
         $id_post = $r->id_post;
+        $debit = $r->debit;
 
-        if ($id_akun == '52') {
-            $data_kredit = [
-                'tgl' => $tgl,
-                'no_nota' => 'A-' . $no_nota,
-                'id_buku' => '1',
-                'id_akun' => '19',
-                'ket' => 'Piutang ayam',
-                'kredit' => $total,
-                'id_post' => $id_post,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data_kredit);
+
+        $data_kredit = [
+            'tgl' => $tgl,
+            'no_nota' => 'A-' . $no_nota,
+            'id_buku' => '1',
+            'id_akun' => '19',
+            'ket' => 'Penjualan ayam',
+            'kredit' => $total,
+            'id_post' => $id_post,
+            'admin' => Auth::user()->name
+        ];
+        DB::table('tb_jurnal')->insert($data_kredit);
+
+        for ($x = 0; $x < count($id_akun); $x++) {
+            $id_akun2 = $id_akun[$x];
+            $akun = DB::table('tb_akun')->where('id_akun', $id_akun2)->first();
             $data_debit = [
                 'tgl' => $tgl,
                 'no_nota' => 'A-' . $no_nota,
                 'id_buku' => '1',
-                'id_akun' => $id_akun,
-                'ket' => 'Piutang ayam',
-                'debit' => $total,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data_debit);
-        } else {
-            $data_kredit = [
-                'tgl' => $tgl,
-                'no_nota' => 'A-' . $no_nota,
-                'id_buku' => '1',
-                'id_akun' => '19',
+                'id_akun' => $id_akun[$x],
                 'ket' => 'Penjualan ayam',
-                'kredit' => $total,
-                'id_post' => $id_post,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data_kredit);
-            $data_debit = [
-                'tgl' => $tgl,
-                'no_nota' => 'A-' . $no_nota,
-                'id_buku' => '1',
-                'id_akun' => $id_akun,
-                'ket' => 'Penjualan ayam',
-                'debit' => $total,
+                'debit' => $debit[$x],
                 'admin' => Auth::user()->name
             ];
             DB::table('tb_jurnal')->insert($data_debit);
 
-            DB::table('invoice_ayam')->where('no_nota', $no_nota)->update(['lunas' => 'Y']);
+            if ($akun->id_akun == '52') {
+                DB::table('invoice_ayam')->where('no_nota', $no_nota)->update(['lunas' => 'T']);
+            } else {
+            }
         }
-        return redirect()->route("pen_ayam")->with('sukses', 'Sukses');
+
+        return redirect()->route("pen_ayam")->with('sukses', 'Data berhasil di input');
+    }
+    public function tambah_pembayaran_ayam(Request $r)
+    {
+        $data = [
+            'count' => $r->count,
+            'akun' => DB::table('tb_akun')->where('id_akun', '52')->first(),
+            'akun2' => DB::table('tb_akun as a')->join('tb_permission_akun as b', 'a.id_akun', 'b.id_akun')->where('id_sub_menu_akun', '28')->get()
+        ];
+        return view('penjualan/tambah', $data);
     }
 }

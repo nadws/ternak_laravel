@@ -90,6 +90,6 @@ class Piutang_ayam extends Controller
             ];
             DB::table('tb_jurnal')->insert($data);
         }
-        return redirect()->route("piutang_ayam")->with('sukses', 'Sukses');
+        return redirect()->route("piutang_ayam")->with('sukses', 'Data berhasil di input');
     }
 }

@@ -86,6 +86,6 @@ class Piutang_pupuk extends Controller
             ];
             DB::table('tb_jurnal')->insert($data);
         }
-        return redirect()->route("p_pupuk")->with('sukses', 'Sukses');
+        return redirect()->route("p_pupuk")->with('sukses', 'Data berhasil di input');
     }
 }

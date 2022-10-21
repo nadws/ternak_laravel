@@ -78,10 +78,11 @@ class Penjualan_kardus extends Controller
             'type' => $type,
             'h_satuan' => $h_satuan,
             'total' => $total,
-            'admin' => Auth::user()->name
+            'admin' => Auth::user()->name,
+            'lunas' => 'Y'
         ];
         DB::table('invoice_kardus')->insert($data);
-        return redirect()->route("nota_kardus", ['nota' => $no_nota])->with('sukses', 'Sukses');
+        return redirect()->route("nota_kardus", ['nota' => $no_nota])->with('sukses', 'Data berhasil di input');
     }
 
     public function nota_kardus(Request $r)
@@ -108,54 +109,50 @@ class Penjualan_kardus extends Controller
         $no_nota = $r->no_nota;
         $tgl = $r->tgl;
         $id_post = $r->id_post;
+        $debit = $r->debit;
 
-        if ($id_akun == '54') {
-            $data_kredit = [
-                'tgl' => $tgl,
-                'no_nota' => 'K-' . $no_nota,
-                'id_buku' => '1',
-                'id_akun' => '21',
-                'ket' => 'Piutang Kardus',
-                'kredit' => $total,
-                'id_post' => $id_post,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data_kredit);
+
+        $data_kredit = [
+            'tgl' => $tgl,
+            'no_nota' => 'K-' . $no_nota,
+            'id_buku' => '1',
+            'id_akun' => '21',
+            'ket' => 'Penjualan Kardus',
+            'kredit' => $total,
+            'id_post' => $id_post,
+            'admin' => Auth::user()->name
+        ];
+        DB::table('tb_jurnal')->insert($data_kredit);
+        for ($x = 0; $x < count($id_akun); $x++) {
+            $id_akun2 = $id_akun[$x];
+            $akun = DB::table('tb_akun')->where('id_akun', $id_akun2)->first();
             $data_debit = [
                 'tgl' => $tgl,
                 'no_nota' => 'K-' . $no_nota,
                 'id_buku' => '1',
-                'id_akun' => $id_akun,
-                'ket' => 'Piutang Kardus',
-                'debit' => $total,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data_debit);
-        } else {
-            $data_kredit = [
-                'tgl' => $tgl,
-                'no_nota' => 'K-' . $no_nota,
-                'id_buku' => '1',
-                'id_akun' => '21',
+                'id_akun' => $id_akun[$x],
                 'ket' => 'Penjualan Kardus',
-                'kredit' => $total,
-                'id_post' => $id_post,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_jurnal')->insert($data_kredit);
-            $data_debit = [
-                'tgl' => $tgl,
-                'no_nota' => 'K-' . $no_nota,
-                'id_buku' => '1',
-                'id_akun' => $id_akun,
-                'ket' => 'Penjualan Kardus',
-                'debit' => $total,
+                'debit' => $debit[$x],
                 'admin' => Auth::user()->name
             ];
             DB::table('tb_jurnal')->insert($data_debit);
 
-            DB::table('invoice_kardus')->where('no_nota', $no_nota)->update(['lunas' => 'Y']);
+            if ($akun->id_akun == '54') {
+                DB::table('invoice_kardus')->where('no_nota', $no_nota)->update(['lunas' => 'Y']);
+            } else {
+            }
         }
-        return redirect()->route("pen_kardus")->with('sukses', 'Sukses');
+
+        return redirect()->route("pen_kardus")->with('sukses', 'Data berhasil di input');
+    }
+
+    public function tambah_pembayaran_kardus(Request $r)
+    {
+        $data = [
+            'count' => $r->count,
+            'akun' => DB::table('tb_akun')->where('id_akun', '54')->first(),
+            'akun2' => DB::table('tb_akun as a')->join('tb_permission_akun as b', 'a.id_akun', 'b.id_akun')->where('id_sub_menu_akun', '28')->get()
+        ];
+        return view('penjualan/tambah', $data);
     }
 }

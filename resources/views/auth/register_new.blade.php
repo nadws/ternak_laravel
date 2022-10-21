@@ -103,7 +103,7 @@
                     </div>
                     <br>
                     <div class="container-login100-form-btn mt-4">
-                        <button class="login100-form-btn" type="submit">
+                        <button class="login100-form-btn" style="background-color: #629779" type="submit">
                             Register
                         </button>
                     </div>

@@ -52,6 +52,7 @@
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets') }}/izitoast/dist/css/iziToast.min.css">
 
 
     <style>
