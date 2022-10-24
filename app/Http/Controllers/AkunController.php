@@ -180,9 +180,9 @@ class AkunController extends Controller
             DB::table('tb_akun')->where('id_akun', $id)->delete();
             DB::table('tb_permission_akun')->where('id_akun', $id)->delete();
             DB::table('tb_relasi_akun')->where('id_akun', $id)->delete();
-            return redirect()->route("akun")->with('sukses', 'Sukses');
+            return redirect()->route("akun")->with('sukses', 'Data berhasil dihapus');
         } else {
-            return redirect()->route("akun")->with('error', 'Gagal');
+            return redirect()->route("akun")->with('error', 'Data gagal dihapus');
         }
     }
 

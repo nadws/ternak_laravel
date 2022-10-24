@@ -30,6 +30,10 @@
                             class="btn btn-costume btn-sm float-right mr-1 " id="btn_pembayaran"><i
                                 class="fas fa-plus"></i> Perencanaan
                         </a>
+                        <a href="" data-toggle="modal" data-target="#list_perencanaan"
+                            class="btn btn-costume btn-sm float-right mr-1 " id="list"><i class="fas fa-list"></i> List
+                            Perencanaan
+                        </a>
                     </div>
                     <div class="card-body">
                         <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
@@ -102,29 +106,73 @@
     }
 </style>
 
+<form action="{{route('save_perencanaan_telur')}}" method="post">
+    @csrf
+    <div class="modal fade" id="bayar" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg-max" role="document">
 
-<div class="modal fade" id="bayar" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg-max" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-costume">
+                    <h5 class="modal-title" id="exampleModalLabel">Penyetoran</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="input_pembayaran">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="modal fade" id="list_perencanaan" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
 
         <div class="modal-content">
             <div class="modal-header bg-costume">
-                <h5 class="modal-title" id="exampleModalLabel">Penyetoran</h5>
+                <h5 class="modal-title" id="exampleModalLabel">List Perencanaan</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div id="input_pembayaran">
+                <div id="perencanaan">
 
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button type="submit" id="btn_bayar" class="btn btn-costume" disabled action="">Edit/Save</button>
+                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-secondary">Close</button>
             </div>
         </div>
     </div>
 </div>
+
+<form action="{{route('save_jurnal_setoran')}}" method="post">
+    @csrf
+    <div class="modal fade" id="view_list" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+
+            <div class="modal-content">
+                <div class="modal-header bg-costume">
+                    <h5 class="modal-title" id="exampleModalLabel">Detail List Perencanaan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="detail_perencanaan">
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-costume">Edit/Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 
 
@@ -156,7 +204,6 @@
                 $('input[name="no_nota"]:checked').each(function() {
                     no_nota.push($(this).attr("nota"))
                 });
-                console.log(no_nota);
                 $.ajax({
                     url: "{{route('rencana_telur')}}",
                     method: "GET",
@@ -171,7 +218,34 @@
                 });
                 
 
-            });
+        });
+        $(document).on('click', '#list', function() {
+                $.ajax({
+                    url: "{{route('list_perencanaan')}}",
+                    method: "GET",
+                    success: function(data) {
+                        $('#perencanaan').html(data);
+                        $('.select').select2()
+                    }
+                });
+                
+
+        });
+        $(document).on('click', '.view_list', function() {
+            var nota = $(this).attr('nota');
+                $.ajax({
+                    url: "{{route('detail_list_perencanaan')}}",
+                    data: {
+                        nota : nota
+                    },
+                    method: "GET",
+                    success: function(data) {
+                        $('#detail_perencanaan').html(data);
+                    }
+                });
+                
+
+        });
     });
 </script>
 
