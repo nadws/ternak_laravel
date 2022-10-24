@@ -10,6 +10,22 @@
 <!-- jQuery -->
 <!-- jQuery -->
 <script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+      $(".preloader").fadeOut();
+
+
+      $('.modal').on('hidden.bs.modal', function() {
+        //If there are any visible
+        if ($(".modal:visible").length > 0) {
+          //Slap the class on it (wait a moment for things to settle)
+          setTimeout(function() {
+            $('body').addClass('modal-open');
+          }, 200)
+        }
+      });
+    })
+</script>
 
 <!-- Bootstrap 4 -->
 <script src="{{ asset('assets') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

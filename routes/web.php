@@ -201,6 +201,8 @@ Route::get('/list_perencanaan', [Setoran_telur::class, 'list_perencanaan'])->mid
 Route::get('/detail_list_perencanaan', [Setoran_telur::class, 'detail_list_perencanaan'])->middleware(['auth', 'verified'])->name('detail_list_perencanaan');
 Route::post('/save_perencanaan_telur', [Setoran_telur::class, 'save_perencanaan_telur'])->middleware(['auth', 'verified'])->name('save_perencanaan_telur');
 Route::post('/save_jurnal_setoran', [Setoran_telur::class, 'save_jurnal_setoran'])->middleware(['auth', 'verified'])->name('save_jurnal_setoran');
+Route::get('/data_invoice_setoran', [Setoran_telur::class, 'data_invoice_setoran'])->middleware(['auth', 'verified'])->name('data_invoice_setoran');
+Route::get('/detail_set_telur', [Setoran_telur::class, 'detail_set_telur'])->middleware(['auth', 'verified'])->name('detail_set_telur');
 
 // Penyetroran Ayam
 Route::get('/setor_ayam', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_ayam');

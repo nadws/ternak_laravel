@@ -11,7 +11,8 @@
 </style>
 <div class="row">
     <div class="col-lg-12">
-        <button type="button" class="float-right btn btn-costume btn-sm tes_button">TES</button>
+        <a target="_blank" href="{{route('print_jurnal2',['nota' => $nota])}}"
+            class="float-right btn btn-costume btn-sm tes_button"><i class="fas fa-print"></i> Print</a>
     </div>
     <div class="col-lg-12">
         <h3 style="color: #629779">Jurnal Pengeluaran</h3>

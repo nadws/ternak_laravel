@@ -70,18 +70,18 @@
     </div>
     <div class="col-lg-3">
         <label for="">Tanggal</label>
-        <input type="date" class="form-control" name="tgl">
+        <input type="date" class="form-control" name="tgl" required>
     </div>
     <div class="col-lg-3">
         <label for="">Akun</label>
-        <input type="text" class="form-control" value="Kas Agri Linda" readonly>
-        <input type="hidden" class="form-control" name="id_akun" value="55" readonly>
+        <input type="text" class="form-control" value="{{$id_akun == '32' ? '' : 'Kas Agri Linda'}}" readonly>
+        <input type="hidden" class="form-control" name="id_akun" value="{{$id_akun == '32' ? '' : '55'}}" readonly>
         <input type="hidden" class="form-control" name="id_akun2" value="{{$id_akun}}" readonly>
         <input type="hidden" class="form-control" name="no_nota" value="{{$nota}}" readonly>
     </div>
     <div class="col-lg-3">
         <label for="">Keterangan</label>
-        <input type="text" class="form-control" name="keterangan">
+        <input type="text" class="form-control" name="keterangan" required>
     </div>
     <div class="col-lg-3">
         <label for="">Total</label>

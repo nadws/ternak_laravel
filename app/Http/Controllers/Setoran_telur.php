@@ -63,7 +63,7 @@ class Setoran_telur extends Controller
 
         for ($x = 0; $x < count($no_nota); $x++) {
 
-            if ($id_akun == '33') {
+            if ($id_akun[$x] == '33') {
                 $data = [
                     'no_nota' => $no_nota[$x],
                     'nota_setor' => 'T' . $urt,
@@ -145,30 +145,83 @@ class Setoran_telur extends Controller
         $rupiah = $r->rupiah;
         $tgl = $r->tgl;
 
+        if ($id_akun2 == '33') {
+            $data = [
+                'tgl' => $tgl,
+                'id_akun' => $id_akun,
+                'id_buku' => '3',
+                'no_nota' => $no_nota,
+                'ket' => $keterangan,
+                'debit' => $rupiah,
+                'admin' => Auth::user()->name,
+            ];
+            DB::table('tb_jurnal')->insert($data);
+            $data = [
+                'tgl' => $tgl,
+                'id_akun' => $id_akun2,
+                'id_buku' => '3',
+                'no_nota' => $no_nota,
+                'ket' => $keterangan,
+                'kredit' => $rupiah,
+                'admin' => Auth::user()->name,
+            ];
+            DB::table('tb_jurnal')->insert($data);
+            $data_setor = [
+                'tgl' => $tgl,
+                'id_akun' => $id_akun2,
+                'no_nota' => $no_nota,
+                'nota_setor' => $no_nota,
+                'kredit' => $rupiah,
+                'admin' => Auth::user()->name,
+            ];
+            DB::table('setoran_telur')->insert($data_setor);
+
+            DB::table('setoran_telur')->where('nota_setor', $no_nota)->update(['setuju' => 'Y']);
+        } else {
+            $data_setor = [
+                'tgl' => $tgl,
+                'id_akun' => $id_akun2,
+                'no_nota' => $no_nota,
+                'nota_setor' => $no_nota,
+                'kredit' => $rupiah,
+                'admin' => Auth::user()->name,
+            ];
+            DB::table('setoran_telur')->insert($data_setor);
+
+            DB::table('setoran_telur')->where('nota_setor', $no_nota)->update(['setuju' => 'Y']);
+        }
+        return redirect()->route("setor_telur")->with('sukses', 'Penyetoran berhasil disimpan');
+    }
+
+    public function data_invoice_setoran(Request $r)
+    {
+        $tgl1 =  $r->tgl1;
+        $tgl2 =  $r->tgl2;
+
+        $invoice = DB::select("SELECT a.nota_setor, a.no_nota, b.nm_akun, sum(a.debit) as debit, a.admin, a.setuju FROM setoran_telur as a 
+        left join tb_akun as b on b.id_akun = a.id_akun
+        where a.tgl between '$tgl1' and '$tgl2'
+        group by a.nota_setor");
         $data = [
-            'tgl' => $tgl,
-            'id_akun' => $id_akun,
-            'id_buku' => '3',
-            'no_nota' => $no_nota,
-            'ket' => $keterangan,
-            'debit' => $rupiah,
-            'admin' => Auth::user()->name,
+            'tgl1' => $tgl1,
+            'tgl2' => $tgl2,
+            'invoice' => $invoice
         ];
-        DB::table('tb_jurnal')->insert($data);
+
+        return view('setor_telur/data_invoice', $data);
+    }
+
+    public function detail_set_telur(Request $r)
+    {
+        $nota = $r->nota;
+
         $data = [
-            'tgl' => $tgl,
-            'id_akun' => $id_akun2,
-            'id_buku' => '3',
-            'no_nota' => $no_nota,
-            'ket' => $keterangan,
-            'kredit' => $rupiah,
-            'admin' => Auth::user()->name,
+            'nota' => $nota,
+            'no_nota' => DB::select("SELECT *
+            FROM setoran_telur AS a
+            left join tb_akun as b on b.id_akun = a.id_akun
+            WHERE a.nota_setor = '$nota'")
         ];
-        DB::table('tb_jurnal')->insert($data);
-
-
-        DB::table('setoran_telur')->where('nota_setor', $no_nota)->update(['setuju' => 'Y']);
-
-        return redirect()->route("setor_telur")->with('sukses', 'Perencanaan berhasil disimpan');
+        return view('setor_telur/detail_invoice', $data);
     }
 }

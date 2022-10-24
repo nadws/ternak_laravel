@@ -34,6 +34,11 @@
                             class="btn btn-costume btn-sm float-right mr-1 " id="list"><i class="fas fa-list"></i> List
                             Perencanaan
                         </a>
+                        <a href="" data-toggle="modal" data-target="#list_setoran"
+                            class="btn btn-costume btn-sm float-right mr-1 " id="list"><i
+                                class="fas fa-file-invoice"></i> Data
+                            Invoice
+                        </a>
                     </div>
                     <div class="card-body">
                         <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
@@ -148,6 +153,65 @@
     </div>
 </div>
 
+<div class="modal fade" id="list_setoran" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-costume">
+                <h5 class="modal-title" id="exampleModalLabel">List Setoran</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="History">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label for="">Dari</label>
+                            <input type="date" id="tgl1" class="form-control">
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="">Sampai</label>
+                            <input type="date" id="tgl2" class="form-control">
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="">Aksi</label> <br>
+                            <button type="submit" class="btn btn-sm btn-costume">search</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="list_penyetoran">
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="detail_invoice" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg-max" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-costume">
+                <h5 class="modal-title" id="exampleModalLabel">Detail cfm setor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detail_list_setoran">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <form action="{{route('save_jurnal_setoran')}}" method="post">
     @csrf
     <div class="modal fade" id="view_list" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -245,6 +309,24 @@
                 });
                 
 
+        });
+
+        $(document).on('submit', '#History', function(e) {
+            e.preventDefault();
+            var tgl1 = $("#tgl1").val();
+            var tgl2 = $("#tgl2").val();
+            console.log(tgl1);
+            console.log(tgl2);
+            var url = "{{route('data_invoice_setoran')}}?tgl1=" + tgl1 + "&tgl2=" + tgl2;
+            $('#list_penyetoran').load(url);
+            
+        });
+
+        $(document).on('click','.detail_nota', function() {
+            var nota = $(this).attr('nota');
+            var url = "{{route('detail_set_telur')}}?nota=" + nota;
+            $('#detail_list_setoran').load(url);
+            
         });
     });
 </script>
