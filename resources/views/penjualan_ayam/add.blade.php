@@ -19,7 +19,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="card">
                         <form action="{{ route('save_ayam') }}" method="post">
                             @csrf

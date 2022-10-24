@@ -18,6 +18,7 @@ use App\Http\Controllers\Piutang_ayam;
 use App\Http\Controllers\Piutang_kardus;
 use App\Http\Controllers\Piutang_pupuk;
 use App\Http\Controllers\Piutang_telur;
+use App\Http\Controllers\Setoran_ayam;
 use App\Http\Controllers\Setoran_telur;
 use App\Http\Controllers\User;
 use App\Http\Controllers\Verify;
@@ -205,7 +206,8 @@ Route::get('/data_invoice_setoran', [Setoran_telur::class, 'data_invoice_setoran
 Route::get('/detail_set_telur', [Setoran_telur::class, 'detail_set_telur'])->middleware(['auth', 'verified'])->name('detail_set_telur');
 
 // Penyetroran Ayam
-Route::get('/setor_ayam', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_ayam');
+Route::get('/setor_ayam', [Setoran_ayam::class, 'index'])->middleware(['auth', 'verified'])->name('setor_ayam');
+Route::get('/rencana_ayam', [Setoran_ayam::class, 'rencana_ayam'])->middleware(['auth', 'verified'])->name('rencana_ayam');
 // Penyetroran Pupuk
 Route::get('/setor_pupuk', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_pupuk');
 // Penyetroran kardus

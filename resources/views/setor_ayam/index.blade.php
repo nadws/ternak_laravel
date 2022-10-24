@@ -83,7 +83,7 @@
                                                     <td style="text-align: right">{{number_format($s->debit,0)}}</td>
                                                     <td style="text-align: center">
                                                         <input type="checkbox" name="no_nota" class="total"
-                                                            nota="<?= $s->no_nota ?>" value="<?= $s->debit ?>">
+                                                            nota_ayam="<?= $s->no_nota ?>" value="<?= $s->debit ?>">
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -254,22 +254,22 @@
 <script>
     $(document).ready(function() {
         $('input:checkbox').change(function() {
-            var total = $(this).val()
+            var total = $(this).val();
+
             var rupiah = 0;
             $('input[name="no_nota"]:checked').each(function() {
-                rupiah += isNaN(parseInt($(this).val())) ? 0 : parseInt($(this).val());
+                rupiah += parseInt($(this).val());
             });
-            var ttl = parseInt(rupiah).toLocaleString();
-
+            var ttl = rupiah.toLocaleString();
             $('.ttl').text(ttl);
         });
         $(document).on('click', '#btn_pembayaran', function() {
                 var no_nota = [];
                 $('input[name="no_nota"]:checked').each(function() {
-                    no_nota.push($(this).attr("nota"))
+                    no_nota.push($(this).attr("nota_ayam"))
                 });
                 $.ajax({
-                    url: "{{route('rencana_telur')}}",
+                    url: "{{route('rencana_ayam')}}",
                     method: "GET",
                     data: {
                         no_nota: no_nota
