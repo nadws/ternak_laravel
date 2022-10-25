@@ -166,7 +166,7 @@
                 <form id="History">
                     <div class="row">
                         <div class="col-lg-4">
-                            <label for="">Dari</label>
+                            <label for="">Dari</label>dasdasdas
                             <input type="date" id="tgl1" class="form-control">
                         </div>
                         <div class="col-lg-4">
