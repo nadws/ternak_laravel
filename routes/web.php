@@ -208,6 +208,10 @@ Route::get('/detail_set_telur', [Setoran_telur::class, 'detail_set_telur'])->mid
 // Penyetroran Ayam
 Route::get('/setor_ayam', [Setoran_ayam::class, 'index'])->middleware(['auth', 'verified'])->name('setor_ayam');
 Route::get('/rencana_ayam', [Setoran_ayam::class, 'rencana_ayam'])->middleware(['auth', 'verified'])->name('rencana_ayam');
+Route::post('/save_perencanaan_ayam', [Setoran_ayam::class, 'save_perencanaan_ayam'])->middleware(['auth', 'verified'])->name('save_perencanaan_ayam');
+Route::get('/list_perencanaan_ayam', [Setoran_ayam::class, 'list_perencanaan_ayam'])->middleware(['auth', 'verified'])->name('list_perencanaan_ayam');
+Route::get('/detail_list_perencanaan_ayam', [Setoran_ayam::class, 'detail_list_perencanaan_ayam'])->middleware(['auth', 'verified'])->name('detail_list_perencanaan_ayam');
+Route::post('/save_jurnal_setoran_ayam', [Setoran_ayam::class, 'save_jurnal_setoran_ayam'])->middleware(['auth', 'verified'])->name('save_jurnal_setoran_ayam');
 // Penyetroran Pupuk
 Route::get('/setor_pupuk', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_pupuk');
 // Penyetroran kardus

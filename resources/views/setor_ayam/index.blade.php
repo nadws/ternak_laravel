@@ -111,7 +111,7 @@
     }
 </style>
 
-<form action="{{route('save_perencanaan_telur')}}" method="post">
+<form action="{{route('save_perencanaan_ayam')}}" method="post">
     @csrf
     <div class="modal fade" id="bayar" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg-max" role="document">
@@ -212,7 +212,7 @@
     </div>
 </div>
 
-<form action="{{route('save_jurnal_setoran')}}" method="post">
+<form action="{{route('save_jurnal_setoran_ayam')}}" method="post">
     @csrf
     <div class="modal fade" id="view_list" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -285,7 +285,7 @@
         });
         $(document).on('click', '#list', function() {
                 $.ajax({
-                    url: "{{route('list_perencanaan')}}",
+                    url: "{{route('list_perencanaan_ayam')}}",
                     method: "GET",
                     success: function(data) {
                         $('#perencanaan').html(data);
@@ -298,7 +298,7 @@
         $(document).on('click', '.view_list', function() {
             var nota = $(this).attr('nota');
                 $.ajax({
-                    url: "{{route('detail_list_perencanaan')}}",
+                    url: "{{route('detail_list_perencanaan_ayam')}}",
                     data: {
                         nota : nota
                     },
