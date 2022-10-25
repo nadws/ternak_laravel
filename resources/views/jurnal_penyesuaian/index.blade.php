@@ -140,6 +140,7 @@
                             id="nav-profile-tab " data-toggle="tab" href="#nav-profile" role="tab"
                             aria-controls="nav-profile" aria-selected="false">{{$a->nm_akun}}</a>
                         @endforeach
+
                         <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
                             role="tab" aria-controls="nav-contact" aria-selected="false">Pullet</a>
 

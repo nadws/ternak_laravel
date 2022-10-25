@@ -52,6 +52,7 @@ class Jurnal_pengeluaran extends Controller
         $akun = DB::table('tb_akun')->where('id_akun', $id)->first();
         $satuan = DB::table('tb_satuan')->where('id_satuan', $akun->id_satuan)->first();
 
+
         $data = [
             'satuan' => DB::table('tb_satuan')->get(),
 
@@ -150,6 +151,26 @@ class Jurnal_pengeluaran extends Controller
         $post = DB::select("SELECT *
         FROM tb_post_center AS a
         WHERE a.id_akun = '$r->id_akun' AND a.id_post NOT IN(SELECT b.id_post FROM aktiva AS b)");
+
+        echo "<option value=''>Pilih Post Center</option>";
+        foreach ($post as $k) {
+            echo "<option value='" . $k->id_post . "'>" . $k->nm_post . "</option>";
+        }
+    }
+    public function get_post_atk(Request $r)
+    {
+        $id_akun = $r->id_akun;
+        if ($id_akun == '58') {
+            $post = DB::select("SELECT *
+            FROM tb_post_center AS a
+            WHERE a.id_akun = '$r->id_akun'");
+        } else {
+            $post = DB::select("SELECT *
+            FROM tb_post_center AS a
+            WHERE a.id_akun = '$r->id_akun' ");
+        }
+
+
 
         echo "<option value=''>Pilih Post Center</option>";
         foreach ($post as $k) {

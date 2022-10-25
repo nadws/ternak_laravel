@@ -15,8 +15,8 @@
     </div>
     <div class="col-md-2">
         <div class="form-group">
-            <label for="list_kategori">Post Center</label>
-            <select name="id_post_center[]" class="form-control   select input_biaya">
+            <label for="list_kategori">Post Center dad</label>
+            <select name="id_post_center[]" class="form-control  select input_biaya">
                 <option value="">--Pilih Post Center--</option>
                 @foreach ($post_center as $p)
                 <option value="{{$p->id_post}}">{{$p->nm_post}}</option>
@@ -31,13 +31,12 @@
             <input type="text" class="form-control input_detail input_biaya qty_monitoring1" name="qty[]" required>
         </div>
     </div>
-
     <div class="col-md-2">
         <div class="form-group">
             <label for="list_kategori">Satuan</label>
             <select name="id_satuan[]" class="form-control select satuan input_detail input_biaya" required>
                 <?php foreach ($satuan as $p) : ?>
-                <option value="<?= $p->id ?>">
+                <option value="<?= $p->id_satuan ?>">
                     <?= $p->nm_satuan ?>
                 </option>
                 <?php endforeach; ?>
@@ -45,9 +44,6 @@
 
         </div>
     </div>
-
-
-
     <div class="col-md-2">
         <div class="form-group">
             <label for="list_kategori">Total Rp</label>

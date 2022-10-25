@@ -58,7 +58,7 @@ class Setoran_telur extends Controller
         if (empty($urutan2->urutan)) {
             $urt2 = '1001';
         } else {
-            $urt2 = $urutan->urutan + 1;
+            $urt2 = $urutan2->urutan + 1;
         }
 
         for ($x = 0; $x < count($no_nota); $x++) {

@@ -186,7 +186,7 @@
 
                         <div class="col-sm-3 col-md-3">
                             <div class="form-group">
-                                <select name="id_akun_kredit" class="form-control akun_kredit select" required>
+                                <select name="id_akun_kredit" class="form-control post_atk akun_kredit select" required>
 
                                 </select>
                             </div>
@@ -513,6 +513,17 @@
 
 
                 
+            });
+            
+            $(document).on('change', '.post_atk', function() {
+                var id_akun = $(this).val();
+                $.ajax({
+                    url: "{{ route('get_post_atk') }}?id_akun=" + id_akun ,
+                    type: "Get",
+                    success: function(data) {
+                    $('.pos_aktiva').html(data);
+                    }
+                });
             });
             
             
