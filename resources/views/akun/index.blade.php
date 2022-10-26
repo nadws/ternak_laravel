@@ -912,7 +912,6 @@
             loadPostCenter(id_akun)
         })
 
-
         $(document).on('click', '#simpanPostCenter', function(){
             var post_center = $('#namaPostCenter').val()
             var id_akun = $('#id_akun').val()
@@ -954,6 +953,7 @@
             $('#edit_namaPostCenter').val(nm_edit_post)
             $('#edit_id_akun').val(id_akun)
         })
+
         $(document).on('click', '#simpanEditPostCenter', function(){
                 var nm_post = $(".edit_namaPostCenter").val();
                 var id_post = $("#id_post_edit").val();
@@ -973,6 +973,7 @@
                 });
                 loadPostCenter(id_akun)
         })
+        
     });
 </script>
 @endsection
