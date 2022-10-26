@@ -6,36 +6,36 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class Setoran_ayam extends Controller
+class Setoran_kardus extends Controller
 {
     public function index(Request $r)
     {
         $data = [
-            'title' => 'Setoran Ayam',
+            'title' => 'Setoran Kardus',
             'jenis' => DB::table('tb_jenis_telur')->get(),
-            'setor' => DB::select("SELECT a.no_nota as nota_ayam, b.id_akun, d.nm_post, a.urutan, b.no_nota, b.tgl,c.nm_akun, b.debit
-            FROM invoice_ayam AS a
-            LEFT JOIN tb_jurnal AS b ON b.no_nota = concat('A-',a.no_nota)
+            'setor' => DB::select("SELECT a.no_nota as nota_kardus, b.id_akun, d.nm_post, a.urutan, b.no_nota, b.tgl,c.nm_akun, b.debit
+            FROM invoice_kardus AS a
+            LEFT JOIN tb_jurnal AS b ON b.no_nota = concat('K-',a.no_nota)
             LEFT JOIN tb_akun AS c ON c.id_akun = b.id_akun
             LEFT JOIN tb_post_center AS d ON d.id_post = a.id_post 
             WHERE b.id_buku = '1' AND b.id_akun IN ('33','32') AND b.setor = 'T'
-            order by a.id_invoice_ayam ASC")
+            order by a.id_invoice_kardus ASC")
         ];
 
-        return view('setor_ayam.index', $data);
+        return view('setor_kardus.index', $data);
     }
 
-    public function rencana_ayam(Request $r)
+    public function rencana_kardus(Request $r)
     {
         $nota = $r->no_nota;
 
         $data = [
             'nota' => $nota,
         ];
-        return view('setor_ayam.perencanaan', $data);
+        return view('setor_kardus.perencanaan', $data);
     }
 
-    public function save_perencanaan_ayam(Request $r)
+    public function save_perencanaan_kardus(Request $r)
     {
         $tgl = $r->tgl;
         $no_nota = $r->no_nota;
@@ -43,12 +43,12 @@ class Setoran_ayam extends Controller
         $debit = $r->debit;
         
         $urutan = DB::selectOne("SELECT MAX(a.urutan) AS urutan
-        FROM setoran_ayam AS a where a.id_akun = '33'");
+        FROM setoran_kardus AS a where a.id_akun = '33'");
 
         $urt = empty($urutan->urutan) ? '1001' : $urutan->urutan + 1;
 
         $urutan2 = DB::selectOne("SELECT MAX(a.urutan) AS urutan
-        FROM setoran_ayam AS a where a.id_akun = '32'");
+        FROM setoran_kardus AS a where a.id_akun = '32'");
 
         $urt2 = empty($urutan2->urutan) ? '1001' : $urutan2->urutan + 1;
 
@@ -56,7 +56,7 @@ class Setoran_ayam extends Controller
 
             $data = [
                 'no_nota' => $no_nota[$x],
-                'nota_setor' => $id_akun[$x] == '33' ? "A$urt" : "B$urt2",
+                'nota_setor' => $id_akun[$x] == '33' ? "K$urt" : "B$urt2",
                 'id_akun' => $id_akun[$x],
                 'tgl' => $tgl,
                 'debit' => $debit[$x],
@@ -65,7 +65,7 @@ class Setoran_ayam extends Controller
                 'urutan' => $id_akun[$x] == '33' ? $urt : $urt2
             ];
 
-            DB::table('setoran_ayam')->insert($data);
+            DB::table('setoran_kardus')->insert($data);
 
             $data = [
                 'setor' => 'Y'
@@ -76,13 +76,13 @@ class Setoran_ayam extends Controller
                 ])->update($data);
             
         }
-        return redirect()->route("setor_ayam")->with('sukses', 'Perencanaan berhasil disimpan');
+        return redirect()->route("setor_kardus")->with('sukses', 'Perencanaan berhasil disimpan');
     }
 
-    public function list_perencanaan_ayam(Request $r)
+    public function list_perencanaan_kardus(Request $r)
     {
         $list = DB::select("SELECT a.tgl, a.nota_setor, SUM(a.debit) AS debit, b.nm_akun
-        FROM setoran_ayam AS a
+        FROM setoran_kardus AS a
         LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
         where a.setuju = 'T'
         GROUP BY a.nota_setor");
@@ -90,32 +90,32 @@ class Setoran_ayam extends Controller
         $data = [
             'list' => $list
         ];
-        return view('setor_ayam/list', $data);
+        return view('setor_kardus.list', $data);
     }
 
-    public function detail_list_perencanaan_ayam(Request $r)
+    public function detail_list_perencanaan_kardus(Request $r)
     {
         $nota = $r->nota;
 
         $list = DB::select("SELECT a.tgl, a.id_akun, a.nota_setor, a.no_nota, a.debit AS debit, b.nm_akun, c.nm_post, c.urutan
-        FROM setoran_ayam AS a
+        FROM setoran_kardus AS a
         LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
         left join (
             SELECT a.no_nota, a.urutan, b.nm_post
-            FROM invoice_ayam as a
+            FROM invoice_kardus as a
             left join tb_post_center as b on b.id_post = a.id_post
             group by a.no_nota
-        ) as c on concat('A-',c.no_nota) = a.no_nota
+        ) as c on concat('K-',c.no_nota) = a.no_nota
         where a.setuju = 'T' and a.nota_setor = '$nota'");
 
         $data = [
             'list' => $list,
             'nota' => $nota
         ];
-        return view('setor_ayam/detail_list', $data);
+        return view('setor_kardus.detail_list', $data);
     }
 
-    public function save_jurnal_setoran_ayam(Request $r)
+    public function save_jurnal_setoran_kardus(Request $r)
     {
         $id_akun = $r->id_akun;
         $id_akun2 = $r->id_akun2;
@@ -153,9 +153,9 @@ class Setoran_ayam extends Controller
                 'kredit' => $rupiah,
                 'admin' => Auth::user()->name,
             ];
-            DB::table('setoran_ayam')->insert($data_setor);
+            DB::table('setoran_kardus')->insert($data_setor);
 
-            DB::table('setoran_ayam')->where('nota_setor', $no_nota)->update(['setuju' => 'Y']);
+            DB::table('setoran_kardus')->where('nota_setor', $no_nota)->update(['setuju' => 'Y']);
         } else {
             $data_setor = [
                 'tgl' => $tgl,
@@ -165,19 +165,19 @@ class Setoran_ayam extends Controller
                 'kredit' => $rupiah,
                 'admin' => Auth::user()->name,
             ];
-            DB::table('setoran_ayam')->insert($data_setor);
+            DB::table('setoran_kardus')->insert($data_setor);
 
-            DB::table('setoran_ayam')->where('nota_setor', $no_nota)->update(['setuju' => 'Y']);
+            DB::table('setoran_kardus')->where('nota_setor', $no_nota)->update(['setuju' => 'Y']);
         }
-        return redirect()->route("setor_ayam")->with('sukses', 'Penyetoran berhasil disimpan');
+        return redirect()->route("setor_kardus")->with('sukses', 'Penyetoran berhasil disimpan');
     }
 
-    public function data_invoice_setoran_ayam(Request $r)
+    public function data_invoice_setoran_kardus(Request $r)
     {
         $tgl1 =  $r->tgl1;
         $tgl2 =  $r->tgl2;
 
-        $invoice = DB::select("SELECT a.nota_setor, a.no_nota, b.nm_akun, sum(a.debit) as debit, a.admin, a.setuju FROM setoran_ayam as a 
+        $invoice = DB::select("SELECT a.nota_setor, a.no_nota, b.nm_akun, sum(a.debit) as debit, a.admin, a.setuju FROM setoran_kardus as a 
         left join tb_akun as b on b.id_akun = a.id_akun
         where a.tgl between '$tgl1' and '$tgl2'
         group by a.nota_setor");
@@ -187,20 +187,20 @@ class Setoran_ayam extends Controller
             'invoice' => $invoice
         ];
 
-        return view('setor_ayam/data_invoice', $data);
+        return view('setor_kardus.data_invoice', $data);
     }
 
-    public function detail_set_ayam(Request $r)
+    public function detail_set_kardus(Request $r)
     {
         $nota = $r->nota;
 
         $data = [
             'nota' => $nota,
             'no_nota' => DB::select("SELECT *
-            FROM setoran_ayam AS a
+            FROM setoran_kardus AS a
             left join tb_akun as b on b.id_akun = a.id_akun
             WHERE a.nota_setor = '$nota'")
         ];
-        return view('setor_ayam/detail_invoice', $data);
+        return view('setor_kardus.detail_invoice', $data);
     }
 }

@@ -227,4 +227,45 @@ class AkunController extends Controller
     {
         DB::table('tb_kelompok_aktiva')->where('id_kelompok', $r->id_kelompok)->delete();
     }
+
+    public function contentPostCenter(Request $r)
+    {
+        $data = [
+            'id_akun' => $r->id_akun,
+            'postCenter' => DB::table('tb_post_center')->where('id_akun',$r->id_akun)->get()
+        ];
+        return view('akun.content_post_center',$data);
+    }
+
+    public function contentEditPostCenter(Request $r)
+    {
+
+    }
+
+    public function tambahPostCenter(Request $r)
+    {
+        $data = [
+            'id_akun' => $r->id_akun,
+            'nm_post' => $r->post_center,
+        ];
+        DB::table('tb_post_center')->insert($data);
+        echo 'sukses';
+    }
+
+    public function hapusPostCenter(Request $r)
+    {
+        $cek1 = DB::table('aktiva')->where('id_post', $r->id_post)->first();
+        $cek2 = DB::table('table_atk')->where('id_post', $r->id_post)->first();
+        if(!$cek1 && !$cek2) {
+            DB::table('tb_post_center')->where('id_post', $r->id_post)->delete();
+        } else {
+            echo 'gagal';
+        }
+
+    }
+
+    public function editPostCenter(Request $r)
+    {
+        DB::table('tb_post_center')->where('id_post', $r->id_post)->update(['nm_post' => $r->nm_post]);
+    }
 }

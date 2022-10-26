@@ -62,7 +62,8 @@
                                                     @else
 
                                                     @endif
-
+                                                    <a id="btnPostCenter" id_akun="{{ $a->id_akun }}" href="#" class="btn btn-costume btn-sm" data-toggle="modal" data-target="#post_center"
+                                                    data-placement="top" title="Post Center"><i class="fas fa-eject"></i></a>
                                                     <a href="#" class="btn btn-costume btn-sm" data-toggle="tooltip"
                                                         data-placement="top" title="Edit"><i class="fas fa-pen"></i>
                                                     </a>
@@ -102,10 +103,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div id="post_center2">
+                    <div id="contentPostCenter">
 
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -114,6 +114,45 @@
         </div>
     </div>
 </form>
+
+<div class="modal fade" id="editPostCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+
+            <div class="modal-content">
+                <div class="modal-header bg-costume">
+                    <h5 class="modal-title" id="exampleModalLabel">Post Center</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <label for="">Nama Post center</label>
+                                    <input type="hidden" id="id_post_edit">
+                                    <input type="hidden" id="edit_id_akun">
+                                    <input autofocus type="text" class="form-control edit_namaPostCenter" id="edit_namaPostCenter">
+                                </td>
+                                <td>
+                                    <label for="">Aksi</label><br>
+                                    <button type="button" id="simpanEditPostCenter" class="btn btn-costume btn-sm">Simpan</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        
+                    </table>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <form id="tambah_post">
     <div class="modal fade" id="tbh_post" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -525,130 +564,93 @@
     $(document).ready(function() {
         hide_default();
 
-function hide_default() {
-    $('.asset').hide();
-    $('.cash_flow').hide();
-    $('.lawan_penyesuaian').hide();
-    $('.keterangan').hide();
-    $('.keterangan2').hide();
-    $('.keterangan3').hide();
-    $('.keterangan4').hide();
-    $('.input_akun2').attr('disabled', 'true');
-    $('.kelompok').attr('disabled', 'true');
-    $('.satuan_umum').attr('disabled', 'true');
-    $('#id_kas').attr('disabled', 'true');
-}
-$(document).on('change', '#id_kategori', function() {
-    var id_kategori = $(this).val();
-    if (id_kategori == '1') {
-        $('.asset').show();
-        $('.cash_flow').show();
-        $('#id_kas').removeAttr('disabled', 'true');
-
-    } else {
+    function hide_default() {
         $('.asset').hide();
         $('.cash_flow').hide();
         $('.lawan_penyesuaian').hide();
-
-    }
-
-});
-
-$(document).on('click', '#switchBiaya', function() {
-    var id_biaya = $('#id_biaya').val();
-    if (id_biaya == '0') {
-        var b = '1';
-        $('.lawan_penyesuaian').show();
-        $('.input_akun2').removeAttr('disabled', 'true');
-        $('#switchbukukas').attr('disabled', 'true');
-    } else {
-        var b = '0';
-        $('.lawan_penyesuaian').hide();
+        $('.keterangan').hide();
+        $('.keterangan2').hide();
+        $('.keterangan3').hide();
+        $('.keterangan4').hide();
         $('.input_akun2').attr('disabled', 'true');
-        $('#switchbukukas').removeAttr('disabled', 'true');
+        $('.kelompok').attr('disabled', 'true');
+        $('.satuan_umum').attr('disabled', 'true');
+        $('#id_kas').attr('disabled', 'true');
     }
+    $(document).on('change', '#id_kategori', function() {
+        var id_kategori = $(this).val();
+        if (id_kategori == '1') {
+            $('.asset').show();
+            $('.cash_flow').show();
+            $('#id_kas').removeAttr('disabled', 'true');
 
-    var id_pilih = '5';
-   
-
-    $.ajax({
-        url: "{{route('get_no_akun')}}",
-        type: "Get",
-        data: {
-            id_pilih: id_pilih
-        },
-        // dataType: "json",
-        success: function(data) {
-
-            $('#no_akun2').val(data);
+        } else {
+            $('.asset').hide();
+            $('.cash_flow').hide();
+            $('.lawan_penyesuaian').hide();
 
         }
 
     });
 
-
-
-    $('#id_biaya').val(b);
-
-});
-$(document).on('click', '#switchbukukas', function() {
-    var id_kas = $('#id_kas').val();
-    if (id_kas == '0') {
-        var b = '1';
-        $('#switchBiaya').attr('disabled', 'true');
-    } else {
-        var b = '0';
-        $('#switchBiaya').removeAttr('disabled', 'true');
-    }
-    $('#id_kas').val(b);
-
-
-});
-
-// post center
-        load_post();
-
-        function load_post() {
-            $(document).on('click', '.post_center', function() {
-                var id_akun = $(this).attr("id_akun");
-                // alert(id_akun);
-                $.ajax({
-                    url: "{{route('post_center_akun')}}",
-                    method: "GET",
-                    data: {
-                        id_akun: id_akun,
-                    },
-                    success: function(data) {
-                        $('#post_center2').html(data);
-                    }
-                });
-
-            });
+    $(document).on('click', '#switchBiaya', function() {
+        var id_biaya = $('#id_biaya').val();
+        if (id_biaya == '0') {
+            var b = '1';
+            $('.lawan_penyesuaian').show();
+            $('.input_akun2').removeAttr('disabled', 'true');
+            $('#switchbukukas').attr('disabled', 'true');
+        } else {
+            var b = '0';
+            $('.lawan_penyesuaian').hide();
+            $('.input_akun2').attr('disabled', 'true');
+            $('#switchbukukas').removeAttr('disabled', 'true');
         }
 
-        $(document).on('submit', '#tambah_post', function(event) {
-            event.preventDefault();
+        var id_pilih = '5';
+    
 
-            var nm_post = $(".nm_post").val();
-            var id_akun = $("#id_akun").val();
-            $.ajax({
-                type: "GET",
-                url: "{{ route('tambah_post') }}",
-                data: {
-                    nm_post: nm_post,
-                    id_akun: id_akun
-                },
-                success: function(response) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        icon: 'success',
-                        title: 'Tambah Post berhasil'
-                    });
-                    var id_akun = $("#id_akun").val();
-                 
+        $.ajax({
+            url: "{{route('get_no_akun')}}",
+            type: "Get",
+            data: {
+                id_pilih: id_pilih
+            },
+            // dataType: "json",
+            success: function(data) {
+
+                $('#no_akun2').val(data);
+
+            }
+
+        });
+
+
+
+        $('#id_biaya').val(b);
+
+    });
+    $(document).on('click', '#switchbukukas', function() {
+        var id_kas = $('#id_kas').val();
+        if (id_kas == '0') {
+            var b = '1';
+            $('#switchBiaya').attr('disabled', 'true');
+        } else {
+            var b = '0';
+            $('#switchBiaya').removeAttr('disabled', 'true');
+        }
+        $('#id_kas').val(b);
+
+
+    });
+
+    // post center
+            load_post();
+
+            function load_post() {
+                $(document).on('click', '.post_center', function() {
+                    var id_akun = $(this).attr("id_akun");
+                    // alert(id_akun);
                     $.ajax({
                         url: "{{route('post_center_akun')}}",
                         method: "GET",
@@ -659,175 +661,318 @@ $(document).on('click', '#switchbukukas', function() {
                             $('#post_center2').html(data);
                         }
                     });
-                    $('#tbh_post').hide(); //or  $('#IDModal').modal('hide');
-                }
-            });
 
-        });
-
-        $(document).on('click', '.tbh_post', function() {
-            var id_akun = $(this).attr("id_akun");
-            // alert(id_akun);
-            $("#id_akun").val(id_akun);
-
-        });
-        $(document).on('click', '.edit_kelompok', function() {
-            var id_akun = $(this).attr("id_akun");
-            var url = "{{route('kelompok_akun')}}?id_akun=" + id_akun;
-
-            $('#kelompok_akun').load(url);
-            $('.show_kelompok').modal('show');
-
-            
-        });
-
-        $("body").on("change", "#id_kategori", function() {
-            var id_pilih = $(this).val();
-            // alert(id_pilih);
-
-            $.ajax({
-                url: "{{route('get_no_akun')}}",
-                type: "Get",
-                data: {
-                    id_pilih: id_pilih
-                },
-                // dataType: "json",
-                success: function(data) {
-
-                    $('#no_akun').val(data);
-
-                }
-
-            });
-        });
-        $("body").on("change", ".kat_akun", function() {
-            var id_kat = $(this).val();
-            if (id_kat == '1') {
-                $('.keterangan').show();
-                $('.satuan_umum').removeAttr('disabled', 'true');
-            } else {
-                $('.keterangan').hide();
+                });
             }
-            if (id_kat == '2') {
-                $('.keterangan2').show();
-                $('.kelompok').removeAttr('disabled', 'true');
-            } else {
-                $('.keterangan2').hide();
-            }
-            if (id_kat == '3') {
-                $('.keterangan3').show();
-            } else {
-                $('.keterangan3').hide();
-            }
-            if (id_kat == '4') {
-                $('.keterangan4').show();
-            } else {
-                $('.keterangan4').hide();
-            }
-            
-        
-        });
 
-        var count = 1;
-        $(document).on('click', '.tbh_kelompok', function() {
-           
-            count = count + 1;
-            $.ajax({
-                url: "{{ route('tambah_kelompok_aktiva') }}?count=" + count ,
-                type: "Get",
-                success: function(data) {
-                    $('#tbh_kelompok').append(data);
-                    $('.select').select2()
-                }                    
-            });  
-
-        });
-        var count = 1;
-        $(document).on('click', '.tbh_kelompok_edit', function() {
-           
-            count = count + 1;
-            $.ajax({
-                url: "{{ route('tambah_kelompok_aktiva') }}?count=" + count ,
-                type: "Get",
-                success: function(data) {
-                    $('#tbh_kelompok_edit').append(data);
-                    $('.select').select2()
-                }                    
-            });  
-
-        });
-
-        $(document).on('click', '.remove_kelompok', function() {   
-                var delete_row = $(this).attr('count');
-                $('#row' + delete_row).remove();
-        });
-        $(document).on('click', '.tambah_k_aktiva', function() {   
-                var id_akun = $(this).attr('id_akun');
-                
-
-                $('.id_akun_kelompok_baru').val(id_akun);
-                
-        });
-
-        $(document).on('submit', '#save_kelompok_baru', function(event) {
+            $(document).on('submit', '#tambah_post', function(event) {
                 event.preventDefault();
-               
-                var id_akun = $('.id_akun_kelompok_baru').val();
-                var pesanan_new = $("#save_kelompok_baru").serialize()
 
+                var nm_post = $(".nm_post").val();
+                var id_akun = $("#id_akun").val();
                 $.ajax({
-                    url: "{{ route('save_kelompok_baru') }}?" + pesanan_new,
-                    method: 'GET',
-                    contentType: false,
-                    processData: false,
-                    success: function(data) {
+                    type: "GET",
+                    url: "{{ route('tambah_post') }}",
+                    data: {
+                        nm_post: nm_post,
+                        id_akun: id_akun
+                    },
+                    success: function(response) {
                         Swal.fire({
                             toast: true,
                             position: 'top-end',
                             showConfirmButton: false,
                             timer: 3000,
                             icon: 'success',
-                            title: 'Pesanan berhasil ditambahkan'
+                            title: 'Tambah Post berhasil'
                         });
-                        var url = "{{route('kelompok_akun')}}?id_akun=" + id_akun;
-
-                        $('#kelompok_akun').load(url);
-                        $('#tambah_k_aktiva').modal('toggle');
+                        var id_akun = $("#id_akun").val();
+                    
+                        $.ajax({
+                            url: "{{route('post_center_akun')}}",
+                            method: "GET",
+                            data: {
+                                id_akun: id_akun,
+                            },
+                            success: function(data) {
+                                $('#post_center2').html(data);
+                            }
+                        });
+                        $('#tbh_post').hide(); //or  $('#IDModal').modal('hide');
                     }
                 });
 
-        });
-        $(document).on('click', '.delete_kelompok_baru', function() {
-            var id_kelompok = $(this).attr("id_kelompok");
-            var id_akun_kelompok = $(this).attr("id_akun_kelompok");
-            $.ajax({
-                type: "GET",
-                url: "{{route('delete_kelompok_baru')}}",
-                data: {
-                    id_kelompok: id_kelompok
-                },
-                success: function(response) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        icon: 'success',
-                        title: 'Delete post center berhasil'
-                    });
-                    var url = "{{route('kelompok_akun')}}?id_akun=" + id_akun_kelompok;
-                    $('#kelompok_akun').load(url);
-
-                    
-                }
             });
 
+            $(document).on('click', '.tbh_post', function() {
+                var id_akun = $(this).attr("id_akun");
+                // alert(id_akun);
+                $("#id_akun").val(id_akun);
+
+            });
+            $(document).on('click', '.edit_kelompok', function() {
+                var id_akun = $(this).attr("id_akun");
+                var url = "{{route('kelompok_akun')}}?id_akun=" + id_akun;
+
+                $('#kelompok_akun').load(url);
+                $('.show_kelompok').modal('show');
+
+                
+            });
+
+            $("body").on("change", "#id_kategori", function() {
+                var id_pilih = $(this).val();
+                // alert(id_pilih);
+
+                $.ajax({
+                    url: "{{route('get_no_akun')}}",
+                    type: "Get",
+                    data: {
+                        id_pilih: id_pilih
+                    },
+                    // dataType: "json",
+                    success: function(data) {
+
+                        $('#no_akun').val(data);
+
+                    }
+
+                });
+            });
+            $("body").on("change", ".kat_akun", function() {
+                var id_kat = $(this).val();
+                if (id_kat == '1') {
+                    $('.keterangan').show();
+                    $('.satuan_umum').removeAttr('disabled', 'true');
+                } else {
+                    $('.keterangan').hide();
+                }
+                if (id_kat == '2') {
+                    $('.keterangan2').show();
+                    $('.kelompok').removeAttr('disabled', 'true');
+                } else {
+                    $('.keterangan2').hide();
+                }
+                if (id_kat == '3') {
+                    $('.keterangan3').show();
+                } else {
+                    $('.keterangan3').hide();
+                }
+                if (id_kat == '4') {
+                    $('.keterangan4').show();
+                } else {
+                    $('.keterangan4').hide();
+                }
+                
+            
+            });
+
+            var count = 1;
+            $(document).on('click', '.tbh_kelompok', function() {
+            
+                count = count + 1;
+                $.ajax({
+                    url: "{{ route('tambah_kelompok_aktiva') }}?count=" + count ,
+                    type: "Get",
+                    success: function(data) {
+                        $('#tbh_kelompok').append(data);
+                        $('.select').select2()
+                    }                    
+                });  
+
+            });
+            var count = 1;
+            $(document).on('click', '.tbh_kelompok_edit', function() {
+            
+                count = count + 1;
+                $.ajax({
+                    url: "{{ route('tambah_kelompok_aktiva') }}?count=" + count ,
+                    type: "Get",
+                    success: function(data) {
+                        $('#tbh_kelompok_edit').append(data);
+                        $('.select').select2()
+                    }                    
+                });  
+
+            });
+
+            $(document).on('click', '.remove_kelompok', function() {   
+                    var delete_row = $(this).attr('count');
+                    $('#row' + delete_row).remove();
+            });
+            $(document).on('click', '.tambah_k_aktiva', function() {   
+                    var id_akun = $(this).attr('id_akun');
+                    
+
+                    $('.id_akun_kelompok_baru').val(id_akun);
+                    
+            });
+
+            $(document).on('submit', '#save_kelompok_baru', function(event) {
+                    event.preventDefault();
+                
+                    var id_akun = $('.id_akun_kelompok_baru').val();
+                    var pesanan_new = $("#save_kelompok_baru").serialize()
+
+                    $.ajax({
+                        url: "{{ route('save_kelompok_baru') }}?" + pesanan_new,
+                        method: 'GET',
+                        contentType: false,
+                        processData: false,
+                        success: function(data) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                icon: 'success',
+                                title: 'Pesanan berhasil ditambahkan'
+                            });
+                            var url = "{{route('kelompok_akun')}}?id_akun=" + id_akun;
+
+                            $('#kelompok_akun').load(url);
+                            $('#tambah_k_aktiva').modal('toggle');
+                        }
+                    });
+
+            });
+            $(document).on('click', '.delete_kelompok_baru', function() {
+                var id_kelompok = $(this).attr("id_kelompok");
+                var id_akun_kelompok = $(this).attr("id_akun_kelompok");
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('delete_kelompok_baru')}}",
+                    data: {
+                        id_kelompok: id_kelompok
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            icon: 'success',
+                            title: 'Delete post center berhasil'
+                        });
+                        var url = "{{route('kelompok_akun')}}?id_akun=" + id_akun_kelompok;
+                        $('#kelompok_akun').load(url);
+
+                        
+                    }
+                });
+
+            });
         });
-    });
-    $(function () {
-     $('[data-toggle="tooltip"]').tooltip()
-    });
+        $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+        });
 </script>
 
 <!-- /.control-sidebar -->
+@endsection
+@section('script')
+<script>
+    $(document).ready(function () {
+        function loadPostCenter(id_akun) {
+            $.ajax({
+                type: "GET",
+                url: "{{route('contentPostCenter')}}?id_akun="+id_akun,
+                success: function (response) {
+                    $("#contentPostCenter").html(response)
+                    $("#tblPost").DataTable({
+                        "paging": true,
+                        "lengthChange": true,
+                        "searching": true,
+                        "ordering": true,
+                        "info": true,
+                        "autoWidth": false,
+                        "responsive": false,
+                    });
+                }
+            });
+        }
+
+        function loadToastSukses(pesan) {
+            iziToast.success({
+                title: 'Success',
+                message: pesan,
+                position: 'topRight'
+            });
+        }
+        function loadToastGagal(pesan) {
+            iziToast.error({
+                title: 'Gagal',
+                message: pesan,
+                position: 'topRight'
+            });
+        }
+        
+        $(document).on('click', '#btnPostCenter', function(){
+            var id_akun = $(this).attr('id_akun')
+            loadPostCenter(id_akun)
+        })
+
+
+        $(document).on('click', '#simpanPostCenter', function(){
+            var post_center = $('#namaPostCenter').val()
+            var id_akun = $('#id_akun').val()
+            $.ajax({
+                type: "GET",
+                url: "{{route('tambahPostCenter')}}",
+                data: {
+                    id_akun:id_akun,
+                    post_center:post_center
+                },
+                success: function (r) {
+                    loadToast('Berhasil tambah post center')
+                }
+            });
+            loadPostCenter(id_akun)
+        })
+
+        $(document).on('click', '#hapusPostCenter', function(){
+            var id_akun = $(this).attr('id_akun')
+            var id_post = $(this).attr('id_post')
+            $.ajax({
+                type: "GET",
+                url: "{{route('hapusPostCenter')}}",
+                data: {
+                    id_post:id_post
+                },
+                success: function (r) {
+                    r == 'gagal' ? loadToastGagal('Gagal hapus post center')  : loadToastSukses('Berhasil hapus post center')      
+                }
+            });
+            loadPostCenter(id_akun)
+        })
+
+        $(document).on('click', '#btnEditPostCenter', function(){
+            var id_edit_post = $(this).attr('id_post')
+            var id_akun = $(this).attr('id_akun')
+            var nm_edit_post = $(this).attr('nm_post')
+            $('#id_post_edit').val(id_edit_post)
+            $('#edit_namaPostCenter').val(nm_edit_post)
+            $('#edit_id_akun').val(id_akun)
+        })
+        $(document).on('click', '#simpanEditPostCenter', function(){
+                var nm_post = $(".edit_namaPostCenter").val();
+                var id_post = $("#id_post_edit").val();
+                var id_akun = $("#edit_id_akun").val();
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('editPostCenter')}}",
+                    data: {
+                        id_post : id_post,
+                        nm_post : nm_post
+                    },
+                    success: function (r) {
+                        loadToastSukses('Berhasil edit post center')
+                        $("#editPostCenter").modal('hide')
+                    }
+                });
+                loadPostCenter(id_akun)
+        })
+    });
+</script>
 @endsection

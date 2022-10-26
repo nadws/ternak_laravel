@@ -19,6 +19,8 @@ use App\Http\Controllers\Piutang_kardus;
 use App\Http\Controllers\Piutang_pupuk;
 use App\Http\Controllers\Piutang_telur;
 use App\Http\Controllers\Setoran_ayam;
+use App\Http\Controllers\Setoran_kardus;
+use App\Http\Controllers\Setoran_pupuk;
 use App\Http\Controllers\Setoran_telur;
 use App\Http\Controllers\User;
 use App\Http\Controllers\Verify;
@@ -65,6 +67,11 @@ Route::post('/save_akun', [AkunController::class, 'add_akun'])->middleware(['aut
 Route::get('/kelompok_akun', [AkunController::class, 'kelompok_akun'])->middleware(['auth', 'verified'])->name('kelompok_akun');
 Route::get('/save_kelompok_baru', [AkunController::class, 'save_kelompok_baru'])->middleware(['auth', 'verified'])->name('save_kelompok_baru');
 Route::get('/delete_kelompok_baru', [AkunController::class, 'delete_kelompok_baru'])->middleware(['auth', 'verified'])->name('delete_kelompok_baru');
+Route::get('/contentPostCenter', [AkunController::class, 'contentPostCenter'])->middleware(['auth', 'verified'])->name('contentPostCenter');
+Route::get('/contentEditPostCenter', [AkunController::class, 'contentEditPostCenter'])->middleware(['auth', 'verified'])->name('contentEditPostCenter');
+Route::get('/tambahPostCenter', [AkunController::class, 'tambahPostCenter'])->middleware(['auth', 'verified'])->name('tambahPostCenter');
+Route::get('/hapusPostCenter', [AkunController::class, 'hapusPostCenter'])->middleware(['auth', 'verified'])->name('hapusPostCenter');
+Route::get('/editPostCenter', [AkunController::class, 'editPostCenter'])->middleware(['auth', 'verified'])->name('editPostCenter');
 
 
 // Sidebar
@@ -212,10 +219,28 @@ Route::post('/save_perencanaan_ayam', [Setoran_ayam::class, 'save_perencanaan_ay
 Route::get('/list_perencanaan_ayam', [Setoran_ayam::class, 'list_perencanaan_ayam'])->middleware(['auth', 'verified'])->name('list_perencanaan_ayam');
 Route::get('/detail_list_perencanaan_ayam', [Setoran_ayam::class, 'detail_list_perencanaan_ayam'])->middleware(['auth', 'verified'])->name('detail_list_perencanaan_ayam');
 Route::post('/save_jurnal_setoran_ayam', [Setoran_ayam::class, 'save_jurnal_setoran_ayam'])->middleware(['auth', 'verified'])->name('save_jurnal_setoran_ayam');
+Route::get('/data_invoice_setoran_ayam', [Setoran_ayam::class, 'data_invoice_setoran_ayam'])->middleware(['auth', 'verified'])->name('data_invoice_setoran_ayam');
+Route::get('/detail_set_ayam', [Setoran_ayam::class, 'detail_set_ayam'])->middleware(['auth', 'verified'])->name('detail_set_ayam');
+
 // Penyetroran Pupuk
-Route::get('/setor_pupuk', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_pupuk');
+Route::get('/setor_pupuk', [Setoran_pupuk::class, 'index'])->middleware(['auth', 'verified'])->name('setor_pupuk');
+Route::get('/rencana_pupuk', [Setoran_pupuk::class, 'rencana_pupuk'])->middleware(['auth', 'verified'])->name('rencana_pupuk');
+Route::post('/save_perencanaan_pupuk', [Setoran_pupuk::class, 'save_perencanaan_pupuk'])->middleware(['auth', 'verified'])->name('save_perencanaan_pupuk');
+Route::get('/list_perencanaan_pupuk', [Setoran_pupuk::class, 'list_perencanaan_pupuk'])->middleware(['auth', 'verified'])->name('list_perencanaan_pupuk');
+Route::get('/detail_list_perencanaan_pupuk', [Setoran_pupuk::class, 'detail_list_perencanaan_pupuk'])->middleware(['auth', 'verified'])->name('detail_list_perencanaan_pupuk');
+Route::post('/save_jurnal_setoran_pupuk', [Setoran_pupuk::class, 'save_jurnal_setoran_pupuk'])->middleware(['auth', 'verified'])->name('save_jurnal_setoran_pupuk');
+Route::get('/data_invoice_setoran_pupuk', [Setoran_pupuk::class, 'data_invoice_setoran_pupuk'])->middleware(['auth', 'verified'])->name('data_invoice_setoran_pupuk');
+Route::get('/detail_set_pupuk', [Setoran_pupuk::class, 'detail_set_pupuk'])->middleware(['auth', 'verified'])->name('detail_set_pupuk');
+
 // Penyetroran kardus
-Route::get('/setor_kardus', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_kardus');
+Route::get('/setor_kardus', [Setoran_kardus::class, 'index'])->middleware(['auth', 'verified'])->name('setor_kardus');
+Route::get('/rencana_kardus', [Setoran_kardus::class, 'rencana_kardus'])->middleware(['auth', 'verified'])->name('rencana_kardus');
+Route::post('/save_perencanaan_kardus', [Setoran_kardus::class, 'save_perencanaan_kardus'])->middleware(['auth', 'verified'])->name('save_perencanaan_kardus');
+Route::get('/list_perencanaan_kardus', [Setoran_kardus::class, 'list_perencanaan_kardus'])->middleware(['auth', 'verified'])->name('list_perencanaan_kardus');
+Route::get('/detail_list_perencanaan_kardus', [Setoran_kardus::class, 'detail_list_perencanaan_kardus'])->middleware(['auth', 'verified'])->name('detail_list_perencanaan_kardus');
+Route::post('/save_jurnal_setoran_kardus', [Setoran_kardus::class, 'save_jurnal_setoran_kardus'])->middleware(['auth', 'verified'])->name('save_jurnal_setoran_kardus');
+Route::get('/data_invoice_setoran_kardus', [Setoran_kardus::class, 'data_invoice_setoran_kardus'])->middleware(['auth', 'verified'])->name('data_invoice_setoran_kardus');
+Route::get('/detail_set_kardus', [Setoran_kardus::class, 'detail_set_kardus'])->middleware(['auth', 'verified'])->name('detail_set_kardus');
 
 
 

@@ -111,7 +111,7 @@
     }
 </style>
 
-<form action="{{route('save_perencanaan_ayam')}}" method="post">
+<form action="{{route('save_perencanaan_pupuk')}}" method="post">
     @csrf
     <div class="modal fade" id="bayar" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg-max" role="document">
@@ -212,7 +212,7 @@
     </div>
 </div>
 
-<form action="{{route('save_jurnal_setoran_ayam')}}" method="post">
+<form action="{{route('save_jurnal_setoran_pupuk')}}" method="post">
     @csrf
     <div class="modal fade" id="view_list" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -269,7 +269,7 @@
                     no_nota.push($(this).attr("nota_ayam"))
                 });
                 $.ajax({
-                    url: "{{route('rencana_ayam')}}",
+                    url: "{{route('rencana_pupuk')}}",
                     method: "GET",
                     data: {
                         no_nota: no_nota
@@ -285,7 +285,7 @@
         });
         $(document).on('click', '#list', function() {
                 $.ajax({
-                    url: "{{route('list_perencanaan_ayam')}}",
+                    url: "{{route('list_perencanaan_pupuk')}}",
                     method: "GET",
                     success: function(data) {
                         $('#perencanaan').html(data);
@@ -298,7 +298,7 @@
         $(document).on('click', '.view_list', function() {
             var nota = $(this).attr('nota');
                 $.ajax({
-                    url: "{{route('detail_list_perencanaan_ayam')}}",
+                    url: "{{route('detail_list_perencanaan_pupuk')}}",
                     data: {
                         nota : nota
                     },
@@ -317,14 +317,14 @@
             var tgl2 = $("#tgl2").val();
             console.log(tgl1);
             console.log(tgl2);
-            var url = "{{route('data_invoice_setoran_ayam')}}?tgl1=" + tgl1 + "&tgl2=" + tgl2;
+            var url = "{{route('data_invoice_setoran_pupuk')}}?tgl1=" + tgl1 + "&tgl2=" + tgl2;
             $('#list_penyetoran').load(url);
             
         });
 
         $(document).on('click','.detail_nota', function() {
             var nota = $(this).attr('nota');
-            var url = "{{route('detail_set_ayam')}}?nota=" + nota;
+            var url = "{{route('detail_set_pupuk')}}?nota=" + nota;
             $('#detail_list_setoran').load(url);
             
            
