@@ -1,4 +1,4 @@
-<form action="{{route('save_aktiva')}}" method="post">
+<form action="{{route('save_aktiva_penyesuaian')}}" method="post">
     @csrf
     <div class="row">
         @php

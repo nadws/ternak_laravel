@@ -97,6 +97,18 @@
             background-color: #629779;
             color: white
         }
+
+        .page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #629779;
+            border-color: #629779;
+        }
+
+        .page-item .page-link {
+            z-index: 3;
+            color: #629779;
+        }
     </style>
 
 </head>

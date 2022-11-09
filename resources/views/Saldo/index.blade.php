@@ -18,7 +18,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="col-lg-10">
+            <div class="col-lg-12">
                 @include('template.flash')
                 <form id="edit_saldo">
                     @csrf
@@ -99,9 +99,7 @@
                                                 </td>
                                             </tr>
                                             @endforeach
-                                        </tbody>
-                                        <tfoot class="bg-costume">
-                                            <tr>
+                                            <tr class="bg-costume">
                                                 <th>Total</th>
                                                 <th></th>
                                                 <th style="text-align: right;">
@@ -118,7 +116,8 @@
                                                     <p class="e_ttl_saldo">Rp. {{number_format($saldo_save, 0) }}</p>
                                                 </th>
                                             </tr>
-                                        </tfoot>
+                                        </tbody>
+
                                     </table>
                                 </div>
                             </div>

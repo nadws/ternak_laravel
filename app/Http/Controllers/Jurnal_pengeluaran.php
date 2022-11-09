@@ -52,6 +52,7 @@ class Jurnal_pengeluaran extends Controller
         $akun = DB::table('tb_akun')->where('id_akun', $id)->first();
         $satuan = DB::table('tb_satuan')->where('id_satuan', $akun->id_satuan)->first();
 
+
         $data = [
             'satuan' => DB::table('tb_satuan')->get(),
 
@@ -93,6 +94,7 @@ class Jurnal_pengeluaran extends Controller
             } elseif ($akun->id_penyesuaian == '2') {
                 echo "asset_aktiva";
             } elseif ($akun->id_penyesuaian == '3') {
+                echo "asset_atk";
             } elseif ($akun->id_penyesuaian == '4') {
                 echo "asset_pakan";
             }
@@ -156,8 +158,35 @@ class Jurnal_pengeluaran extends Controller
             echo "<option value='" . $k->id_post . "'>" . $k->nm_post . "</option>";
         }
     }
+    public function get_post_atk(Request $r)
+    {
+        $id_kredit = $r->id_kredit;
+        $id_debit = $r->id_debit;
+        if ($id_kredit == '58') {
+            $post = DB::select("SELECT *
+            FROM tb_post_center AS a
+            WHERE a.id_akun = '$id_kredit' AND a.id_post NOT IN(SELECT b.id_post FROM table_atk AS b)");
+        } else {
+            $post = DB::select("SELECT *
+            FROM tb_post_center AS a
+            WHERE a.id_akun = '$id_debit' AND a.id_post NOT IN(SELECT b.id_post FROM table_atk AS b)");
+        }
+
+        echo "<option value=''>Pilih Post Center</option>";
+        foreach ($post as $k) {
+            echo "<option value='" . $k->id_post . "'>" . $k->nm_post . "</option>";
+        }
+    }
 
     public function get_ttl_aktiva(Request $r)
+    {
+        $debit = DB::selectOne("SELECT SUM(a.debit) AS debit 
+        FROM tb_jurnal AS a
+        WHERE a.id_post = '$r->id_post'");
+
+        echo $debit->debit;
+    }
+    public function get_ttl_atk(Request $r)
     {
         $debit = DB::selectOne("SELECT SUM(a.debit) AS debit 
         FROM tb_jurnal AS a

@@ -36,6 +36,7 @@
         <div class="form-group">
             <label for="list_kategori">Satuan</label>
             <select name="id_satuan[]" class="form-control select satuan input_detail input_biaya" required>
+                <option value="">--Pilih Satuan--</option>
                 <?php foreach ($satuan as $p) : ?>
                 <option value="<?= $p->id_satuan ?>">
                     <?= $p->nm_satuan ?>

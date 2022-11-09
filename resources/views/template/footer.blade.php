@@ -87,7 +87,7 @@
         $('#tb_bkin').DataTable({
             "paging": false,
             "pageLength": 100,
-            "scrollY": "300px",
+            "scrollY": "100%",
             "lengthChange": false,
             // "ordering": false,
             "info": false,
@@ -120,11 +120,29 @@
             });
     <?php endif; ?>
     <?php if (session()->has('eror')) : ?>
-        iziToast.error();({
-                title: 'Gagal',
-                message: "{{ Session::get('gagal') }}",
-                position: 'topRight'
-            });
+        iziToast.error({
+            title: 'Gagal',
+            message: "{{ Session::get('eror') }}",
+            position: 'topRight'
+        });
+    <?php endif; ?>
+    <?php if (session()->has('berhasil')) : ?>
+        iziToast.show({
+        theme: 'dark',
+        icon: 'icon-person',
+        title: "Hey",
+        message: "{{Auth::user()->name}} Welcome to our website",
+        position: 'topCenter', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+        progressBarColor: 'rgb(0, 255, 184)',
+        buttons: [
+    ],
+    onOpening: function(instance, toast){
+        console.info('callback abriu!');
+    },
+    onClosing: function(instance, toast, closedBy){
+        console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
+    }
+});
     <?php endif; ?>
 </script>
 @yield('script')

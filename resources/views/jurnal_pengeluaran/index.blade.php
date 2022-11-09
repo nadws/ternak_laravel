@@ -1,6 +1,5 @@
 @extends('template.master')
 @section('content')
-
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -22,27 +21,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        {{-- <ul class="nav nav-tabs float-left" id="custom-tabs-one-tab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill"
-                                    href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home"
-                                    aria-selected="true">Pengeluaran</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route('j_pemasukan')}}" role="tab"
-                                    aria-controls="custom-tabs-one-profile" aria-selected="false">Pemasukan</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill"
-                                    href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages"
-                                    aria-selected="false">Penyesuaian</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill"
-                                    href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings"
-                                    aria-selected="false">Penutup</a>
-                            </li>
-                        </ul> --}}
+                        <h5>Tanggal : {{ date('d-m-Y', strtotime($tgl1)) }} ~ {{ date('d-m-Y', strtotime($tgl2)) }}</h5>
                         <a href="" data-toggle="modal" data-target="#tambah"
                             class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-plus"></i>
                             Jurnal
@@ -64,10 +43,13 @@
                                                     <th>#</th>
                                                     <th>Tanggal</th>
                                                     <th>No Nota</th>
+                                                    <th>No Id</th>
                                                     <th>Post Akun</th>
                                                     <th>Keterangan</th>
-                                                    <th>Debit <br> ({{ number_format($total_jurnal->debit, 0) }})</th>
-                                                    <th>Kredit <br> ({{ number_format($total_jurnal->kredit, 0) }})</th>
+                                                    <th style="text-align: right">Debit <br>
+                                                        ({{ number_format($total_jurnal->debit, 0) }})</th>
+                                                    <th style="text-align: right">Kredit <br>
+                                                        ({{ number_format($total_jurnal->kredit, 0) }})</th>
                                                     <th>Admin</th>
                                                     <th class="text-center">Aksi</th>
                                                 </tr>
@@ -82,23 +64,33 @@
                                                     <td style="white-space: nowrap">
                                                         {{ date('d-m-Y', strtotime($a->tgl)) }}</td>
                                                     <td>{{ $a->no_nota }}</td>
+                                                    <td>{{ $a->no_id }}</td>
                                                     <td>{{ $a->nm_akun }}</td>
                                                     <td>{{ $a->ket }}</td>
-                                                    <td>{{ number_format($a->debit, 0) }}</td>
-                                                    <td>{{ number_format($a->kredit, 0) }}</td>
+                                                    <td style="text-align: right">{{ number_format($a->debit, 0) }}
+                                                    </td>
+                                                    <td style="text-align: right">
+                                                        {{ number_format($a->kredit, 0) }}
+                                                    </td>
                                                     <td>{{ $a->admin }}</td>
                                                     <td align="center" style="white-space: nowrap">
                                                         <a href="#" data-toggle="modal" data-target="#print"
                                                             class="btn btn-costume btn-sm print"
-                                                            nota="{{$a->no_nota}}"><i class="fas fa-print"></i>
+                                                            nota="{{ $a->no_nota }}"><i class="fas fa-print"></i>
                                                         </a>
-                                                        <a href="#" class="btn btn-costume btn-sm"><i
-                                                                class="fas fa-pen"></i>
+                                                        @if ($a->penyesuaian == 'Y' || $a->penutup == 'Y')
+
+                                                        @else
+                                                        <a href="#" data-toggle="modal" data-target="#edit"
+                                                            class="btn btn-costume btn-sm edit_jurnal"
+                                                            nota="{{ $a->no_nota }}"><i class="fas fa-pen"></i>
                                                         </a>
-                                                        <a href="{{route('delete_jurnal', ['no_nota' => $a->no_nota])}}"
+                                                        <a href="{{ route('delete_jurnal', ['no_nota' => $a->no_nota]) }}"
                                                             class="btn btn-danger btn-sm"><i
                                                                 class="fas fa-trash-alt"></i>
                                                         </a>
+                                                        @endif
+
 
                                                     </td>
                                                 </tr>
@@ -153,7 +145,7 @@
                         <div class="col-sm-3 col-md-3">
                             <div class="form-group">
                                 <label for="list_kategori">Akun</label>
-                                <select name="id_akun" class="form-control select id_debit" required="">
+                                <select name="id_akun" class="form-control select id_debit" required>
                                     <option value="">-Pilih Akun-</option>
                                     <?php foreach ($akun as $a) : ?>
                                     <option value="<?= $a->id_akun ?>">
@@ -167,7 +159,8 @@
                         <div class="col-sm-2 col-md-2">
                             <div class="form-group">
                                 <label for="list_kategori">Debit</label>
-                                <input type="number" class="form-control  total" name="debit" readonly>
+                                <input style="text-align: right" type="number" class="form-control  total" name="debit"
+                                    readonly>
                             </div>
                         </div>
                         <div class="col-sm-2 col-md-2">
@@ -185,8 +178,11 @@
                         </div>
 
                         <div class="col-sm-3 col-md-3">
+
                             <div class="form-group">
-                                <select name="id_akun_kredit" class="form-control akun_kredit select" required>
+                                <input type="hidden" class="id_debit_akun">
+                                <select name="id_akun_kredit" class="form-control post_atk akun_kredit select" count="1"
+                                    required>
 
                                 </select>
                             </div>
@@ -199,7 +195,8 @@
                         </div>
                         <div class="col-sm-2 col-md-2">
                             <div class="form-group">
-                                <input type="number" class="form-control total " name="kredit" readonly>
+                                <input type="number" style="text-align: right" class="form-control total " name="kredit"
+                                    readonly>
                             </div>
                         </div>
 
@@ -251,6 +248,26 @@
     </div>
 </form>
 
+
+<div class="modal fade" id="edit" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg-max" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header bg-costume">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Jurnal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="edit_jurnal">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
 <style>
     .modal-lg-max2 {
         max-width: 1200px;
@@ -291,21 +308,10 @@
 <script src="{{ asset('assets') }}/izitoast/dist/js/iziToast.min.js" type="text/javascript"></script>
 <script>
     $(document).ready(function() {
-      $('.modal').on('hidden.bs.modal', function() {
-        //If there are any visible
-        if ($(".modal:visible").length > 0) {
-          //Slap the class on it (wait a moment for things to settle)
-          setTimeout(function() {
-            $('body').addClass('modal-open');
-          }, 200)
-        }
-      });
-    })
-</script>
-<script>
-    $(document).ready(function() {
-            $('.id_debit').change(function() {
+            $(document).on('change', '.id_debit', function() {
                 var id_debit = $(this).val();
+
+
                 $.ajax({
                     url: "{{ route('akun_kredit') }}",
                     data: {
@@ -314,6 +320,8 @@
                     type: "GET",
                     success: function(data) {
                         $('.akun_kredit').html(data);
+                        $('.id_debit_akun').val(id_debit);
+                        $(this).attr('id_debit', id_debit);
                         $('.select').select2()
                     }
                 });
@@ -326,27 +334,33 @@
                     type: "GET",
                     success: function(data) {
                         if (data == 'biaya') {
-                            $("#form-jurnal").attr("action", "{{route('save_jurnal_biaya')}}");
+                            $("#form-jurnal").attr("action",
+                                "{{ route('save_jurnal_biaya') }}");
                         }
                         if (data == 'asset_umum') {
-                            $("#form-jurnal").attr("action", "{{route('save_jurnal_umum')}}");
+                            $("#form-jurnal").attr("action",
+                                "{{ route('save_jurnal_umum') }}");
                         }
                         if (data == 'asset_pakan') {
-                            $("#form-jurnal").attr("action", "{{route('save_jurnal_pv')}}");
+                            $("#form-jurnal").attr("action", "{{ route('save_jurnal_pv') }}");
                         }
                         if (data == 'asset_aktiva') {
-                            $("#form-jurnal").attr("action", "{{route('save_aktiva')}}");
+                            $("#form-jurnal").attr("action", "{{ route('save_aktiva') }}");
+                        }
+                        if (data == 'asset_atk') {
+                            $("#form-jurnal").attr("action", "{{ route('save_atk') }}");
                         }
                     }
                 });
             });
-            
-            $('.id_debit').change(function() {
+
+            $(document).on('change', '.id_debit', function() {
                 var id_debit = $(this).val();
+
                 $.ajax({
                     url: "{{ route('get_isi_jurnal') }}",
                     data: {
-                        id_debit: id_debit
+                        id_debit: id_debit,
                     },
                     type: "GET",
                     success: function(data) {
@@ -355,7 +369,7 @@
                     }
                 });
             });
-            $('.id_debit').change(function() {
+            $(document).on('change', '.id_debit', function() {
                 var id_debit = $(this).val();
                 $.ajax({
                     url: "{{ route('get_isi_jurnal') }}",
@@ -378,7 +392,7 @@
                 });
                 $('.total').val(debit);
             });
-            $(document).on('click', '.remove_monitoring', function() {   
+            $(document).on('click', '.remove_monitoring', function() {
                 var delete_row = $(this).attr('count');
 
                 $('#row' + delete_row).remove();
@@ -393,50 +407,53 @@
                 $('.total').val(debit);
 
             });
-    
+
             var count = 1;
             $(document).on('click', '.tambah_input_jurnal', function() {
                 var id_akun = $(this).attr('id_akun');
                 count = count + 1;
-                    $.ajax({
-                        url: "{{ route('tambah_jurnal') }}?count=" + count + "&" + "id_akun=" + id_akun ,
-                        type: "Get",
-                        success: function(data) {
-                            $('#tambah_input_jurnal').append(data);
-                            $('.select').select2()
+                $.ajax({
+                    url: "{{ route('tambah_jurnal') }}?count=" + count + "&" + "id_akun=" +
+                        id_akun,
+                    type: "Get",
+                    success: function(data) {
+                        $('#tambah_input_jurnal').append(data);
+                        $('.select').select2()
                     }
-                });        
+                });
             });
+
 
             var count = 1;
             $(document).on('click', '.tambah_umum', function() {
                 var id_akun = $(this).attr('id_akun');
                 count = count + 1;
-                    $.ajax({
-                        url: "{{ route('tambah_umum') }}?count=" + count + "&" + "id_akun=" + id_akun ,
-                        type: "Get",
-                        success: function(data) {
-                            $('#tambah_umum').append(data);
-                            $('.select').select2()
+                $.ajax({
+                    url: "{{ route('tambah_umum') }}?count=" + count + "&" + "id_akun=" + id_akun,
+                    type: "Get",
+                    success: function(data) {
+                        $('#tambah_umum').append(data);
+                        $('.select').select2()
                     }
-                });        
+                });
             });
 
             var count = 1;
             $(document).on('click', '.tambah_input_vitamin', function() {
                 var id_akun = $(this).attr('id_akun');
                 count = count + 1;
-                    $.ajax({
-                        url: "{{ route('tambah_input_vitamin') }}?count=" + count + "&" + "id_akun=" + id_akun ,
-                        type: "Get",
-                        success: function(data) {
-                            $('#tambah_input_vitamin').append(data);
-                            $('.select').select2()
+                $.ajax({
+                    url: "{{ route('tambah_input_vitamin') }}?count=" + count + "&" + "id_akun=" +
+                        id_akun,
+                    type: "Get",
+                    success: function(data) {
+                        $('#tambah_input_vitamin').append(data);
+                        $('.select').select2()
                     }
-                });        
+                });
             });
 
-            
+
 
             // Aktiva
 
@@ -454,10 +471,10 @@
             $(document).on('click', '.print', function() {
                 var nota = $(this).attr('nota');
                 $.ajax({
-                    url: "{{ route('print_j') }}?nota=" + nota ,
+                    url: "{{ route('print_j') }}?nota=" + nota,
                     type: "Get",
                     success: function(data) {
-                    $('#print_nota').html(data);
+                        $('#print_nota').html(data);
                     }
                 });
             });
@@ -465,28 +482,28 @@
                 var id_barang = $(this).val();
                 var count = $(this).attr('count');
                 $.ajax({
-                    url: "{{ route('get_barang') }}?id_barang=" + id_barang ,
+                    url: "{{ route('get_barang') }}?id_barang=" + id_barang,
                     type: "Get",
                     success: function(data) {
-                    $('.satuan_barang' + count).html(data);
+                        $('.satuan_barang' + count).html(data);
                     }
                 });
             });
             $(document).on('change', '.akun_kredit', function() {
                 var id_akun = $(this).val();
                 $.ajax({
-                    url: "{{ route('get_post_aktiva') }}?id_akun=" + id_akun ,
+                    url: "{{ route('get_post_aktiva') }}?id_akun=" + id_akun,
                     type: "Get",
                     success: function(data) {
-                    $('.pos_aktiva').html(data);
+                        $('.pos_aktiva').html(data);
                     }
                 });
             });
-            
+
             $(document).on('change', '.pos_aktiva', function() {
                 var id_post = $(this).val();
                 $.ajax({
-                    url: "{{ route('get_ttl_aktiva') }}?id_post=" + id_post ,
+                    url: "{{ route('get_ttl_aktiva') }}?id_post=" + id_post,
                     type: "Get",
                     success: function(data) {
                         $('.total_aktiva').val(data);
@@ -498,7 +515,7 @@
                         $('.ppn').val(ppn);
                         $('.ppn_ttl_rp').val(total);
                         $('.total').val(total);
-                        
+
                     }
                 });
             });
@@ -512,15 +529,104 @@
 
 
 
-                
+
             });
+
+            $(document).on('change', '.post_atk', function() {
+                var id_debit = $('.id_debit').val();
+                var id_kredit = $('.post_atk').val();
+                var count = '1';
+
+                $.ajax({
+                    url: "{{ route('get_post_atk') }}",
+                    data: {
+                        id_debit: id_debit,
+                        id_kredit: id_kredit,
+                    },
+                    type: "Get",
+                    success: function(data) {
+                        $('.atk_post' + count).html(data);
+                    }
+                });
+
+
+
+            });
+            $(document).on('change', '.atk_post', function() {
+                var count = $(this).attr('count');
+                var id_post = $('.atk_post' + count).val();
+
+                $.ajax({
+                    url: "{{ route('get_ttl_atk') }}",
+                    data: {
+                        id_post: id_post
+                    },
+                    type: "Get",
+                    success: function(data) {
+                        $('.ttl_atk' + count).val(data);
+
+                        var debit = 0;
+                        $(".ttl_atk:not([disabled=disabled]").each(function() {
+                            debit += parseFloat($(this).val());
+                        });
+                        $('.total').val(debit);
+
+                    }
+                });
+
+
+
+            });
+
+            var count = 2;
+            $(document).on('click', '.tambah_input_jurnal_atk', function() {
+                var id_akun = $(this).attr('id_akun');
+                count = count + 1;
+                $.ajax({
+                    url: "{{ route('tambah_input_atk') }}?count=" + count + "&" + "id_akun=" +
+                        id_akun,
+                    type: "Get",
+                    success: function(data) {
+                        $('#tambah_input_jurnal_atk').append(data);
+                        $('.select').select2()
+                        var id_debit = $('.id_debit').val();
+                        var id_kredit = $('.post_atk').val();
+                        $.ajax({
+                            url: "{{ route('get_post_atk') }}",
+                            data: {
+                                id_debit: id_debit,
+                                id_kredit: id_kredit,
+                            },
+                            type: "Get",
+                            success: function(data) {
+                                $('.atk_post' + count).html(data);
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.edit_jurnal', function() {
+                var nota = $(this).attr('nota');
             
-            
-            
-                
-                
-            
-    });
+                $.ajax({
+                    url: "{{ route('edit_jurnal') }}?nota=" + nota,
+                    type: "Get",
+                    success: function(data) {
+                        $('#edit_jurnal').html(data);
+                        $('.select').select2()
+                    }
+                });
+            });
+
+
+
+
+
+
+
+
+        });
 </script>
 
 

@@ -116,7 +116,14 @@ class Jurnal_penyesuaian2 extends Controller
         $id_post = $r->id_post;
         $b_penyusutan = $r->b_penyusutan;
 
+
+
         for ($x = 0; $x < count($id_post); $x++) {
+            $post_id = $id_post[$x];
+            $jurnal = DB::selectOne("SELECT a.no_nota FROM tb_jurnal as a where a.id_post = '$post_id' and a.id_akun = '13'");
+
+
+            DB::table('tb_jurnal')->where('no_nota', $jurnal->no_nota)->update(['penyesuaian' => 'Y']);
             $data = [
                 'tgl' => $tgl,
                 'id_post' => $id_post[$x],

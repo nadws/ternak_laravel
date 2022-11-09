@@ -22,7 +22,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="float-left">{{$title}} : {{date('d-m-Y',strtotime($tgl1))}} ~
+                            <h5 class="float-left">{{$title}} : {{$akun->nm_akun}}, {{date('d-m-Y',strtotime($tgl1))}} ~
                                 {{date('d-m-Y',strtotime($tgl2))}}</h5>
                             <a href="" data-toggle="modal" data-target="#view"
                                 class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-file-excel"></i>

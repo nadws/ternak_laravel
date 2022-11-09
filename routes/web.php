@@ -3,12 +3,16 @@
 use App\Http\Controllers\AksesConttroller;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\Buku_besar;
+use App\Http\Controllers\Cancel;
 use App\Http\Controllers\Dashboard;
+use App\Http\Controllers\Home;
 use App\Http\Controllers\Isi_jurnalpengeluaran;
 use App\Http\Controllers\Jurnal_pemasukan;
 use App\Http\Controllers\Jurnal_pengeluaran;
+use App\Http\Controllers\Jurnal_penutup;
 use App\Http\Controllers\Jurnal_penyesuaian;
 use App\Http\Controllers\Jurnal_penyesuaian2;
+use App\Http\Controllers\Laba_rugi;
 use App\Http\Controllers\Neraca_saldo;
 use App\Http\Controllers\Penjualan;
 use App\Http\Controllers\Penjualan_ayam;
@@ -86,18 +90,30 @@ Route::get('/print_j', [Jurnal_pengeluaran::class, 'print_jurnal'])->middleware(
 Route::get('/print_jurnal2', [Jurnal_pengeluaran::class, 'print_jurnal2'])->middleware(['auth', 'verified'])->name('print_jurnal2');
 Route::get('/get_post_aktiva', [Jurnal_pengeluaran::class, 'get_post_aktiva'])->middleware(['auth', 'verified'])->name('get_post_aktiva');
 Route::get('/get_ttl_aktiva', [Jurnal_pengeluaran::class, 'get_ttl_aktiva'])->middleware(['auth', 'verified'])->name('get_ttl_aktiva');
+Route::get('/get_post_atk', [Jurnal_pengeluaran::class, 'get_post_atk'])->middleware(['auth', 'verified'])->name('get_post_atk');
+Route::get('/get_ttl_atk', [Jurnal_pengeluaran::class, 'get_ttl_atk'])->middleware(['auth', 'verified'])->name('get_ttl_atk');
+
 
 // Save Jurnal pengeluaran
 Route::post('/save_jurnal_biaya', [Isi_jurnalpengeluaran::class, 'save_jurnal_biaya'])->middleware(['auth', 'verified'])->name('save_jurnal_biaya');
 Route::post('/save_jurnal_umum', [Isi_jurnalpengeluaran::class, 'save_jurnal_umum'])->middleware(['auth', 'verified'])->name('save_jurnal_umum');
 Route::post('/save_jurnal_pv', [Isi_jurnalpengeluaran::class, 'save_jurnal_pv'])->middleware(['auth', 'verified'])->name('save_jurnal_pv');
 Route::post('/save_aktiva', [Isi_jurnalpengeluaran::class, 'save_aktiva'])->middleware(['auth', 'verified'])->name('save_aktiva');
+Route::post('/save_atk', [Isi_jurnalpengeluaran::class, 'save_atk'])->middleware(['auth', 'verified'])->name('save_atk');
 
 // Tambah Jurnal
 
 Route::get('/tambah_jurnal', [Isi_jurnalpengeluaran::class, 'tambah_jurnal'])->middleware(['auth', 'verified'])->name('tambah_jurnal');
 Route::get('/tambah_umum', [Isi_jurnalpengeluaran::class, 'tambah_umum'])->middleware(['auth', 'verified'])->name('tambah_umum');
 Route::get('/tambah_input_vitamin', [Isi_jurnalpengeluaran::class, 'tambah_input_vitamin'])->middleware(['auth', 'verified'])->name('tambah_input_vitamin');
+Route::get('/tambah_input_atk', [Isi_jurnalpengeluaran::class, 'tambah_input_atk'])->middleware(['auth', 'verified'])->name('tambah_input_atk');
+
+
+// Edit Jurnal
+Route::get('/edit_jurnal', [Isi_jurnalpengeluaran::class, 'edit_jurnal'])->middleware(['auth', 'verified'])->name('edit_jurnal');
+Route::post('/edit_jurnal_biaya', [Isi_jurnalpengeluaran::class, 'edit_jurnal_biaya'])->middleware(['auth', 'verified'])->name('edit_jurnal_biaya');
+Route::post('/edit_jurnal_pakan', [Isi_jurnalpengeluaran::class, 'edit_jurnal_pakan'])->middleware(['auth', 'verified'])->name('edit_jurnal_pakan');
+Route::post('/edit_jurnal_aktiva', [Isi_jurnalpengeluaran::class, 'edit_jurnal_aktiva'])->middleware(['auth', 'verified'])->name('edit_jurnal_aktiva');
 
 // user
 Route::get('/user', [User::class, 'index'])->middleware(['auth', 'verified'])->name('user');
@@ -111,6 +127,8 @@ Route::post('/save_saldo', [Neraca_saldo::class, 'save_saldo'])->middleware(['au
 Route::get('/get_penutup', [Neraca_saldo::class, 'get_penutup'])->middleware(['auth', 'verified'])->name('get_penutup');
 Route::post('/edit_saldo', [Neraca_saldo::class, 'edit_saldo'])->middleware(['auth', 'verified'])->name('edit_saldo');
 Route::get('/delete_saldo', [Neraca_saldo::class, 'delete_saldo'])->middleware(['auth', 'verified'])->name('delete_saldo');
+
+Route::get('/saldo_penutupan', [Neraca_saldo::class, 'index'])->middleware(['auth', 'verified'])->name('saldo_penutupan');
 
 // Buku Besar
 Route::get('/buku_besar', [Buku_besar::class, 'index'])->middleware(['auth', 'verified'])->name('buku_besar');
@@ -153,11 +171,20 @@ Route::post('/save_penyesuaian_stok', [Jurnal_penyesuaian::class, 'save_penyesua
 Route::post('/save_pv', [Jurnal_penyesuaian::class, 'save_pv'])->middleware(['auth', 'verified'])->name('save_pv');
 Route::get('/delete_penyesuaian', [Jurnal_penyesuaian::class, 'delete_penyesuaian'])->middleware(['auth', 'verified'])->name('delete_penyesuaian');
 
+Route::get('/atk_stok', [Jurnal_penyesuaian::class, 'atk_stok'])->middleware(['auth', 'verified'])->name('atk_stok');
+Route::post('/save_penyesuaian_atk', [Jurnal_penyesuaian::class, 'save_atk'])->middleware(['auth', 'verified'])->name('save_penyesuaian_atk');
+
 
 // Jurnal penyesuaian2
 Route::get('/j_penyesuaian2', [Jurnal_penyesuaian2::class, 'index'])->middleware(['auth', 'verified'])->name('j_penyesuaian2');
 Route::get('/aktiva_penyesuaian', [Jurnal_penyesuaian2::class, 'aktiva_penyesuaian'])->middleware(['auth', 'verified'])->name('aktiva_penyesuaian');
-Route::post('/save_aktiva', [Jurnal_penyesuaian2::class, 'save_aktiva'])->middleware(['auth', 'verified'])->name('save_aktiva');
+Route::post('/save_aktiva_penyesuaian', [Jurnal_penyesuaian2::class, 'save_aktiva'])->middleware(['auth', 'verified'])->name('save_aktiva_penyesuaian');
+
+// Jurnal Penutup
+Route::get('/j_penutup', [Jurnal_penutup::class, 'index'])->middleware(['auth', 'verified'])->name('j_penutup');
+Route::get('/isi_penutup', [Jurnal_penutup::class, 'isi_penutup'])->middleware(['auth', 'verified'])->name('isi_penutup');
+Route::post('/save_penutup', [Jurnal_penutup::class, 'save_penutup'])->middleware(['auth', 'verified'])->name('save_penutup');
+
 
 // Penjualan Ayam
 Route::get('/pen_ayam', [Penjualan_ayam::class, 'index'])->middleware(['auth', 'verified'])->name('pen_ayam');
@@ -216,6 +243,20 @@ Route::post('/save_jurnal_setoran_ayam', [Setoran_ayam::class, 'save_jurnal_seto
 Route::get('/setor_pupuk', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_pupuk');
 // Penyetroran kardus
 Route::get('/setor_kardus', [Piutang_kardus::class, 'save_piutang_p'])->middleware(['auth', 'verified'])->name('setor_kardus');
+
+
+// home 
+Route::get('/home', [Home::class, 'index'])->middleware(['auth', 'verified'])->name('home');
+Route::get('/view_jurnal_laporan_bulanan', [Home::class, 'view_jurnal_laporan_bulanan'])->middleware(['auth', 'verified'])->name('view_jurnal_laporan_bulanan');
+Route::get('/cash_flow', [Home::class, 'index'])->middleware(['auth', 'verified'])->name('cash_flow');
+Route::get('/profit', [Home::class, 'index'])->middleware(['auth', 'verified'])->name('profit');
+
+// Cancel
+Route::get('/cancel_jurnal', [Cancel::class, 'index'])->middleware(['auth', 'verified'])->name('cancel_jurnal');
+Route::post('/save_cancel_jurnal', [Cancel::class, 'save_cancel'])->middleware(['auth', 'verified'])->name('save_cancel_jurnal');
+
+// Laporan laba rugi
+Route::get('/laba_rugi', [Laba_rugi::class, 'index'])->middleware(['auth', 'verified'])->name('laba_rugi');
 
 
 

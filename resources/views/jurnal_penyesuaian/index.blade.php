@@ -63,8 +63,10 @@
                                                     <th>No Nota</th>
                                                     <th>Post Akun</th>
                                                     <th>Keterangan</th>
-                                                    <th>Debit <br> ({{ number_format($total_jurnal->debit, 0) }})</th>
-                                                    <th>Kredit <br> ({{ number_format($total_jurnal->kredit, 0) }})</th>
+                                                    <th style="text-align: right">Debit <br> ({{
+                                                        number_format($total_jurnal->debit, 0) }})</th>
+                                                    <th style="text-align: right">Kredit <br> ({{
+                                                        number_format($total_jurnal->kredit, 0) }})</th>
                                                     <th>Admin</th>
                                                     <th class="text-center">Aksi</th>
                                                 </tr>
@@ -140,11 +142,11 @@
                             id="nav-profile-tab " data-toggle="tab" href="#nav-profile" role="tab"
                             aria-controls="nav-profile" aria-selected="false">{{$a->nm_akun}}</a>
                         @endforeach
-                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
-                            role="tab" aria-controls="nav-contact" aria-selected="false">Pullet</a>
-
-                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
-                            role="tab" aria-controls="nav-contact" aria-selected="false">Atk & Perlengkapan</a>
+                        @foreach ($atk as $a)
+                        <a class="nav-item nav-link atk_stok atk_stok{{$a->id_akun}}" id_akun="{{$a->id_akun}}"
+                            id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+                            aria-controls="nav-contact" aria-selected="false">{{$a->nm_akun}}</a>
+                        @endforeach
                     </div>
                 </nav>
             </div>
@@ -153,6 +155,9 @@
 
                 </div>
                 <div id="pakan">
+
+                </div>
+                <div id="atk">
 
                 </div>
             </div>
@@ -215,6 +220,7 @@
                     $('#stok').html(data);
                     $('#stok').show();
                     $('#pakan').hide();
+                    $('#atk').hide();
                 }
             });
         });                
@@ -227,6 +233,21 @@
                     $('#pakan').html(data);
                     $('#pakan').show();
                     $('#stok').hide();
+                    $('#atk').hide();
+                    
+                }
+            });
+        });                
+        $(document).on('click', '.atk_stok', function() {
+            var id_akun = $(this).attr('id_akun')
+            $.ajax({
+                url: "{{ route('atk_stok') }}?id_akun="+id_akun,
+                type: "GET",
+                success: function(data) {
+                    $('#atk').html(data);
+                    $('#atk').show();
+                    $('#stok').hide();
+                    $('#pakan').hide();
                     
                 }
             });
@@ -262,6 +283,30 @@
 
             var debit = 0;
             $(".ttl_pv").each(function() {
+                debit += parseFloat($(this).val());
+            });
+            
+            $('.ttl_debit_p').val(debit);
+
+            
+        });                
+        $(document).on('keyup', '.qty_atk_aktual', function() {
+
+        
+            var id_atk = $(this).attr('id_atk');
+            var qty_pro = $('.qty_atk' + id_atk).val()
+            var qty_akt = $('.qty_atk_aktual' + id_atk).val()
+            var h_satuan = $('.h_satuan_atk' + id_atk).val()
+
+            var selisih = parseInt(qty_pro) - parseInt(qty_akt);
+            var rupiah = parseInt(h_satuan) * selisih;
+
+
+            $('.slsh_atk' + id_atk).val(selisih);
+            $('.ttl_atk' + id_atk).val(rupiah);
+
+            var debit = 0;
+            $(".ttl_atk").each(function() {
                 debit += parseFloat($(this).val());
             });
             

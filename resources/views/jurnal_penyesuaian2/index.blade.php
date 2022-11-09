@@ -64,8 +64,10 @@
                                                     <th>No Nota</th>
                                                     <th>Post Akun</th>
                                                     <th>Keterangan</th>
-                                                    <th>Debit <br> ({{ number_format($total_jurnal->debit, 0) }})</th>
-                                                    <th>Kredit <br> ({{ number_format($total_jurnal->kredit, 0) }})</th>
+                                                    <th style="text-align: right">Debit <br> ({{
+                                                        number_format($total_jurnal->debit, 0) }})</th>
+                                                    <th style="text-align: right">Kredit <br> ({{
+                                                        number_format($total_jurnal->kredit, 0) }})</th>
                                                     <th>Admin</th>
                                                     <th class="text-center">Aksi</th>
                                                 </tr>

@@ -169,6 +169,7 @@
                             <label for="">Dari</label>
                             <input type="date" id="tgl1" class="form-control">
                         </div>
+
                         <div class="col-lg-4">
                             <label for="">Sampai</label>
                             <input type="date" id="tgl2" class="form-control">

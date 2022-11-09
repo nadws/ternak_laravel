@@ -39,6 +39,8 @@ class AkunController extends Controller
                 $max = '4001';
             } elseif ($id == '5') {
                 $max = '5001';
+            } elseif ($id == '6') {
+                $max = '6001';
             }
         } else {
             $max = $max_no_akun->no_max + 1;

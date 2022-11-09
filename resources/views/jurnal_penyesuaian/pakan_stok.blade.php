@@ -1,7 +1,7 @@
 <form action="{{route('save_pv')}}" method="post">
     @csrf
     <div class="row">
-
+        <input type="hidden" name="pakan_id" value="{{$id_akun}}">
         <div class="col-lg-2">
             <label for="">Tanggal </label>
             <input type="date" name="tgl_pv" class="form-control" id="" value="{{$tgl}}">

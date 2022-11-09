@@ -105,7 +105,9 @@
 
                     </div>
                 </form>
-                <div class="login100-more" style="background-image: url('/assets/login/img/9814.JPG');">
+
+                <div class="login100-more"
+                    style="background-image: url({{asset('/storage/images/backgrounds/9814.JPG')}});">
                 </div>
             </div>
         </div>
