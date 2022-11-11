@@ -38,6 +38,7 @@ class Cancel extends Controller
             $tgl2_penyesuaian = date('Y-m-t', strtotime($last_year_penyesuaian . '-' . $last_month_penyesuaian . '-' . 01));
 
             DB::table('tb_jurnal')->whereBetween('tgl', [$tgl1_penyesuaian, $tgl2_penyesuaian])->update(['penyesuaian' => 'T', 'penutup' => 'T']);
+
             DB::table('tb_jurnal')->whereBetween('tgl', [$tgl1_penyesuaian, $tgl2_penyesuaian])->whereIn('id_buku', ['4', '5', '7'])->delete();
 
             DB::table('tb_neraca_asset_umum')->whereBetween('tgl', [$tgl1_penyesuaian, $tgl2_penyesuaian])->delete();
@@ -47,6 +48,9 @@ class Cancel extends Controller
 
             DB::table('tb_asset_umum')->whereBetween('tgl', [$tgl1_penyesuaian, $tgl2_penyesuaian])->where('penyesuaian', 'Y')->delete();
             DB::table('tb_asset_pv')->whereBetween('tgl', [$tgl1_penyesuaian, $tgl2_penyesuaian])->where('penyesuaian', 'Y')->delete();
+
+            DB::table('aktiva')->whereBetween('tgl', [$tgl1_penyesuaian, $tgl2_penyesuaian])->where('debit_aktiva', '0')->delete();
+            DB::table('table_atk')->whereBetween('tgl', [$tgl1_penyesuaian, $tgl2_penyesuaian])->where('qty_debit', '0')->delete();
 
             DB::table('tb_asset_umum')->whereBetween('tgl', [$tgl1_penyesuaian, $tgl2_penyesuaian])->where('penyesuaian', 'T')->update(['disesuaikan' => 'T']);
             DB::table('tb_asset_pv')->whereBetween('tgl', [$tgl1_penyesuaian, $tgl2_penyesuaian])->where('penyesuaian', 'T')->update(['disesuaikan' => 'T']);

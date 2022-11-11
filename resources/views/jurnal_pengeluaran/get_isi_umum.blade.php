@@ -46,8 +46,8 @@
     <div class="col-md-2">
         <div class="form-group">
             <label for="list_kategori">Total Rp</label>
-            <input type="text" class="form-control  input_detail input_biaya total_rp total_rp1" name="ttl_rp[]"
-                total_rp='1' required>
+            <input type="text" class="form-control  input_detail input_biaya total_rp total_rp1 text-right"
+                name="ttl_rp[]" total_rp='1' required>
         </div>
     </div>
 

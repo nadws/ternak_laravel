@@ -4,6 +4,7 @@ use App\Http\Controllers\AksesConttroller;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\Buku_besar;
 use App\Http\Controllers\Cancel;
+use App\Http\Controllers\Cash_flow;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Home;
 use App\Http\Controllers\Isi_jurnalpengeluaran;
@@ -93,6 +94,9 @@ Route::get('/get_ttl_aktiva', [Jurnal_pengeluaran::class, 'get_ttl_aktiva'])->mi
 Route::get('/get_post_atk', [Jurnal_pengeluaran::class, 'get_post_atk'])->middleware(['auth', 'verified'])->name('get_post_atk');
 Route::get('/get_ttl_atk', [Jurnal_pengeluaran::class, 'get_ttl_atk'])->middleware(['auth', 'verified'])->name('get_ttl_atk');
 
+Route::get('/print_j_all', [Jurnal_pengeluaran::class, 'print_jurnal_all'])->middleware(['auth', 'verified'])->name('print_j_all');
+Route::get('/export_j_all', [Jurnal_pengeluaran::class, 'export_jurnal_all'])->middleware(['auth', 'verified'])->name('export_j_all');
+
 
 // Save Jurnal pengeluaran
 Route::post('/save_jurnal_biaya', [Isi_jurnalpengeluaran::class, 'save_jurnal_biaya'])->middleware(['auth', 'verified'])->name('save_jurnal_biaya');
@@ -114,6 +118,8 @@ Route::get('/edit_jurnal', [Isi_jurnalpengeluaran::class, 'edit_jurnal'])->middl
 Route::post('/edit_jurnal_biaya', [Isi_jurnalpengeluaran::class, 'edit_jurnal_biaya'])->middleware(['auth', 'verified'])->name('edit_jurnal_biaya');
 Route::post('/edit_jurnal_pakan', [Isi_jurnalpengeluaran::class, 'edit_jurnal_pakan'])->middleware(['auth', 'verified'])->name('edit_jurnal_pakan');
 Route::post('/edit_jurnal_aktiva', [Isi_jurnalpengeluaran::class, 'edit_jurnal_aktiva'])->middleware(['auth', 'verified'])->name('edit_jurnal_aktiva');
+Route::post('/edit_jurnal_umum', [Isi_jurnalpengeluaran::class, 'edit_jurnal_umum'])->middleware(['auth', 'verified'])->name('edit_jurnal_umum');
+Route::post('/edit_jurnal_atk', [Isi_jurnalpengeluaran::class, 'edit_jurnal_atk'])->middleware(['auth', 'verified'])->name('edit_jurnal_atk');
 
 // user
 Route::get('/user', [User::class, 'index'])->middleware(['auth', 'verified'])->name('user');
@@ -248,7 +254,10 @@ Route::get('/setor_kardus', [Piutang_kardus::class, 'save_piutang_p'])->middlewa
 // home 
 Route::get('/home', [Home::class, 'index'])->middleware(['auth', 'verified'])->name('home');
 Route::get('/view_jurnal_laporan_bulanan', [Home::class, 'view_jurnal_laporan_bulanan'])->middleware(['auth', 'verified'])->name('view_jurnal_laporan_bulanan');
-Route::get('/cash_flow', [Home::class, 'index'])->middleware(['auth', 'verified'])->name('cash_flow');
+Route::get('/e_home', [Home::class, 'e_home'])->middleware(['auth', 'verified'])->name('e_home');
+Route::get('/e_all_home', [Home::class, 'e_all_home'])->middleware(['auth', 'verified'])->name('e_all_home');
+
+Route::get('/cash_flow', [Cash_flow::class, 'index'])->middleware(['auth', 'verified'])->name('cash_flow');
 Route::get('/profit', [Home::class, 'index'])->middleware(['auth', 'verified'])->name('profit');
 
 // Cancel

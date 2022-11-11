@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\Echo_;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class Jurnal_pengeluaran extends Controller
 {
@@ -193,5 +196,163 @@ class Jurnal_pengeluaran extends Controller
         WHERE a.id_post = '$r->id_post'");
 
         echo $debit->debit;
+    }
+
+    public function print_jurnal_all(Request $r)
+    {
+        if (empty($r->tgl1)) {
+            $tgl1 = date('Y-m-01');
+            $tgl2 = date('Y-m-d');
+        } else {
+            $tgl1 = $r->tgl1;
+            $tgl2 = $r->tgl2;
+        }
+        $jurnal = DB::select("SELECT * FROM tb_jurnal as a left join tb_akun as b on a.id_akun = b.id_akun where a.id_buku = '3' and a.tgl between '$tgl1' and '$tgl2' order by a.id_jurnal DESC");
+        $data = [
+            'title' => 'Jurnal Pengeluaran',
+            'akun' => DB::table('tb_akun as a')->join('tb_kategori_akun as b', 'a.id_kategori', 'b.id_kategori')->get(),
+            'jurnal' => $jurnal,
+
+            'total_jurnal' => DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as kredit FROM tb_jurnal as a where a.id_buku = '3' and a.tgl between '$tgl1' and '$tgl2' "),
+            'kategori' => DB::table('tb_kategori_akun')->get(),
+            'satuan' => DB::table('tb_satuan')->get(),
+            'tgl1' => $tgl1,
+            'tgl2' => $tgl2,
+        ];
+
+        return view('jurnal_pengeluaran/print_j_all', $data);
+    }
+    public function export_jurnal_all(Request $r)
+    {
+        if (empty($r->tgl1)) {
+            $tgl1 = date('Y-m-01');
+            $tgl2 = date('Y-m-d');
+        } else {
+            $tgl1 = $r->tgl1;
+            $tgl2 = $r->tgl2;
+        }
+        $jurnal = DB::select("SELECT * FROM tb_jurnal as a 
+        left join tb_akun as b on a.id_akun = b.id_akun 
+        left join tb_post_center as c on a.id_post = c.id_post 
+        where a.id_buku = '3' and a.tgl between '$tgl1' and '$tgl2' order by a.id_jurnal DESC");
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $spreadsheet->setActiveSheetIndex(0);
+        $spreadsheet->getActiveSheet()->setTitle('Jurnal Pengeluaran');
+
+        $sheet->getStyle('A1:F1')
+            ->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+        // lebar kolom
+        $sheet->getColumnDimension('A')->setWidth(3);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(3);
+        $sheet->getColumnDimension('D')->setWidth(3);
+        $sheet->getColumnDimension('E')->setWidth(5);
+        $sheet->getColumnDimension('F')->setWidth(8);
+        $sheet->getColumnDimension('G')->setWidth(6);
+        $sheet->getColumnDimension('I')->setWidth(12);
+        $sheet->getColumnDimension('H')->setWidth(21);
+        $sheet->getColumnDimension('J')->setWidth(28);
+        $sheet->getColumnDimension('K')->setWidth(8);
+        $sheet->getColumnDimension('L')->setWidth(8);
+        $sheet->getColumnDimension('M')->setWidth(6);
+        // header text
+        $sheet
+            ->setCellValue('A1', 'No')
+            ->setCellValue('B1', 'Tanggal')
+            ->setCellValue('C1', 'D')
+            ->setCellValue('D1', 'M')
+            ->setCellValue('E1', 'Y')
+            ->setCellValue('F1', 'No Nota')
+            ->setCellValue('G1', 'No Id')
+            ->setCellValue('H1', 'Post Akun')
+            ->setCellValue('I1', 'Post Center')
+            ->setCellValue('J1', 'Keterangan')
+            ->setCellValue('K1', 'Debit')
+            ->setCellValue('L1', 'Kredit')
+            ->setCellValue('M1', 'Admin');
+        $kolom = 2;
+        $i = 1;
+        foreach ($jurnal as $k) {
+            $sheet->setCellValue('A' . $kolom, $i++);
+            $sheet->setCellValue('B' . $kolom, $k->tgl);
+            $sheet->setCellValue('C' . $kolom, date('d', strtotime($k->tgl)));
+            $sheet->setCellValue('D' . $kolom, date('m', strtotime($k->tgl)));
+            $sheet->setCellValue('E' . $kolom, date('Y', strtotime($k->tgl)));
+            $sheet->setCellValue('F' . $kolom, $k->no_nota);
+            $sheet->setCellValue('G' . $kolom, $k->no_id);
+            $sheet->setCellValue('H' . $kolom, $k->nm_akun);
+            $sheet->setCellValue('I' . $kolom, $k->nm_post);
+            $sheet->setCellValue('J' . $kolom, $k->ket);
+            $sheet->setCellValue('K' . $kolom, $k->debit);
+            $sheet->setCellValue('L' . $kolom, $k->kredit);
+            $sheet->setCellValue('M' . $kolom, $k->admin);
+
+            $kolom++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $style_huruf = [
+            'font' => array(
+                'size' => 10,
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+
+        ];
+        $style_number = [
+            'font' => array(
+                'size' => 10,
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+
+        ];
+        $style_header = array(
+            'font' => array(
+                'size' => 10,
+                'bold'  =>  true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+        );
+
+        $batas = $jurnal;
+        $batas = count($batas) + 1;
+        $sheet->getStyle('A1:M1')->applyFromArray($style_header);
+        $sheet->getStyle('A2:J' . $batas)->applyFromArray($style_huruf);
+        $sheet->getStyle('M2:M' . $batas)->applyFromArray($style_huruf);
+        $sheet->getStyle('K2:L' . $batas)->applyFromArray($style_number);
+
+
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Jurnal Pengeluaran.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
     }
 }

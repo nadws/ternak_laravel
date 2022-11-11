@@ -375,6 +375,10 @@ class Jurnal_penyesuaian extends Controller
         }
 
         $tgl1 = date('Y-m-01', strtotime($tgl_atk));
+        $atk = DB::table('tb_jurnal')->whereBetween('tgl', [$tgl1, $tgl_atk])->where('id_akun', $id_akun_kredit_atk)->first();
+
+        DB::table('tb_jurnal')->where('no_nota', $atk->no_nota)->update(['penyesuaian' => 'Y']);
+
         return redirect()->route("j_penyesuaian", ['tgl1' => $tgl1, 'tgl2' => $tgl_atk])->with('sukses', 'Data berhasil di input');
     }
 

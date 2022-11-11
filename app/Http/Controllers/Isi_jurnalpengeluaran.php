@@ -23,7 +23,7 @@ class Isi_jurnalpengeluaran extends Controller
     public function tambah_umum(Request $r)
     {
         $akun = DB::table('tb_akun')->where('id_akun', $r->id_akun)->first();
-        $satuan = DB::table('tb_satuan')->where('id', $akun->id_satuan)->first();
+        $satuan = DB::table('tb_satuan')->where('id_satuan', $akun->id_satuan)->first();
         $data = [
             'title' => 'Absensi',
             'count' => $r->count,
@@ -104,7 +104,8 @@ class Isi_jurnalpengeluaran extends Controller
                 'id_post' => $id_post[$x],
                 'id_satuan' => $id_satuan[$x],
                 'no_id' =>  $no_id[$x],
-                'admin' => Auth::user()->name
+                'admin' => Auth::user()->name,
+                'id_akun_kredit' => $r->id_akun_kredit
             ];
             DB::table('tb_jurnal')->insert($data);
         }
@@ -113,7 +114,6 @@ class Isi_jurnalpengeluaran extends Controller
     }
     public function save_jurnal_umum(Request $r)
     {
-
         $no_id = $r->no_id;
         $ttl_rp = $r->ttl_rp;
         $ket = $r->keterangan;
@@ -156,18 +156,23 @@ class Isi_jurnalpengeluaran extends Controller
                 'qty' => $qty[$x],
                 'id_post' => $id_post[$x],
                 'no_id' =>  $no_id[$x],
-                'admin' => Auth::user()->name
+                'admin' => Auth::user()->name,
+                'id_akun_kredit' => $r->id_akun_kredit
             ];
             DB::table('tb_jurnal')->insert($data);
 
-            $data_asset = [
-                'id_akun' => $r->id_akun,
-                'tgl' => $r->tgl,
-                'debit' => $qty[$x],
-                'no_nota' => 'AGR-' . $no_urutan,
-                'admin' => Auth::user()->name
-            ];
-            DB::table('tb_asset_umum')->insert($data_asset);
+            if ($qty[$x] == 0) {
+                # code...
+            } else {
+                $data_asset = [
+                    'id_akun' => $r->id_akun,
+                    'tgl' => $r->tgl,
+                    'debit' => $qty[$x],
+                    'no_nota' => 'AGR-' . $no_urutan,
+                    'admin' => Auth::user()->name
+                ];
+                DB::table('tb_asset_umum')->insert($data_asset);
+            }
         }
         $tgl1 = date('Y-m-01', strtotime($r->tgl));
         return redirect()->route("jurnal_pengeluaran", ['tgl1' => $tgl1, 'tgl2' => $r->tgl])->with('sukses', 'Data berhasil di input');
@@ -220,7 +225,8 @@ class Isi_jurnalpengeluaran extends Controller
                 'no_id' =>  $no_id[$x],
                 'id_barang_pv' => $id_barang[$x],
                 'admin' => Auth::user()->name,
-                'id_satuan' => $id_satuan[$x]
+                'id_satuan' => $id_satuan[$x],
+                'id_akun_kredit' => $r->id_akun_kredit
             ];
             DB::table('tb_jurnal')->insert($data);
 
@@ -257,8 +263,6 @@ class Isi_jurnalpengeluaran extends Controller
         } else {
             $no_urutan = $urutan->urutan + 1;
         }
-
-
         $data = [
 
             'id_akun' => $r->id_akun_kredit,
@@ -282,7 +286,8 @@ class Isi_jurnalpengeluaran extends Controller
             'id_satuan' => $id_satuan,
             'debit' => $r->kredit,
             'admin' => Auth::user()->name,
-            'id_post' => $id_post
+            'id_post' => $id_post,
+            'id_akun_kredit' => $r->id_akun_kredit
         ];
         DB::table('tb_jurnal')->insert($data);
 
@@ -353,7 +358,9 @@ class Isi_jurnalpengeluaran extends Controller
                 'qty' => $qty[$x],
                 'debit' => $ttl_rp[$x],
                 'id_satuan' => $id_satuan[$x],
-                'admin' => Auth::user()->name
+                'id_post' => $id_post[$x],
+                'admin' => Auth::user()->name,
+                'id_akun_kredit' => $r->id_akun_kredit
             ];
             DB::table('tb_jurnal')->insert($data);
 
@@ -384,6 +391,7 @@ class Isi_jurnalpengeluaran extends Controller
         where a.no_nota = '$r->nota' AND a.kredit != 0
         ");
         $akun = DB::table('tb_akun')->where('id_akun', $debit->id_akun)->first();
+        $satuan = DB::table('tb_satuan')->where('id_satuan', $akun->id_satuan)->first();
 
         $data = [
             'debit' => $debit,
@@ -396,18 +404,20 @@ class Isi_jurnalpengeluaran extends Controller
             'post_center' => DB::table('tb_post_center')->where('id_akun', $debit->id_akun)->get(),
             'post_center_aktiva' => DB::table('tb_post_center')->where('id_akun', $kredit->id_akun)->get(),
             'barang' => DB::table('tb_barang_pv')->where('id_akun', $debit->id_akun)->get(),
-            'b_aktiva' => DB::table('aktiva')->where('no_nota', $r->nota)->first()
+            'b_aktiva' => DB::table('aktiva')->where('no_nota', $r->nota)->first(),
+            'satuan2' => $satuan,
+
         ];
 
         if ($akun->id_kategori == '5') {
             return view('isi_jurnalpengeluaran/get_edit_jurnal', $data);
         } elseif ($akun->id_kategori == '1') {
             if ($akun->id_penyesuaian == '1') {
-                return view('jurnal_pengeluaran/get_isi_umum', $data);
+                return view('isi_jurnalpengeluaran/get_edit_isi_umum', $data);
             } elseif ($akun->id_penyesuaian == '2') {
                 return view('isi_jurnalpengeluaran/get_edit_isi_aktiva', $data);
             } elseif ($akun->id_penyesuaian == '3') {
-                return view('jurnal_pengeluaran/get_isi_atk', $data);
+                return view('isi_jurnalpengeluaran/get_edit_isi_atk', $data);
             } elseif ($akun->id_penyesuaian == '4') {
                 return view('isi_jurnalpengeluaran/get_edit_jurnal_pakan', $data);
             }
@@ -450,7 +460,8 @@ class Isi_jurnalpengeluaran extends Controller
                 'id_post' => $id_post[$x],
                 'id_satuan' => $id_satuan[$x],
                 'no_id' =>  $no_id[$x],
-                'admin' => Auth::user()->name
+                'admin' => Auth::user()->name,
+                'id_akun_kredit' => $r->id_akun_kredit
             ];
             DB::table('tb_jurnal')->where('id_jurnal', $id_debit[$x])->update($data);
         }
@@ -472,10 +483,6 @@ class Isi_jurnalpengeluaran extends Controller
         $no_nota = $r->no_nota;
 
         $akun = DB::table('tb_akun')->where('id_akun', $r->id_akun)->first();
-
-
-
-
         $data = [
             'id_akun' => $r->id_akun_kredit,
             'id_buku' => '3',
@@ -498,14 +505,10 @@ class Isi_jurnalpengeluaran extends Controller
                 'no_id' =>  $no_id[$x],
                 'id_barang_pv' => $id_barang[$x],
                 'admin' => Auth::user()->name,
-                'id_satuan' => $id_satuan[$x]
+                'id_satuan' => $id_satuan[$x],
+                'id_akun_kredit' => $r->id_akun_kredit
             ];
             DB::table('tb_jurnal')->where('id_jurnal', $id_debit[$x])->update($data);
-
-
-
-
-
             $data_asset = [
                 'id_akun' => $r->id_akun,
                 'tgl' => $r->tgl,
@@ -567,7 +570,8 @@ class Isi_jurnalpengeluaran extends Controller
             'id_satuan' => $id_satuan,
             'id_post' => $id_post,
             'debit' => $r->kredit,
-            'admin' => Auth::user()->name
+            'admin' => Auth::user()->name,
+            'id_akun_kredit' => $r->id_akun_kredit
         ];
         DB::table('tb_jurnal')->where('id_jurnal', $id_debit)->update($data);
 
@@ -591,6 +595,138 @@ class Isi_jurnalpengeluaran extends Controller
             'id_akun' => $r->id_akun
         ];
         DB::table('aktiva')->where('id_aktiva', $id_aktiva)->update($data);
+
+        $tgl1 = date('Y-m-01', strtotime($r->tgl));
+        return redirect()->route("jurnal_pengeluaran", ['tgl1' => $tgl1, 'tgl2' => $r->tgl])->with('sukses', 'Data berhasil di input');
+    }
+
+    public function edit_jurnal_umum(Request $r)
+    {
+        $no_id = $r->no_id;
+        $ttl_rp = $r->ttl_rp;
+        $ket = $r->keterangan;
+        $id_post = $r->id_post_center;
+        $qty = $r->qty;
+
+        $no_nota = $r->no_nota;
+        $id_kredit = $r->id_kredit;
+        $id_debit = $r->id_debit;
+
+
+        $akun = DB::table('tb_akun')->where('id_akun', $r->id_akun)->first();
+
+        $data = [
+            'id_akun' => $r->id_akun_kredit,
+            'id_buku' => '3',
+            'tgl' => $r->tgl,
+            'ket' => 'Pengeluaran' . ' ' . $akun->nm_akun,
+            'kredit' => $r->kredit,
+            'admin' => Auth::user()->name
+        ];
+        DB::table('tb_jurnal')->where('id_jurnal', $id_kredit)->update($data);
+
+
+        for ($x = 0; $x < count($ttl_rp); $x++) {
+            $data = [
+                'id_akun' => $r->id_akun,
+                'id_buku' => '3',
+                'tgl' => $r->tgl,
+                'debit' => $ttl_rp[$x],
+                'ket' => $ket[$x],
+                'qty' => $qty[$x],
+                'id_post' => $id_post[$x],
+                'no_id' =>  $no_id[$x],
+                'admin' => Auth::user()->name,
+                'id_akun_kredit' => $r->id_akun_kredit
+            ];
+            DB::table('tb_jurnal')->where('id_jurnal', $id_debit[$x])->update($data);
+        }
+        DB::table('tb_asset_umum')->where('no_nota',  $no_nota)->delete();
+        for ($x = 0; $x < count($id_debit); $x++) {
+
+            if ($qty[$x] == '0') {
+                # code...
+            } else {
+                $data_asset = [
+                    'id_akun' => $r->id_akun,
+                    'tgl' => $r->tgl,
+                    'debit' => $qty[$x],
+                    'no_nota' => $no_nota,
+                    'admin' => Auth::user()->name
+                ];
+                DB::table('tb_asset_umum')->insert($data_asset);
+            }
+        }
+
+        $tgl1 = date('Y-m-01', strtotime($r->tgl));
+        return redirect()->route("jurnal_pengeluaran", ['tgl1' => $tgl1, 'tgl2' => $r->tgl])->with('sukses', 'Data berhasil di input');
+    }
+
+    public function edit_jurnal_atk(Request $r)
+    {
+        $no_id = $r->no_id;
+        $ttl_rp = $r->ttl_rp;
+        $ket = $r->keterangan;
+        $id_post = $r->id_post_center;
+        $qty = $r->qty;
+        $id_satuan = $r->id_satuan;
+        $id_akun = $r->id_akun;
+
+        $no_nota = $r->no_nota;
+        $id_kredit = $r->id_kredit;
+        $id_debit = $r->id_debit;
+
+
+
+        $akun = DB::table('tb_akun')->where('id_akun', $r->id_akun)->first();
+        $urutan = DB::selectOne("SELECT max(a.urutan) as urutan FROM tb_jurnal as a where a.id_buku = '3'");
+
+        if (empty($urutan->urutan)) {
+            $no_urutan = '1001';
+        } else {
+            $no_urutan = $urutan->urutan + 1;
+        }
+        $data = [
+            'id_akun' => $r->id_akun_kredit,
+            'id_buku' => '3',
+            'tgl' => $r->tgl,
+            'ket' => 'Pengeluaran' . ' ' . $akun->nm_akun,
+            'kredit' => $r->kredit,
+            'admin' => Auth::user()->name
+        ];
+        DB::table('tb_jurnal')->where('id_jurnal', $id_kredit)->update($data);
+
+
+        DB::table('table_atk')->where('no_nota',  $no_nota)->delete();
+
+        for ($x = 0; $x < count($ttl_rp); $x++) {
+            $data = [
+                'no_id' => $no_id[$x],
+                'id_akun' => $r->id_akun,
+                'id_buku' => '3',
+                'tgl' => $r->tgl,
+                'ket' => $ket[$x],
+                'qty' => $qty[$x],
+                'debit' => $ttl_rp[$x],
+                'id_satuan' => $id_satuan[$x],
+                'id_post' => $id_post[$x],
+                'admin' => Auth::user()->name,
+                'id_akun_kredit' => $r->id_akun_kredit
+            ];
+            DB::table('tb_jurnal')->where('id_jurnal', $id_debit[$x])->update($data);
+
+            $h_satuan = $ttl_rp[$x] / $qty[$x];
+            $data = [
+                'tgl' => $r->tgl,
+                'id_post' => $id_post[$x],
+                'qty_debit' => $qty[$x],
+                'no_nota' => $no_nota,
+                'h_satuan' => $h_satuan,
+                'admin' => Auth::user()->name,
+                'id_akun' => $r->id_akun
+            ];
+            DB::table('table_atk')->insert($data);
+        }
 
         $tgl1 = date('Y-m-01', strtotime($r->tgl));
         return redirect()->route("jurnal_pengeluaran", ['tgl1' => $tgl1, 'tgl2' => $r->tgl])->with('sukses', 'Data berhasil di input');

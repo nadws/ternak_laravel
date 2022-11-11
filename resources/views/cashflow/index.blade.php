@@ -4,7 +4,7 @@
 <style>
     .scroll {
         overflow-x: auto;
-        height: 350px;
+        height: auto;
         overflow-y: scroll;
     }
 
@@ -26,6 +26,14 @@
         left: 0;
         z-index: 1020;
     }
+
+    .input-kecil {
+        height: 30px;
+        padding: 5px 10px;
+        font-size: 12px;
+        line-height: 1.5;
+        border-radius: 3px;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -46,15 +54,9 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-10">
                     <div class="card">
                         <div class="card-header">
-                            <a href="#" data-toggle="modal" data-target="#range"
-                                class="btn btn-costume btn-sm float-right ml-2"><i class="fas fa-file-excel"></i>
-                                Export All</a>
-                            <a href="{{route('e_home',['bulan1'=>$bulan1,'tahun1'=>$tahun1,'bulan2'=>$bulan2,'tahun2'=>$tahun2])}}"
-                                class="btn btn-costume btn-sm float-right ml-2"><i class="fas fa-file-excel"></i>
-                                Export </a>
                             <a href="#" data-toggle="modal" data-target="#view"
                                 class="btn btn-costume btn-sm float-right ml-2"><i class="fas fa-search"></i>
                                 View</a>
@@ -70,7 +72,15 @@
                                 <table class="table table-sm table-bordered someclass" style="font-size: 12px;">
                                     <thead>
                                         <tr>
-                                            <th width="14%" class="top">Akun</th>
+                                            <th width="25%" class="top">Akun</th>
+                                            @foreach ($tahun2 as $t)
+                                            <th class="top">
+                                                {{date('M-Y', strtotime($t->tgl))}}
+                                            </th>
+                                            @endforeach
+                                            <th class="top" width="20%">
+                                                Bugeting
+                                            </th>
                                             @foreach ($tahun as $t)
                                             <th class="top">
                                                 {{date('M-Y', strtotime($t->tgl))}}
@@ -93,6 +103,28 @@
                                                 </dt>
                                             </td>
                                             @php
+                                            $ttl_penj_s = 0;
+                                            @endphp
+                                            @foreach ($tahun2 as $t)
+                                            @php
+                                            $bulan = date('m',strtotime($t->tgl));
+                                            $year = date('Y',strtotime($t->tgl));
+
+                                            $ttl_pen = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
+                                            kredit FROM tb_jurnal as a where MONTH(a.tgl)
+                                            = '$bulan'
+                                            and a.id_buku ='1'
+                                            and YEAR(a.tgl) = '$year'");
+                                            $ttl_penj_s += $ttl_pen->kredit;
+                                            @endphp
+                                            <td class="top_bawah" align="right">
+                                                <dt>{{number_format($ttl_pen->kredit,0)}}</dt>
+                                            </td>
+                                            @endforeach
+                                            <td class="top_bawah" align="right">
+
+                                            </td>
+                                            @php
                                             $ttl_penj = 0;
                                             @endphp
                                             @foreach ($tahun as $t)
@@ -112,12 +144,43 @@
                                             </td>
                                             @endforeach
                                             <td class="top_bawah" align="right">
-                                                <dt>{{number_format($ttl_penj,0)}}</dt>
+                                                <dt>{{number_format($ttl_penj + $ttl_penj_s,0)}}</dt>
                                             </td>
                                         </tr>
                                         @foreach ($akun_pendapatan as $a)
                                         <tr class="pendapatan">
                                             <td>{{$a->nm_akun}}</td>
+
+                                            @php
+                                            $total_pendapatan2 = 0;
+                                            @endphp
+                                            @foreach ($tahun2 as $t)
+
+                                            @php
+                                            $bulan = date('m',strtotime($t->tgl));
+                                            $year = date('Y',strtotime($t->tgl));
+                                            $pendapatan = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
+                                            kredit FROM tb_jurnal as a where a.id_akun = '$a->id_akun' and MONTH(a.tgl)
+                                            = '$bulan'
+                                            and a.id_buku ='1'
+                                            and YEAR(a.tgl) = '$year' group by a.id_akun");
+                                            $total_pendapatan2 += empty($pendapatan->kredit) ? '0' :
+                                            $pendapatan->kredit;
+                                            @endphp
+
+
+                                            <td align="right">
+                                                <a href="" data-toggle="modal" data-target="#detail_jurnal"
+                                                    class="view_jurnal" id_akun="{{$a->id_akun}}" bulan="{{$bulan}}"
+                                                    tahun="{{$year}}">
+                                                    {{empty($pendapatan->kredit) ? '0'
+                                                    :number_format($pendapatan->kredit,0)}}
+                                                </a>
+                                            </td>
+
+                                            @endforeach
+                                            <td align="right"></td>
+
 
                                             @php
                                             $total_pendapatan = 0;
@@ -146,7 +209,7 @@
                                             @endforeach
 
                                             <td align="right">
-                                                <dt>{{number_format($total_pendapatan,0)}}</dt>
+                                                <dt>{{number_format($total_pendapatan + $total_pendapatan2,0)}}</dt>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -155,6 +218,26 @@
                                                 <dt>Total Penjualan</dt>
                                             </td>
 
+                                            @php
+                                            $ttl_penj2 = 0;
+                                            @endphp
+                                            @foreach ($tahun2 as $t)
+                                            @php
+                                            $bulan = date('m',strtotime($t->tgl));
+                                            $year = date('Y',strtotime($t->tgl));
+
+                                            $ttl_pen = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
+                                            kredit FROM tb_jurnal as a where MONTH(a.tgl)
+                                            = '$bulan'
+                                            and a.id_buku ='1'
+                                            and YEAR(a.tgl) = '$year'");
+                                            $ttl_penj2 += $ttl_pen->kredit;
+                                            @endphp
+                                            <td class="top_bawah" align="right">
+                                                <dt>{{number_format($ttl_pen->kredit,0)}}</dt>
+                                            </td>
+                                            @endforeach
+                                            <td class="top_bawah" align="right"></td>
                                             @php
                                             $ttl_penj = 0;
                                             @endphp
@@ -175,10 +258,14 @@
                                             </td>
                                             @endforeach
                                             <td class="top_bawah" align="right">
-                                                <dt>{{number_format($ttl_penj,0)}}</dt>
+                                                <dt>{{number_format($ttl_penj + $ttl_penj2,0)}}</dt>
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td></td>
+                                            @foreach ($tahun2 as $t)
+                                            <td></td>
+                                            @endforeach
                                             <td></td>
                                             @foreach ($tahun as $t)
                                             <td></td>
@@ -187,11 +274,48 @@
                                             </td>
                                         </tr>
 
+
+
                                         <tr>
                                             <td class="top_bawah">
-                                                <dt>Total Pengeluaran</dt>
+                                                <dt>
+                                                    Uang Keluar
+                                                    <button
+                                                        class="btn float-right btn-costume btn-muncul-disesuaikan btn-xs show_biaya_p">
+                                                        <i class="fas fa-caret-down"></i>
+                                                    </button>
+                                                    <button
+                                                        class="btn float-right btn-costume btn-hide-disesuaikan btn-xs show_biaya_p">
+                                                        <i class="fas fa-caret-down"></i>
+                                                    </button>
+                                                </dt>
                                             </td>
 
+
+                                            @php
+                                            $ttl_biaya2 = 0;
+                                            @endphp
+                                            @foreach ($tahun2 as $t)
+                                            @php
+                                            $bulan = date('m',strtotime($t->tgl));
+                                            $year = date('Y',strtotime($t->tgl));
+
+                                            $biaya = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
+                                            kredit
+                                            FROM tb_jurnal as a
+                                            left join tb_akun as c on c.id_akun = a.id_akun
+                                            LEFT JOIN tb_relasi_akun AS b ON b.id_relation_debit = a.id_akun
+                                            where MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' AND
+                                            c.id_kategori='5'");
+
+                                            $ttl_biaya2 += $biaya->debit;
+
+                                            @endphp
+                                            <td class="top_bawah" align="right">
+                                                <dt>{{number_format($biaya->debit,0)}}</dt>
+                                            </td>
+                                            @endforeach
+                                            <td class="top_bawah" align="right"></td>
                                             @php
                                             $ttl_biaya = 0;
                                             @endphp
@@ -214,140 +338,151 @@
                                             <td class="top_bawah" align="right">
                                                 <dt>{{number_format($biaya->debit,0)}}</dt>
                                             </td>
+
                                             @endforeach
                                             <td class="top_bawah" align="right">
-                                                <dt>{{number_format($ttl_biaya,0)}}</dt>
+                                                <dt>{{number_format($ttl_biaya + $ttl_biaya2,0)}}</dt>
                                             </td>
+
                                         </tr>
 
-                                        <tr>
-                                            <td></td>
-                                            @foreach ($tahun as $t)
-                                            <td></td>
-                                            @endforeach
-                                            <td>
-                                            </td>
-                                        </tr>
 
-                                        <tr>
-                                            <td class="top_bawah">
-                                                <dt>
-                                                    Biaya disesuaikan
-                                                    <button
-                                                        class="btn float-right btn-costume btn-muncul-disesuaikan btn-xs show_biaya_p">
-                                                        <i class="fas fa-caret-down"></i>
-                                                    </button>
-                                                    <button
-                                                        class="btn float-right btn-costume btn-hide-disesuaikan btn-xs show_biaya_p">
-                                                        <i class="fas fa-caret-down"></i>
-                                                    </button>
-                                                </dt>
-                                            </td>
+                                        @foreach ($uang_keluar as $u)
+                                        <tr class="biaya_dis">
+                                            <td>{{$u->nm_akun}}</td>
                                             @php
                                             $ttl_biaya_dis = 0;
                                             @endphp
-                                            @foreach ($tahun as $t)
-
+                                            @foreach ($tahun2 as $t)
                                             @php
                                             $bulan = date('m',strtotime($t->tgl));
                                             $year = date('Y',strtotime($t->tgl));
-                                            $biaya_dis = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit
-                                            FROM tb_jurnal as a
-                                            LEFT JOIN tb_relasi_akun AS b ON b.id_relation_debit = a.id_akun
-                                            where MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' AND
-                                            b.id_relation_debit
-                                            IS NOT null");
+                                            $biaya_dis = DB::selectOne("SELECT a.id_akun, b.nm_akun, SUM(a.debit) AS
+                                            debit, SUM(a.kredit) AS kredit, c.id_penyesuaian
+                                            FROM tb_jurnal AS a
+                                            LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
+                                            LEFT JOIN tb_akun AS c ON c.id_akun = a.id_akun_kredit
+                                            WHERE a.id_buku = '3' AND c.id_kategori = '1' AND c.id_penyesuaian = '0' and
+                                            MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' and a.id_akun =
+                                            '$u->id_akun'
+                                            GROUP BY a.id_akun");
                                             $ttl_biaya_dis += empty($biaya_dis->debit) ? '0' : $biaya_dis->debit;
                                             @endphp
 
-                                            <td class="top_bawah" align="right">
-                                                <dt>{{ empty($biaya_dis->debit) ? '0' :
-                                                    number_format($biaya_dis->debit,0)}}</dt>
+                                            <td align="right">
+                                                <a href="" data-toggle="modal" data-target="#detail_jurnal"
+                                                    class="view_jurnal" id_akun="{{$u->id_akun}}" bulan="{{$bulan}}"
+                                                    tahun="{{$year}}">
+                                                    {{ empty($biaya_dis->debit) ? '0' :
+                                                    number_format($biaya_dis->debit,0)}}
+
+
+
+                                                </a>
+
                                             </td>
                                             @endforeach
-                                            <td class="top_bawah" align="right">
-                                                <dt>{{number_format($ttl_biaya_dis,0)}}</dt>
+                                            <td align="right">
+                                                <input type="text" class="form-control input-kecil text-right"
+                                                    value="0">
                                             </td>
-                                        </tr>
-                                        @foreach ($akun_biaya_disesuaiakan as $a)
-                                        <tr class="biaya_dis">
-                                            <td>{{$a->nm_akun}}</td>
 
                                             @php
-                                            $total_biaya =0;
+                                            $ttl_biaya_dis2 = 0;
                                             @endphp
                                             @foreach ($tahun as $t)
-
                                             @php
                                             $bulan = date('m',strtotime($t->tgl));
                                             $year = date('Y',strtotime($t->tgl));
-                                            $biaya = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit FROM tb_jurnal as a where a.id_akun = '$a->id_akun' and MONTH(a.tgl)
-                                            = '$bulan'
-                                            and YEAR(a.tgl) = '$year' group by a.id_akun");
-                                            $total_biaya += empty($biaya->debit) ? '0' : $biaya->debit;
+                                            $biaya_dis = DB::selectOne("SELECT a.id_akun, b.nm_akun, SUM(a.debit) AS
+                                            debit, SUM(a.kredit) AS kredit, c.id_penyesuaian
+                                            FROM tb_jurnal AS a
+                                            LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
+                                            LEFT JOIN tb_akun AS c ON c.id_akun = a.id_akun_kredit
+                                            WHERE a.id_buku = '3' AND c.id_kategori = '1' AND c.id_penyesuaian = '0' and
+                                            MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' and a.id_akun =
+                                            '$u->id_akun'
+                                            GROUP BY a.id_akun");
+                                            $ttl_biaya_dis2 += empty($biaya_dis->debit) ? '0' : $biaya_dis->debit;
                                             @endphp
 
-                                            <td align="right"><a href="" data-toggle="modal"
-                                                    data-target="#detail_jurnal" class="view_jurnal"
-                                                    id_akun="{{$a->id_akun}}" bulan="{{$bulan}}"
-                                                    tahun="{{$year}}">{{empty($biaya->debit) ? '0' :
-                                                    number_format($biaya->debit,0)}}</a></td>
+                                            <td align="right">
+                                                <a href="" data-toggle="modal" data-target="#detail_jurnal"
+                                                    class="view_jurnal" id_akun="{{$u->id_akun}}" bulan="{{$bulan}}"
+                                                    tahun="{{$year}}">
+                                                    {{ empty($biaya_dis->debit) ? '0' :
+                                                    number_format($biaya_dis->debit,0)}}
+                                                </a>
+                                            </td>
                                             @endforeach
 
                                             <td align="right">
-                                                <dt>{{number_format($total_biaya,0)}}</dt>
+                                                <dt>{{number_format($ttl_biaya_dis + $ttl_biaya_dis2,0)}}</dt>
                                             </td>
                                         </tr>
                                         @endforeach
                                         <tr class="biaya_dis">
                                             <td class="top_bawah">
-                                                <dt>Total Biaya Disesuaiakan</dt>
+                                                <dt>Total Uang Keluar</dt>
                                             </td>
                                             @php
-                                            $ttl_biaya_dis = 0;
+                                            $ttl_biaya2 = 0;
                                             @endphp
-                                            @foreach ($tahun as $t)
-
+                                            @foreach ($tahun2 as $t)
                                             @php
                                             $bulan = date('m',strtotime($t->tgl));
                                             $year = date('Y',strtotime($t->tgl));
-                                            $biaya_dis = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
+
+                                            $biaya = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
                                             kredit
                                             FROM tb_jurnal as a
+                                            left join tb_akun as c on c.id_akun = a.id_akun
                                             LEFT JOIN tb_relasi_akun AS b ON b.id_relation_debit = a.id_akun
                                             where MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' AND
-                                            b.id_relation_debit
-                                            IS NOT null");
-                                            $ttl_biaya_dis += empty($biaya_dis->debit) ? '0' : $biaya_dis->debit;
+                                            c.id_kategori='5'");
+
+                                            $ttl_biaya2 += $biaya->debit;
+
                                             @endphp
-
                                             <td class="top_bawah" align="right">
-                                                <dt>{{ empty($biaya_dis->debit) ? '0' :
-                                                    number_format($biaya_dis->debit,0)}}</dt>
+                                                <dt>{{number_format($biaya->debit,0)}}</dt>
                                             </td>
                                             @endforeach
-                                            <td class="top_bawah" align="right">
-                                                <dt>{{number_format($ttl_biaya_dis,0)}}</dt>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td></td>
+                                            <td class="top_bawah" align="right"></td>
+                                            @php
+                                            $ttl_biaya = 0;
+                                            @endphp
                                             @foreach ($tahun as $t)
-                                            <td></td>
+                                            @php
+                                            $bulan = date('m',strtotime($t->tgl));
+                                            $year = date('Y',strtotime($t->tgl));
+
+                                            $biaya = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
+                                            kredit
+                                            FROM tb_jurnal as a
+                                            left join tb_akun as c on c.id_akun = a.id_akun
+                                            LEFT JOIN tb_relasi_akun AS b ON b.id_relation_debit = a.id_akun
+                                            where MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' AND
+                                            c.id_kategori='5'");
+
+                                            $ttl_biaya += $biaya->debit;
+
+                                            @endphp
+                                            <td class="top_bawah" align="right">
+                                                <dt>{{number_format($biaya->debit,0)}}</dt>
+                                            </td>
+
                                             @endforeach
-                                            <td>
+                                            <td class="top_bawah" align="right">
+                                                <dt>{{number_format($ttl_biaya + $ttl_biaya2,0)}}</dt>
                                             </td>
                                         </tr>
 
-                                        {{-- Biaya --}}
-
+                                        {{-- liabilities --}}
                                         <tr>
                                             <td class="top_bawah">
                                                 <dt>
-                                                    Biaya Utama
+                                                    Liabilities (credit side)
                                                     <button
                                                         class="btn float-right btn-costume btn-muncul-utama btn-xs show_biaya_p">
                                                         <i class="fas fa-caret-down"></i>
@@ -358,163 +493,145 @@
                                                     </button>
                                                 </dt>
                                             </td>
-                                            @php
-                                            $ttl_biaya_u = 0;
-                                            @endphp
-                                            @foreach ($tahun as $t)
 
+
+                                            @php
+                                            $ttl_liabilities = 0;
+                                            @endphp
+                                            @foreach ($tahun2 as $t)
                                             @php
                                             $bulan = date('m',strtotime($t->tgl));
                                             $year = date('Y',strtotime($t->tgl));
-                                            $biaya_u = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit
-                                            FROM tb_jurnal as a
-                                            left join tb_akun as c on c.id_akun = a.id_akun
-                                            LEFT JOIN tb_relasi_akun AS b ON b.id_relation_debit = a.id_akun
-                                            where MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' AND
-                                            b.id_relation_debit
-                                            IS null AND c.id_kategori='5'");
-                                            $ttl_biaya_u += empty($biaya_u->debit) ? '0' : $biaya_u->debit;
-                                            @endphp
 
+                                            $biaya = DB::selectOne("SELECT a.id_akun, b.nm_akun, SUM(a.debit) AS debit,
+                                            SUM(a.kredit) AS kredit
+                                            FROM tb_jurnal AS a
+                                            LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
+                                            WHERE b.id_kategori ='1' AND b.id_penyesuaian = '0' AND a.id_buku = '3'
+                                            AND MONTH(a.tgl) = '$bulan' AND YEAR(a.tgl) = '$year'
+                                            GROUP BY a.id_akun");
+
+                                            $ttl_liabilities += $biaya->kredit;
+
+                                            @endphp
                                             <td class="top_bawah" align="right">
-                                                <dt>{{ empty($biaya_u->debit) ? '0' :
-                                                    number_format($biaya_u->debit,0)}}</dt>
+                                                <dt>{{number_format($biaya->kredit,0)}}</dt>
                                             </td>
                                             @endforeach
-                                            <td class="top_bawah" align="right">
-                                                <dt>{{number_format($ttl_biaya_u,0)}}</dt>
-                                            </td>
-                                        </tr>
-                                        @foreach ($akun_biaya as $a)
-                                        <tr class="biaya_utama">
-                                            <td>{{$a->nm_akun}}</td>
+
+                                            <td class="top_bawah" align="right"></td>
 
                                             @php
-                                            $total_biaya =0;
+                                            $ttl_liabilities2 = 0;
                                             @endphp
                                             @foreach ($tahun as $t)
-
                                             @php
                                             $bulan = date('m',strtotime($t->tgl));
                                             $year = date('Y',strtotime($t->tgl));
-                                            $biaya = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit FROM tb_jurnal as a where a.id_akun = '$a->id_akun' and MONTH(a.tgl)
-                                            = '$bulan'
-                                            and YEAR(a.tgl) = '$year' group by a.id_akun");
-                                            $total_biaya += empty($biaya->debit) ? '0' : $biaya->debit;
+
+                                            $biaya = DB::selectOne("SELECT a.id_akun, b.nm_akun, SUM(a.debit) AS debit,
+                                            SUM(a.kredit) AS kredit
+                                            FROM tb_jurnal AS a
+                                            LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
+                                            WHERE b.id_kategori ='1' AND b.id_penyesuaian = '0' AND a.id_buku = '3'
+                                            AND MONTH(a.tgl) = '$bulan' AND YEAR(a.tgl) = '$year'
+                                            GROUP BY a.id_akun");
+
+                                            $ttl_liabilities2 += $biaya->kredit;
+
+                                            @endphp
+                                            <td class="top_bawah" align="right">
+                                                <dt>{{number_format($biaya->kredit,0)}}</dt>
+                                            </td>
+
+                                            @endforeach
+                                            <td class="top_bawah" align="right">
+                                                <dt>{{number_format($ttl_liabilities + $ttl_liabilities2,0)}}</dt>
+                                            </td>
+
+                                        </tr>
+
+
+                                        @foreach ($liabilities as $u)
+                                        <tr class="biaya_utama">
+                                            <td>{{$u->nm_akun}}</td>
+                                            @php
+                                            $ttl_liabilities = 0;
+                                            @endphp
+                                            @foreach ($tahun2 as $t)
+                                            @php
+                                            $bulan = date('m',strtotime($t->tgl));
+                                            $year = date('Y',strtotime($t->tgl));
+                                            $biaya_liabilities = DB::selectOne("SELECT a.id_akun, b.nm_akun,
+                                            SUM(a.debit) AS
+                                            debit, SUM(a.kredit) AS kredit
+                                            FROM tb_jurnal AS a
+                                            LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
+                                            WHERE b.id_kategori ='1' AND b.id_penyesuaian = '0' AND a.id_buku = '3'
+                                            AND MONTH(a.tgl) = '$bulan' AND YEAR(a.tgl) = '$year' AND a.id_akun =
+                                            '$u->id_akun'
+                                            GROUP BY a.id_akun");
+                                            $ttl_liabilities += empty($biaya_liabilities->kredit) ? '0' :
+                                            $biaya_liabilities->kredit;
                                             @endphp
 
-                                            <td align="right"><a href="" data-toggle="modal"
-                                                    data-target="#detail_jurnal" class="view_jurnal"
-                                                    id_akun="{{$a->id_akun}}" bulan="{{$bulan}}"
-                                                    tahun="{{$year}}">{{empty($biaya->debit) ? '0' :
-                                                    number_format($biaya->debit,0)}}</a></td>
+                                            <td align="right">
+                                                <a href="" data-toggle="modal" data-target="#detail_jurnal"
+                                                    class="view_jurnal" id_akun="{{$u->id_akun}}" bulan="{{$bulan}}"
+                                                    tahun="{{$year}}">
+                                                    {{ empty($biaya_liabilities->kredit) ? '0' :
+                                                    number_format($biaya_liabilities->kredit,0)}}
+                                                </a>
+                                            </td>
+                                            @endforeach
+                                            <td align="right"></td>
+
+                                            @php
+                                            $ttl_liabilities2 = 0;
+                                            @endphp
+                                            @foreach ($tahun as $t)
+                                            @php
+                                            $bulan = date('m',strtotime($t->tgl));
+                                            $year = date('Y',strtotime($t->tgl));
+                                            $biaya_liabilities = DB::selectOne("SELECT a.id_akun, b.nm_akun,
+                                            SUM(a.debit) AS
+                                            debit, SUM(a.kredit) AS kredit
+                                            FROM tb_jurnal AS a
+                                            LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
+                                            WHERE b.id_kategori ='1' AND b.id_penyesuaian = '0' AND a.id_buku = '3'
+                                            AND MONTH(a.tgl) = '$bulan' AND YEAR(a.tgl) = '$year' AND a.id_akun =
+                                            '$u->id_akun'
+                                            GROUP BY a.id_akun");
+                                            $ttl_liabilities2 += empty($biaya_liabilities->kredit) ? '0' :
+                                            $biaya_liabilities->kredit;
+                                            @endphp
+
+                                            <td align="right">
+                                                <a href="" data-toggle="modal" data-target="#detail_jurnal"
+                                                    class="view_jurnal" id_akun="{{$u->id_akun}}" bulan="{{$bulan}}"
+                                                    tahun="{{$year}}">
+                                                    {{ empty($biaya_liabilities->kredit) ? '0' :
+                                                    number_format($biaya_liabilities->kredit,0)}}
+                                                </a>
+                                            </td>
                                             @endforeach
 
                                             <td align="right">
-                                                <dt>{{number_format($total_biaya,0)}}</dt>
+                                                <dt>{{number_format($ttl_liabilities + $ttl_liabilities2,0)}}</dt>
                                             </td>
                                         </tr>
                                         @endforeach
                                         <tr class="biaya_utama">
                                             <td class="top_bawah">
-                                                <dt>Total Biaya Utama</dt>
+                                                <dt>Total Liabilities</dt>
                                             </td>
                                             @php
-                                            $ttl_biaya_u = 0;
+                                            $ttl_biaya2 = 0;
                                             @endphp
-                                            @foreach ($tahun as $t)
-
+                                            @foreach ($tahun2 as $t)
                                             @php
                                             $bulan = date('m',strtotime($t->tgl));
                                             $year = date('Y',strtotime($t->tgl));
-                                            $biaya_u = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit
-                                            FROM tb_jurnal as a
-                                            left join tb_akun as c on c.id_akun = a.id_akun
-                                            LEFT JOIN tb_relasi_akun AS b ON b.id_relation_debit = a.id_akun
-                                            where MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' AND
-                                            b.id_relation_debit
-                                            IS null AND c.id_kategori='5'");
-                                            $ttl_biaya_u += empty($biaya_u->debit) ? '0' : $biaya_u->debit;
-                                            @endphp
-
-                                            <td class="top_bawah" align="right">
-                                                <dt>{{ empty($biaya_u->debit) ? '0' :
-                                                    number_format($biaya_u->debit,0)}}</dt>
-                                            </td>
-                                            @endforeach
-                                            <td class="top_bawah" align="right">
-                                                <dt>{{number_format($ttl_biaya_u,0)}}</dt>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td></td>
-                                            @foreach ($tahun as $t)
-                                            <td></td>
-                                            @endforeach
-                                            <td>
-                                            </td>
-                                        </tr>
-
-                                        {{-- Laba Rugi --}}
-
-                                        <tr>
-                                            <td class="top_bawah">
-                                                <dt>
-                                                    Laba Rugi
-                                                    <button
-                                                        class="btn float-right btn-costume btn-muncul-laba btn-xs show_biaya_p">
-                                                        <i class="fas fa-caret-down"></i>
-                                                    </button>
-                                                    <button
-                                                        class="btn float-right btn-costume btn-hide-laba btn-xs show_biaya_p">
-                                                        <i class="fas fa-caret-down"></i>
-                                                    </button>
-                                                </dt>
-                                            </td>
-                                            @foreach ($tahun as $t)
-
-                                            @php
-                                            $tgl_akhir = date('Y-m-t',strtotime($t->tgl));
-
-                                            $ttl_pen = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit FROM tb_jurnal as a where a.id_buku ='1'
-                                            and a.tgl between '2022-01-01' and '$tgl_akhir'");
-
-                                            $biaya = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit
-                                            FROM tb_jurnal as a
-                                            left join tb_akun as c on c.id_akun = a.id_akun
-                                            LEFT JOIN tb_relasi_akun AS b ON b.id_relation_debit = a.id_akun
-                                            where a.tgl between '2022-01-01' and '$tgl_akhir' AND
-                                            c.id_kategori='5'");
-
-                                            @endphp
-
-                                            <td align="right" class="top_bawah">
-                                                <dt>{{number_format($ttl_pen->kredit - $biaya->debit,0)}}</dt>
-                                            </td>
-                                            @endforeach
-                                            <td align="right" class="top_bawah">
-                                                <dt>0</dt>
-                                            </td>
-                                        </tr>
-                                        <tr class="laba">
-                                            <td style="white-space: nowrap">Laba bersih sebelum pajak</td>
-                                            @foreach ($tahun as $t)
-
-                                            @php
-                                            $bulan = date('m',strtotime($t->tgl));
-                                            $year = date('Y',strtotime($t->tgl));
-
-                                            $ttl_pen = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit FROM tb_jurnal as a where MONTH(a.tgl)
-                                            = '$bulan'
-                                            and a.id_buku ='1'
-                                            and YEAR(a.tgl) = '$year'");
 
                                             $biaya = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
                                             kredit
@@ -524,34 +641,21 @@
                                             where MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' AND
                                             c.id_kategori='5'");
 
-                                            @endphp
+                                            $ttl_biaya2 += $biaya->debit;
 
-                                            <td align="right">
-                                                {{number_format($ttl_pen->kredit - $biaya->debit,0)}}
+                                            @endphp
+                                            <td class="top_bawah" align="right">
+                                                <dt>{{number_format($biaya->debit,0)}}</dt>
                                             </td>
                                             @endforeach
-                                            <td align="right">0</td>
-                                        </tr>
-                                        <tr class="laba">
-                                            <td>PPH Terhutang(-)</td>
+                                            <td class="top_bawah" align="right"></td>
+                                            @php
+                                            $ttl_biaya = 0;
+                                            @endphp
                                             @foreach ($tahun as $t)
-                                            <td align="right">0</td>
-                                            @endforeach
-                                            <td align="right">0</td>
-                                        </tr>
-                                        <tr class="laba">
-                                            <td>Laba bersih setelah pajak</td>
-                                            @foreach ($tahun as $t)
-
                                             @php
                                             $bulan = date('m',strtotime($t->tgl));
                                             $year = date('Y',strtotime($t->tgl));
-
-                                            $ttl_pen = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit FROM tb_jurnal as a where MONTH(a.tgl)
-                                            = '$bulan'
-                                            and a.id_buku ='1'
-                                            and YEAR(a.tgl) = '$year'");
 
                                             $biaya = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
                                             kredit
@@ -560,168 +664,27 @@
                                             LEFT JOIN tb_relasi_akun AS b ON b.id_relation_debit = a.id_akun
                                             where MONTH(a.tgl) = '$bulan' and YEAR(a.tgl) = '$year' AND
                                             c.id_kategori='5'");
-                                            @endphp
 
-                                            <td align="right">
-                                                {{number_format($ttl_pen->kredit - $biaya->debit,0)}}
-                                            </td>
-                                            @endforeach
-                                            <td align="right">0</td>
-                                        </tr>
-                                        <tr class="laba">
-                                            <td>Pendapatan Bank(+)</td>
-                                            @foreach ($tahun as $t)
-                                            <td align="right">0</td>
-                                            @endforeach
-                                            <td align="right">0</td>
-                                        </tr>
-                                        <tr class="laba">
-                                            <td>Laba Ditahan</td>
-                                            @foreach ($tahun as $t)
-
-                                            @php
-                                            $tgl_akhir = date('Y-m-t',strtotime($t->tgl));
-
-                                            $ttl_pen = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit FROM tb_jurnal as a where a.id_buku ='1'
-                                            and a.tgl between '2022-01-01' and '$tgl_akhir'");
-
-                                            $biaya = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit
-                                            FROM tb_jurnal as a
-                                            left join tb_akun as c on c.id_akun = a.id_akun
-                                            LEFT JOIN tb_relasi_akun AS b ON b.id_relation_debit = a.id_akun
-                                            where a.tgl between '2022-01-01' and '$tgl_akhir' AND
-                                            c.id_kategori='5'");
+                                            $ttl_biaya += $biaya->debit;
 
                                             @endphp
-
-                                            <td align="right">
-                                                {{number_format($ttl_pen->kredit - $biaya->debit,0)}}
-                                            </td>
-                                            @endforeach
-                                            <td align="right">0</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            @foreach ($tahun as $t)
-                                            <td></td>
-                                            @endforeach
-                                            <td>
-                                            </td>
-                                        </tr>
-                                        {{-- Asset --}}
-
-                                        <tr>
-                                            <td class="top_bawah">
-                                                <dt>
-                                                    Asset
-                                                    <button
-                                                        class="btn float-right btn-costume btn-muncul-asset btn-xs show_biaya_p">
-                                                        <i class="fas fa-caret-down"></i>
-                                                    </button>
-                                                    <button
-                                                        class="btn float-right btn-costume btn-hide-asset btn-xs show_biaya_p">
-                                                        <i class="fas fa-caret-down"></i>
-                                                    </button>
-                                                </dt>
-                                            </td>
-                                            @php
-                                            $ttl_assets1 = 0;
-                                            @endphp
-                                            @foreach ($tahun as $t)
-
-                                            @php
-                                            $tgl_akhir = date('Y-m-t',strtotime($t->tgl));
-                                            $ttl_asset = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit FROM tb_jurnal as a
-                                            left join tb_akun as b on b.id_akun = a.id_akun
-                                            where a.tgl between
-                                            '2022-01-01' and '$tgl_akhir' and b.id_kategori='1' and b.id_penyesuaian !=0
-                                            ");
-
-                                            $ttl_assets1 += empty($ttl_asset->debit) ? '0' : $ttl_asset->debit -
-                                            $ttl_asset->kredit;
-                                            @endphp
-
                                             <td class="top_bawah" align="right">
-                                                <dt>
-                                                    {{ empty($ttl_asset->debit) ? '0' : number_format($ttl_asset->debit
-                                                    - $ttl_asset->kredit,0)}}</dt>
+                                                <dt>{{number_format($biaya->debit,0)}}</dt>
                                             </td>
 
                                             @endforeach
                                             <td class="top_bawah" align="right">
-                                                <dt>{{number_format($ttl_assets1,0)}}</dt>
+                                                <dt>{{number_format($ttl_biaya + $ttl_biaya2,0)}}</dt>
                                             </td>
                                         </tr>
-
-                                        @foreach ($asset as $a)
-                                        <tr class="asset">
-                                            <td>{{$a->nm_akun}}</td>
-
-                                            @php
-                                            $total_asset =0;
-                                            @endphp
-                                            @foreach ($tahun as $t)
-
-                                            @php
-                                            $tgl_akhir = date('Y-m-t',strtotime($t->tgl));
-                                            $asset = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit FROM tb_jurnal as a where a.id_akun = '$a->id_akun' and a.tgl between
-                                            '2022-01-01' and '$tgl_akhir'
-                                            group by a.id_akun");
-
-                                            $total_asset += empty($asset->debit) ? '0' : $asset->debit - $asset->kredit;
-                                            @endphp
-
-                                            <td align="right">{{empty($asset->debit) ? '0' :
-                                                number_format($asset->debit - $asset->kredit,0)}}</td>
-                                            @endforeach
-
-                                            <td align="right">
-                                                <dt>{{number_format($total_asset,0)}}</dt>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-
-                                        <tr class="asset">
-                                            <td class="top_bawah">
-                                                <dt>Total Asset</dt>
-                                            </td>
-                                            @php
-                                            $ttl_assets1 = 0;
-                                            @endphp
-                                            @foreach ($tahun as $t)
-
-                                            @php
-                                            $tgl_akhir = date('Y-m-t',strtotime($t->tgl));
-                                            $ttl_asset = DB::selectOne("SELECT sum(a.debit) as debit, sum(a.kredit) as
-                                            kredit FROM tb_jurnal as a
-                                            left join tb_akun as b on b.id_akun = a.id_akun
-                                            where a.tgl between
-                                            '2022-01-01' and '$tgl_akhir' and b.id_kategori='1' and b.id_penyesuaian !=0
-                                            ");
-
-                                            $ttl_assets1 += empty($ttl_asset->debit) ? '0' : $ttl_asset->debit -
-                                            $ttl_asset->kredit;
-                                            @endphp
-
-                                            <td class="top_bawah" align="right">
-                                                <dt>
-                                                    {{ empty($ttl_asset->debit) ? '0' : number_format($ttl_asset->debit
-                                                    - $ttl_asset->kredit,0)}}</dt>
-                                            </td>
-
-                                            @endforeach
-                                            <td class="top_bawah" align="right">
-                                                <dt>{{number_format($ttl_assets1,0)}}</dt>
-                                            </td>
-                                        </tr>
-
                                     </thead>
                                 </table>
                             </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-costume btn-sm float-right">
+                                <i class="fas fa-save"></i> Save Budgetting
+                            </button>
                         </div>
                     </div>
 
@@ -955,6 +918,8 @@
             var id_akun = $(this).attr('id_akun');
             var bulan = $(this).attr('bulan');
             var tahun = $(this).attr('tahun');
+
+            
 
             $.ajax({
                 url: "{{route('view_jurnal_laporan_bulanan')}}",

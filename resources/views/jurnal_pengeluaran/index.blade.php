@@ -26,6 +26,25 @@
                             class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-plus"></i>
                             Jurnal
                         </a>
+                        <div class="dropdown">
+                            <button class="btn btn-costume btn-sm float-right mr-1 dropdown-toggle" type="button"
+                                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item text-info" target="_blank"
+                                    href="{{route('print_j_all',['tgl1' => $tgl1,'tgl2' => $tgl2 ])}}"><i
+                                        class="fas fa-print "></i>
+                                    Cetak</a>
+                                <a class="dropdown-item text-info"
+                                    href="{{route('export_j_all',['tgl1' => $tgl1,'tgl2' => $tgl2 ])}}"><i
+                                        class="fas fa-file-excel"></i>
+                                    Excel</a>
+                            </div>
+                        </div>
+
+
                         <a href="" data-toggle="modal" data-target="#view"
                             class="btn btn-costume btn-sm float-right mr-1"><i class="fas fa-calendar-alt"></i> View
                         </a>
@@ -352,6 +371,8 @@
                         }
                     }
                 });
+
+                $('.total').val(0);
             });
 
             $(document).on('change', '.id_debit', function() {
