@@ -9,6 +9,7 @@
                         <th>Akun</th>
                         <th style="text-align: right">Total RP</th>
                         <th>Keterangan</th>
+                        <th>Aksi</th>
                     </thead>
                     <tbody>
                         @php
@@ -22,6 +23,23 @@
                             <td>{{$i->nm_akun}}</td>
                             <td style="text-align: right">{{number_format($i->debit,0)}}</td>
                             <td>{{$i->setuju == 'Y' ? 'Sudah Setor' : 'Perencanaan'}}</td>
+                            <td>
+                                <a href="{{route('print_penyetoran_telur',['nota'=> $i->nota_setor])}}" target="_blank"
+                                    class="btn btn-sm btn-costume"><i class="fas fa-print"></i>
+                                </a>
+                                @if (Auth::user()->role_id)
+                                @if ($i->setuju == 'Y')
+                                <a href="#" nota="{{$i->nota_setor}}" tgl1="{{$tgl1}}" tgl2="{{$tgl2}}"
+                                    class=" btn btn-danger btn-sm cancel_setoran"><i class="fas fa-undo"></i></a>
+                                @else
+
+                                @endif
+                                @else
+
+                                @endif
+
+
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

@@ -52,6 +52,41 @@ Route::get('/verify', [Verify::class, 'index'])->name('verify');
 // })->middleware(['auth'])->name('dashboard');
 
 Route::get('/dashboard', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/kontenViewSolar', [Dashboard::class, 'kontenViewSolar'])->middleware(['auth', 'verified'])->name('kontenViewSolar');
+Route::get('/kontenViewRak', [Dashboard::class, 'kontenViewRak'])->middleware(['auth', 'verified'])->name('kontenViewRak');
+Route::get('/kontenViewPakan', [Dashboard::class, 'kontenViewPakan'])->middleware(['auth', 'verified'])->name('kontenViewPakan');
+Route::get('/kontenViewObatVit', [Dashboard::class, 'kontenViewObatVit'])->middleware(['auth', 'verified'])->name('kontenViewObatVit');
+Route::get('/kontenPilihPakan', [Dashboard::class, 'kontenPilihPakan'])->middleware(['auth', 'verified'])->name('kontenPilihPakan');
+Route::get('/kontenPilihObatVit', [Dashboard::class, 'kontenPilihObatVit'])->middleware(['auth', 'verified'])->name('kontenPilihObatVit');
+Route::get('/selStokAwalObatVit', [Dashboard::class, 'selStokAwalObatVit'])->middleware(['auth', 'verified'])->name('selStokAwalObatVit');
+Route::get('/selPemutihanObatVit', [Dashboard::class, 'selPemutihanObatVit'])->middleware(['auth', 'verified'])->name('selPemutihanObatVit');
+Route::get('/tbhPakan', [Dashboard::class, 'tbhPakan'])->middleware(['auth', 'verified'])->name('tbhPakan');
+Route::get('/modal_tbh_pakan', [Dashboard::class, 'modal_tbh_pakan'])->middleware(['auth', 'verified'])->name('modal_tbh_pakan');
+Route::get('/tbhObatVit', [Dashboard::class, 'tbhObatVit'])->middleware(['auth', 'verified'])->name('tbhObatVit');
+Route::get('/buku_besar', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('buku_besar');
+Route::get('/get_satuan_pakan', [Dashboard::class, 'get_satuan_pakan'])->middleware(['auth', 'verified'])->name('get_satuan_pakan');
+Route::post('/save_pemutihan_pv', [Dashboard::class, 'save_pemutihan_pv'])->middleware(['auth', 'verified'])->name('save_pemutihan_pv');
+Route::post('/save_stok_awal', [Dashboard::class, 'save_stok_awal'])->middleware(['auth', 'verified'])->name('save_stok_awal');
+Route::post('/add_rak_telur', [Dashboard::class, 'add_rak_telur'])->middleware(['auth', 'verified'])->name('add_rak_telur');
+Route::post('/pemutihan_rak_telur', [Dashboard::class, 'pemutihan_rak_telur'])->middleware(['auth', 'verified'])->name('pemutihan_rak_telur');
+Route::post('/stok_awal_rak_telur', [Dashboard::class, 'stok_awal_rak_telur'])->middleware(['auth', 'verified'])->name('stok_awal_rak_telur');
+Route::get('/kontenViewRak', [Dashboard::class, 'kontenViewRak'])->middleware(['auth', 'verified'])->name('kontenViewRak');
+Route::post('/add_stok_solar', [Dashboard::class, 'add_stok_solar'])->middleware(['auth', 'verified'])->name('add_stok_solar');
+Route::post('/pemutihan_stok_solar', [Dashboard::class, 'pemutihan_stok_solar'])->middleware(['auth', 'verified'])->name('pemutihan_stok_solar');
+Route::post('/pemutihan_martadah', [Dashboard::class, 'pemutihan_martadah'])->middleware(['auth', 'verified'])->name('pemutihan_martadah');
+Route::post('/check_ayam_mtd', [Dashboard::class, 'check_ayam_mtd'])->middleware(['auth', 'verified'])->name('check_ayam_mtd');
+Route::post('/check_ayam', [Dashboard::class, 'check_ayam'])->middleware(['auth', 'verified'])->name('check_ayam');
+Route::post('/check_telur', [Dashboard::class, 'check_telur'])->middleware(['auth', 'verified'])->name('check_telur');
+Route::post('/add_nota_ayam', [Dashboard::class, 'add_nota_ayam'])->middleware(['auth', 'verified'])->name('add_nota_ayam');
+Route::post('/pemutihan_ayam_mtd', [Dashboard::class, 'pemutihan_ayam_mtd'])->middleware(['auth', 'verified'])->name('pemutihan_ayam_mtd');
+Route::post('/pemutihan_ayam_alpa', [Dashboard::class, 'pemutihan_ayam_alpa'])->middleware(['auth', 'verified'])->name('pemutihan_ayam_alpa');
+Route::post('/pemutihan_telur_mtd', [Dashboard::class, 'pemutihan_telur_mtd'])->middleware(['auth', 'verified'])->name('pemutihan_telur_mtd');
+
+
+Route::get('/sidebar', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('sidebar');
+
+
+
 Route::get('/buku_besar', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('buku_besar');
 
 
@@ -150,6 +185,9 @@ Route::get('/nota', [Penjualan::class, 'nota'])->middleware(['auth', 'verified']
 Route::post('/tb_post', [Penjualan::class, 'tb_post'])->middleware(['auth', 'verified'])->name('tb_post');
 Route::get('/delete_p', [Penjualan::class, 'delete'])->middleware(['auth', 'verified'])->name('delete_p');
 Route::get('/edit_telur', [Penjualan::class, 'edit_telur'])->middleware(['auth', 'verified'])->name('edit_telur');
+Route::get('/export_invoice', [Penjualan::class, 'export_invoice'])->middleware(['auth', 'verified'])->name('export_invoice');
+Route::get('/export_telur', [Penjualan::class, 'export_telur'])->middleware(['auth', 'verified'])->name('export_telur');
+Route::post('/edit_save_pcs', [Penjualan::class, 'edit_save_pcs'])->middleware(['auth', 'verified'])->name('edit_save_pcs');
 
 Route::get('/tambah_pembayaran', [Penjualan::class, 'tambah_pembayaran'])->middleware(['auth', 'verified'])->name('tambah_pembayaran');
 Route::get('/tambah_pembayaran_kardus', [Penjualan_kardus::class, 'tambah_pembayaran_kardus'])->middleware(['auth', 'verified'])->name('tambah_pembayaran_kardus');
@@ -197,6 +235,7 @@ Route::get('/pen_ayam', [Penjualan_ayam::class, 'index'])->middleware(['auth', '
 Route::get('/add_ayam', [Penjualan_ayam::class, 'add_ayam'])->middleware(['auth', 'verified'])->name('add_ayam');
 Route::post('/save_ayam', [Penjualan_ayam::class, 'save_ayam'])->middleware(['auth', 'verified'])->name('save_ayam');
 Route::get('/nota_ayam', [Penjualan_ayam::class, 'nota_ayam'])->middleware(['auth', 'verified'])->name('nota_ayam');
+Route::get('/export_invoice_ayam', [Penjualan_ayam::class, 'export_invoice_ayam'])->middleware(['auth', 'verified'])->name('export_invoice_ayam');
 Route::post('/save_jurnal_ayam', [Penjualan_ayam::class, 'save_jurnal'])->middleware(['auth', 'verified'])->name('save_jurnal_ayam');
 
 // Piutang Ayam
@@ -237,6 +276,10 @@ Route::post('/save_perencanaan_telur', [Setoran_telur::class, 'save_perencanaan_
 Route::post('/save_jurnal_setoran', [Setoran_telur::class, 'save_jurnal_setoran'])->middleware(['auth', 'verified'])->name('save_jurnal_setoran');
 Route::get('/data_invoice_setoran', [Setoran_telur::class, 'data_invoice_setoran'])->middleware(['auth', 'verified'])->name('data_invoice_setoran');
 Route::get('/detail_set_telur', [Setoran_telur::class, 'detail_set_telur'])->middleware(['auth', 'verified'])->name('detail_set_telur');
+Route::get('/cancel_setoran_telur', [Setoran_telur::class, 'cancel_setoran_telur'])->middleware(['auth', 'verified'])->name('cancel_setoran_telur');
+Route::get('/print_penyetoran_telur', [Setoran_telur::class, 'print_penyetoran_telur'])->middleware(['auth', 'verified'])->name('print_penyetoran_telur');
+Route::get('/export_penyetoran_telur', [Setoran_telur::class, 'export_penyetoran_telur'])->middleware(['auth', 'verified'])->name('export_penyetoran_telur');
+Route::get('/cancel_perencanaan_st', [Setoran_telur::class, 'cancel_perencanaan_st'])->middleware(['auth', 'verified'])->name('cancel_perencanaan_st');
 
 // Penyetroran Ayam
 Route::get('/setor_ayam', [Setoran_ayam::class, 'index'])->middleware(['auth', 'verified'])->name('setor_ayam');

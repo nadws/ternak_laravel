@@ -231,6 +231,7 @@
                         <div class="col-lg-4">
                             <label for="">Nama Customer</label>
                             <input type="text" class="form-control" name="nm_post">
+                            <input type="hidden" value="18" class="form-control" name="id_akun">
                         </div>
                         <div class="col-lg-4">
                             <label for="">No Telpon</label>

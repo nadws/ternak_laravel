@@ -60,6 +60,7 @@
                                 <thead>
                                     <tr>
                                         <th>Nama Barang</th>
+                                        <th>Pcs</th>
                                         <th>Timbangan <br> (Kg)</th>
                                         <th>Ikat</th>
                                         <th>Harga Satuan</th>
@@ -76,6 +77,7 @@
 
                                     <tr>
                                         <td>{{$s->jenis}}</td>
+                                        <td>{{$s->pcs}}</td>
                                         <td>{{$s->kg_jual}}</td>
                                         <td>{{number_format($s->pcs/180,1)}}</td>
                                         <td>{{number_format($s->rupiah,0)}}</td>
@@ -92,19 +94,19 @@
                                     @endforeach
                                 </tbody>
                                 <tfoot>
-                                    <th colspan="3"></th>
+                                    <th colspan="4"></th>
                                     <th>TOTAL</th>
                                     <th>{{number_format($ttl,0)}}</th>
                                 </tfoot>
                             </table>
                         </div>
                         <div class="card-footer">
-                            <form action="{{route('save_jurnal2')}}" method="post">
+                            <form action="{{route('save_jurnal')}}" method="post">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-lg-8"></div>
-                                    <div class="col-lg-4 mb-2">
-                                        <select name="id_akun" id="" class="form-control select">
+                                    <div class="col-lg-5"></div>
+                                    <div class="col-lg-3 mb-2">
+                                        <select name="id_akun[]" id="" class="form-control select" required>
                                             <option value="">--Pilih Akun--</option>
                                             <option value="{{$akun->id_akun}}">{{$akun->nm_akun}}</option>
                                             @foreach ($akun2 as $a)
@@ -112,23 +114,50 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <input type="hidden" name="total" value="{{$ttl}}">
-                                    <input type="hidden" name="no_nota" value="{{$nota->no_nota}}">
-                                    <input type="hidden" name="tgl" value="{{$nota->tgl}}">
-                                    <input type="hidden" name="id_post" value="{{$nota->id_post}}">
-                                    <div class="col-lg-12">
-                                        <button class="btn btn-costume  float-right">Save</button>
+                                    <div class="col-lg-3 mb-2">
+                                        <input type="text" class="form-control bayar" name="debit[]"
+                                            style="text-align: right" required>
+                                    </div>
+                                    <div class="col-lg-1 mb-2">
+                                        <button type="button" class="btn btn-costume btn-sm tbh_pembayaran"><i
+                                                class="fas fa-plus"></i></button>
                                     </div>
                                 </div>
-                            </form>
+                                <div id="tambah">
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-5"></div>
+                                    <div class="col-lg-7">
+                                        <hr style="border: 1px solid black">
+                                    </div>
+                                    <div class="col-lg-5"></div>
+                                    <div class="col-lg-3">
+                                        <em class="float-right">Total :</em>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <em class="float-right"><strong id="total_bayar">Rp. 0</strong></em>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" class="total_asli" name="total" value="{{$ttl}}">
+                                <input type="hidden" class="total_hitung">
+                                <input type="hidden" name="no_nota" value="{{$nota->no_nota}}">
+                                <input type="hidden" name="tgl" value="{{$nota->tgl}}">
+                                <input type="hidden" name="id_post" value="{{$nota->id_post}}">
+                                <div class="col-lg-12 mt-4">
+                                    <button id="btn_bayar" class="btn btn-costume  float-right">Save</button>
+                                </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        <!--/. container-fluid -->
-    </section>
-    <!-- /.content -->
+</div>
+<!--/. container-fluid -->
+</section>
+<!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
 
@@ -137,4 +166,74 @@
     <!-- Control sidebar content goes here -->
 </aside>
 <!-- /.control-sidebar -->
+
+<script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(document).on('keyup', '.bayar', function() {
+            var bayar =  $(this).val();
+            var ttl_rp = 0;
+            $(".bayar").each(function() {
+                ttl_rp += parseInt($(this).val());
+            });
+
+            var number_total = ttl_rp.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+            var rupiah_total = "Rp. " + number_total;
+            $('#total_bayar').text(rupiah_total);
+            $('.total_hitung').val(ttl_rp);
+
+
+           var hitung = $('.total_hitung').val();
+            var asli = $('.total_asli').val();
+
+            if (hitung == asli) {
+                    $('#btn_bayar').removeAttr('disabled');
+                    // alert('tes')
+                } else {
+                    // alert('tes1')
+                    $('#btn_bayar').attr('disabled', 'true');
+            }
+        });
+        var count = 1;
+        $(document).on('click', '.tbh_pembayaran', function() {
+            count = count + 1;
+            $.ajax({
+                url: "{{ route('tambah_pembayaran') }}?count=" + count ,
+                type: "Get",
+                    success: function(data) {
+                            $('#tambah').append(data);
+                            $('.select').select2()
+                    }
+            }); 
+                
+        });
+        $(document).on('click', '.remove', function() {
+                var delete_row = $(this).attr('count');
+                $('#row' + delete_row).remove();
+
+                var ttl_rp = 0;
+            $(".bayar").each(function() {
+                ttl_rp += parseInt($(this).val());
+            });
+
+            var number_total = ttl_rp.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+            var rupiah_total = "Rp. " + number_total;
+            $('#total_bayar').text(rupiah_total);
+            $('.total_hitung').val(ttl_rp);
+
+
+           var hitung = $('.total_hitung').val();
+            var asli = $('.total_asli').val();
+
+            if (hitung == asli) {
+                    $('#btn_bayar').removeAttr('disabled');
+                    // alert('tes')
+                } else {
+                    // alert('tes1')
+                    $('#btn_bayar').attr('disabled', 'true');
+            }
+                
+        });
+    });
+</script>
 @endsection

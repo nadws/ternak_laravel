@@ -21,8 +21,11 @@
             <i class="fas fa-share-alt"></i>
         </button>
         <div class="dropdown-menu">
-            <a class="dropdown-item  post_center" href="#"><i class=" text-primary fas fa-print"></i> &nbsp;Cetak</a>
-            <a class="dropdown-item  " href="#"><i style="color: #1F6E43" class=" fas fa-file-excel"></i> &nbsp;Export
+            <a class="dropdown-item  post_center" target="_blank"
+                href="{{route('print_penyetoran_telur',['nota'=> $nota])}}"><i class=" text-primary fas fa-print"></i>
+                &nbsp;Cetak</a>
+            <a class="dropdown-item  " href="{{route('export_penyetoran_telur',['nota'=> $nota])}}" target="_blank"><i
+                    style="color: #1F6E43" class=" fas fa-file-excel"></i> &nbsp;Export
                 To Excel</a>
         </div>
     </div>

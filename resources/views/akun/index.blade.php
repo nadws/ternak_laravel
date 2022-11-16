@@ -37,6 +37,7 @@
                                             <tr role="row">
                                                 <th>#</th>
                                                 <th>No Akun</th>
+                                                <th>Kode Akun</th>
                                                 <th>Akun</th>
                                                 <th>Kategori</th>
                                                 <th class="text-center">Aksi</th>
@@ -50,6 +51,7 @@
                                             <tr>
                                                 <td>{{ $no++ }}</td>
                                                 <td>{{ $a->no_akun }}</td>
+                                                <td>{{ $a->kd_akun }}</td>
                                                 <td>{{ $a->nm_akun }}</td>
                                                 <td>{{ $a->nm_kategori }}</td>
                                                 <td align="right">
@@ -62,7 +64,13 @@
                                                     @else
 
                                                     @endif
-
+                                                    <span class="post_center" data-toggle="modal"
+                                                        data-target="#post_center" id_akun="<?= $a->id_akun ?>">
+                                                        <a href="#" class="btn btn-costume btn-sm" data-toggle="tooltip"
+                                                            data-placement="top" title="Post Center">
+                                                            <i class="fas fa-layer-group"></i>
+                                                        </a>
+                                                    </span>
                                                     <a href="#" class="btn btn-costume btn-sm" data-toggle="tooltip"
                                                         data-placement="top" title="Edit"><i class="fas fa-pen"></i>
                                                     </a>
@@ -135,7 +143,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save/Edit</button>
+                    <button type="submit" class="btn btn-costume">Save/Edit</button>
                 </div>
             </div>
         </div>
@@ -611,7 +619,7 @@ $(document).on('click', '#switchbukukas', function() {
         function load_post() {
             $(document).on('click', '.post_center', function() {
                 var id_akun = $(this).attr("id_akun");
-                // alert(id_akun);
+                
                 $.ajax({
                     url: "{{route('post_center_akun')}}",
                     method: "GET",

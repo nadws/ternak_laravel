@@ -33,17 +33,17 @@ class Penjualan_ayam extends Controller
             'tgl2' => $tgl2,
         ];
 
-        return view('penjualan_ayam/index', $data);
+        return view('penjualan_ayam.index', $data);
     }
 
     public function add_ayam(Request $r)
     {
         $data = [
             'title' => 'Penjualan Ayam',
-            'costumer' => DB::table('tb_post_center')->where('id_akun', '18')->get(),
+            'costumer' => DB::table('tb_post_center')->where('id_akun', '19')->get(),
         ];
 
-        return view('penjualan_ayam/add', $data);
+        return view('penjualan_ayam.add', $data);
     }
 
     public function save_ayam(Request $r)
@@ -154,5 +154,35 @@ class Penjualan_ayam extends Controller
             'akun2' => DB::table('tb_akun as a')->join('tb_permission_akun as b', 'a.id_akun', 'b.id_akun')->where('id_sub_menu_akun', '28')->get()
         ];
         return view('penjualan/tambah', $data);
+    }
+
+    public function export_invoice_ayam(Request $r)
+    {
+        if (empty($r->tgl1)) {
+            $tgl1 = date('Y-m-01');
+            $tgl2 = date('Y-m-d');
+        } else {
+            $tgl1 = $r->tgl1;
+            $tgl2 = $r->tgl2;
+        }
+        $data = [
+            'ayam' => DB::select("SELECT a.tgl, b.nm_post, a.urutan, 
+            b.no_telpon, b.npwp, a.no_nota, 
+            a.ekor, a.berat, a.harga, a.ttl_harga, c.nm_akun, e.tgl AS tgl_setor, e.nota_setor
+            FROM invoice_ayam AS a
+            LEFT JOIN tb_post_center AS b ON b.id_post = a.id_post
+            LEFT JOIN (
+            SELECT c.no_nota, d.nm_akun, c.debit
+            FROM tb_jurnal AS c
+            LEFT JOIN tb_akun AS d ON d.id_akun = c.id_akun
+            WHERE c.kredit = 0 AND c.id_buku = '1' AND d.id_kategori = '1'
+            ) AS c ON c.no_nota  = concat('A-', a.no_nota)
+            
+            LEFT JOIN setoran_ayam AS e ON e.no_nota = concat('A-', a.no_nota)
+            WHERE a.tgl BETWEEN '$tgl1' AND '$tgl2'
+            GROUP BY a.no_nota")
+        ];
+
+        return view('penjualan_ayam.export_invoice', $data);
     }
 }

@@ -23,7 +23,7 @@ class Setoran_telur extends Controller
            order by a.id_invoice_telur ASC")
         ];
 
-        return view('setor_telur/index', $data);
+        return view('setor_telur.index', $data);
     }
 
     public function rencana_telur(Request $r)
@@ -76,6 +76,11 @@ class Setoran_telur extends Controller
                 ];
 
                 DB::table('setoran_telur')->insert($data);
+                $data = [
+                    'setor' => 'Y',
+                    'nota_setor' => 'T' . $urt
+                ];
+                DB::table('tb_jurnal')->where('no_nota', $no_nota[$x])->where('id_akun', $id_akun[$x])->update($data);
             } else {
                 $data = [
                     'no_nota' => $no_nota[$x],
@@ -89,13 +94,12 @@ class Setoran_telur extends Controller
                 ];
 
                 DB::table('setoran_telur')->insert($data);
+                $data = [
+                    'setor' => 'Y',
+                    'nota_setor' => 'B' . $urt2
+                ];
+                DB::table('tb_jurnal')->where('no_nota', $no_nota[$x])->where('id_akun', $id_akun[$x])->update($data);
             }
-
-
-            $data = [
-                'setor' => 'Y'
-            ];
-            DB::table('tb_jurnal')->where('no_nota', $no_nota[$x])->where('id_akun', $id_akun[$x])->update($data);
         }
 
         return redirect()->route("setor_telur")->with('sukses', 'Perencanaan berhasil disimpan');
@@ -112,7 +116,7 @@ class Setoran_telur extends Controller
         $data = [
             'list' => $list
         ];
-        return view('setor_telur/list', $data);
+        return view('setor_telur.list', $data);
     }
     public function detail_list_perencanaan(Request $r)
     {
@@ -133,7 +137,7 @@ class Setoran_telur extends Controller
             'list' => $list,
             'nota' => $nota
         ];
-        return view('setor_telur/detail_list', $data);
+        return view('setor_telur.detail_list', $data);
     }
 
     public function save_jurnal_setoran(Request $r)
@@ -144,31 +148,33 @@ class Setoran_telur extends Controller
         $keterangan = $r->keterangan;
         $rupiah = $r->rupiah;
         $tgl = $r->tgl;
-        
+
         if ($id_akun2 == '33') {
             $data = [
                 'tgl' => $tgl,
-                'id_akun' => $id_akun,
-                'id_buku' => '3',
-                'no_nota' => $no_nota,
-                'ket' => $keterangan,
-                'debit' => $rupiah,
-                'admin' => Auth::user()->name,
-            ];
-            DB::table('tb_jurnal')->insert($data);
-            $data = [
-                'tgl' => $tgl,
                 'id_akun' => $id_akun2,
-                'id_buku' => '3',
+                'id_buku' => '1',
                 'no_nota' => $no_nota,
                 'ket' => $keterangan,
                 'kredit' => $rupiah,
                 'admin' => Auth::user()->name,
             ];
             DB::table('tb_jurnal')->insert($data);
+            $data = [
+                'tgl' => $tgl,
+                'id_akun' => $id_akun,
+                'id_buku' => '1',
+                'no_nota' => $no_nota,
+                'ket' => $keterangan,
+                'debit' => $rupiah,
+                'admin' => Auth::user()->name,
+
+            ];
+            DB::table('tb_jurnal')->insert($data);
+
             $data_setor = [
                 'tgl' => $tgl,
-                'id_akun' => $id_akun2,
+                'id_akun' => $id_akun,
                 'no_nota' => $no_nota,
                 'nota_setor' => $no_nota,
                 'kredit' => $rupiah,
@@ -208,7 +214,15 @@ class Setoran_telur extends Controller
             'invoice' => $invoice
         ];
 
-        return view('setor_telur/data_invoice', $data);
+        return view('setor_telur.data_invoice', $data);
+    }
+
+    public function cancel_setoran_telur(Request $r)
+    {
+        $nota = $r->nota;
+        DB::table('tb_jurnal')->where('no_nota', $nota)->delete();
+        DB::table('setoran_telur')->where('no_nota', $nota)->delete();
+        DB::table('setoran_telur')->where('nota_setor', $nota)->update(['setuju' => 'T']);
     }
 
     public function detail_set_telur(Request $r)
@@ -222,6 +236,61 @@ class Setoran_telur extends Controller
             left join tb_akun as b on b.id_akun = a.id_akun
             WHERE a.nota_setor = '$nota'")
         ];
-        return view('setor_telur/detail_invoice', $data);
+        return view('setor_telur.detail_invoice', $data);
+    }
+
+    public function print_penyetoran_telur(Request $r)
+    {
+        $nota = $r->nota;
+
+        $list = DB::select("SELECT a.tgl, a.id_akun, a.nota_setor, a.no_nota, a.debit AS debit, a.kredit, b.nm_akun, c.nm_post, c.urutan
+        FROM setoran_telur AS a
+        LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
+        left join (
+            SELECT a.no_nota, a.urutan, b.nm_post
+            FROM invoice_telur as a
+            left join tb_post_center as b on b.id_post = a.id_post
+            group by a.no_nota
+        ) as c on concat('T-',c.no_nota) = a.no_nota
+        where  a.nota_setor = '$nota'");
+
+
+
+        $data = [
+            'list' => $list,
+            'nota' => $nota,
+            'nota_s' => DB::selectOne("SELECT * FROM setoran_telur as a where a.nota_setor = '$nota'")
+        ];
+        return view('setor_telur.print_list', $data);
+    }
+    public function export_penyetoran_telur(Request $r)
+    {
+        $nota = $r->nota;
+
+        $list = DB::select("SELECT a.tgl, a.id_akun, a.nota_setor, a.no_nota, a.debit AS debit, a.kredit, b.nm_akun, c.nm_post, c.urutan
+        FROM setoran_telur AS a
+        LEFT JOIN tb_akun AS b ON b.id_akun = a.id_akun
+        left join (
+            SELECT a.no_nota, a.urutan, b.nm_post
+            FROM invoice_telur as a
+            left join tb_post_center as b on b.id_post = a.id_post
+            group by a.no_nota
+        ) as c on concat('T-',c.no_nota) = a.no_nota
+        where  a.nota_setor = '$nota'");
+
+
+
+        $data = [
+            'list' => $list,
+            'nota' => $nota,
+            'nota_s' => DB::selectOne("SELECT * FROM setoran_telur as a where a.nota_setor = '$nota'")
+        ];
+        return view('setor_telur.export_list', $data);
+    }
+
+    public function cancel_perencanaan_st(Request $r)
+    {
+        DB::table('tb_jurnal')->where('nota_setor', $r->nota)->update(['setor' => 'T', 'nota_setor' => '']);
+        DB::table('setoran_telur')->where('nota_setor', $r->nota)->delete();
     }
 }

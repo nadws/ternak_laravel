@@ -285,7 +285,7 @@
         });
         $(document).on('click', '#list', function() {
                 $.ajax({
-                    url: "{{route('list_perencanaan')}}",
+                    url: "{{ route('list_perencanaan') }}",
                     method: "GET",
                     success: function(data) {
                         $('#perencanaan').html(data);
@@ -315,8 +315,6 @@
             e.preventDefault();
             var tgl1 = $("#tgl1").val();
             var tgl2 = $("#tgl2").val();
-            console.log(tgl1);
-            console.log(tgl2);
             var url = "{{route('data_invoice_setoran')}}?tgl1=" + tgl1 + "&tgl2=" + tgl2;
             $('#list_penyetoran').load(url);
             
@@ -326,6 +324,63 @@
             var nota = $(this).attr('nota');
             var url = "{{route('detail_set_telur')}}?nota=" + nota;
             $('#detail_list_setoran').load(url);
+            
+        });
+        $(document).on('click','.cancel_setoran', function() {
+            var nota = $(this).attr('nota');
+            var tgl1 = $(this).attr('tgl1');
+            var tgl2 = $(this).attr('tgl2');
+            // var url = "{{route('cancel_setoran_telur')}}?nota=" + nota;
+
+            $.ajax({
+                url: "{{route('cancel_setoran_telur')}}",
+                    data: {
+                        nota : nota
+                    },
+                    method: "GET",
+                    success: function(data) {
+                        var url = "{{route('data_invoice_setoran')}}?tgl1=" + tgl1 + "&tgl2=" + tgl2;
+                        $('#list_penyetoran').load(url);
+                        iziToast.success({
+                            title: 'Success',
+                            message: "Cancel setoran berhasil",
+                            position: 'topRight',
+                            timeout: 3000,
+                        });
+                    }
+            });
+            
+            
+        });
+        $(document).on('click','.cencel_rencana', function() {
+            var nota = $(this).attr('nota');
+            $.ajax({
+                url: "{{route('cancel_perencanaan_st')}}",
+                    data: {
+                        nota : nota
+                    },
+                    method: "GET",
+                    success: function(data) {
+                        $.ajax({
+                            url: "{{ route('list_perencanaan') }}",
+                            method: "GET",
+                            success: function(data) {
+                                $('#perencanaan').html(data);
+                                $('.select').select2()
+                            }
+                        });
+                        iziToast.success({
+                            title: 'Success',
+                            message: "Cancel setoran berhasil",
+                            position: 'topRight',
+                            timeout: 3000,
+                        });
+                    }
+            });
+
+            
+            
+            
             
         });
     });

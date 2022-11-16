@@ -21,8 +21,20 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
+
                             <a class="btn btn-costume btn-sm float-right" href="{{route('add_telur')}}"><i
                                     class="fas fa-plus"></i> Invoice
+                            </a>
+                            <a class="btn btn-costume btn-sm float-right mr-2"
+                                href="{{route('export_invoice',['tgl1'=> $tgl1,'tgl2'=>$tgl2])}}"><i
+                                    class="fas fa-file-excel"></i> Export Invoice
+                            </a>
+                            <a class="btn btn-costume btn-sm float-right mr-2"
+                                href="{{route('export_telur',['tgl1'=> $tgl1,'tgl2'=>$tgl2])}}"><i
+                                    class="fas fa-file-excel"></i> Export Telur
+                            </a>
+                            <a class="btn btn-costume btn-sm float-right mr-2" href="#" data-target="#view"
+                                data-toggle="modal"><i class="fas fa-calendar-alt"></i> View
                             </a>
                         </div>
                         <div class="card-body">
@@ -52,7 +64,6 @@
                                             <td>{{date('d-m-Y',strtotime($i->tgl))}}</td>
                                             <td>{{$i->nm_post}} {{$i->urutan}}</td>
                                             <td>T-{{$i->no_nota}}</td>
-
                                             @foreach ($jenis as $j)
                                             @php
                                             $kg =
@@ -90,5 +101,37 @@
 <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
 </aside>
+
+<form action="" method="get">
+    <div class="modal fade" id="view" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-costume">
+                    <h5 class="modal-title" id="exampleModalLabel">View</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="">Dari</label>
+                            <input type="date" class="form-control" name="tgl1">
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="">Sampai</label>
+                            <input type="date" class="form-control" name="tgl2">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-costume">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 <!-- /.control-sidebar -->
 @endsection

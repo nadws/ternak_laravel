@@ -17,7 +17,7 @@ class AkunController extends Controller
             'satuan' => DB::table('tb_satuan')->get(),
         ];
 
-        return view('akun/index', $data);
+        return view('akun.index', $data);
     }
 
     public function get_no_akun(Request $request)
@@ -228,5 +228,25 @@ class AkunController extends Controller
     public function delete_kelompok_baru(Request $r)
     {
         DB::table('tb_kelompok_aktiva')->where('id_kelompok', $r->id_kelompok)->delete();
+    }
+
+    public function post_center_akun(Request $r)
+    {
+        $id_akun = $r->id_akun;
+
+        $data = [
+            'post_center' => DB::select("SELECT * FROM tb_post_center as a where a.id_akun = '$id_akun'"),
+            'id_akun' => $id_akun
+        ];
+        return view('akun/post_center', $data);
+    }
+
+    public function tambah_post(Request $request)
+    {
+        $data = [
+            'nm_post' => $request->nm_post,
+            'id_akun' => $request->id_akun,
+        ];
+        DB::table('tb_post_center')->insert($data);
     }
 }

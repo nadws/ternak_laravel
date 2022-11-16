@@ -18,11 +18,13 @@
             <td style="text-align: center">
 
                 <button type="button" data-toggle="modal" data-target="#view_list"
-                    class="btn btn-sm btn-costume view_list" nota="{{$l->nota_setor}}"><i class="fas fa-search"></i>
+                    class="btn btn-sm btn-costume view_list" nota="{{$l->nota_setor}}"><i class="fas fa-clipboard"></i>
                 </button>
 
-                <a href="" class="btn btn-sm btn-costume"><i class="fas fa-print"></i></a>
-                <a href="" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></a>
+                <a href="{{route('print_penyetoran_telur',['nota'=> $l->nota_setor])}}" target="_blank"
+                    class="btn btn-sm btn-costume"><i class="fas fa-print"></i></a>
+                <a href="#" class="btn btn-sm btn-danger cencel_rencana" nota="{{$l->nota_setor}}"><i
+                        class="fas fa-trash-alt"></i></a>
             </td>
         </tr>
         @endforeach

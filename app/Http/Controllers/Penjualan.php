@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class Penjualan extends Controller
 {
@@ -147,8 +148,6 @@ class Penjualan extends Controller
             'isi_nota' => DB::table('invoice_telur as a')->join('tb_jenis_telur as b', 'a.id_jenis_telur', 'b.id')->where('no_nota', $r->nota)->get(),
             'akun' => DB::table('tb_akun')->where('id_akun', '31')->first(),
             'akun2' => DB::table('tb_akun as a')->join('tb_permission_akun as b', 'a.id_akun', 'b.id_akun')->where('id_sub_menu_akun', '28')->get()
-
-
         ];
 
         return view('penjualan/nota', $data);
@@ -190,9 +189,11 @@ class Penjualan extends Controller
                 'admin' => Auth::user()->name
             ];
             DB::table('tb_jurnal')->insert($data_debit);
+
             if ($akun->id_akun == '31') {
                 DB::table('invoice_telur')->where('no_nota', $no_nota)->update(['lunas' => 'T']);
             } else {
+                DB::table('invoice_telur')->where('no_nota', $no_nota)->update(['lunas' => 'Y']);
             }
         }
         return redirect()->route("p_telur")->with('sukses', 'Data berhasil di input');
@@ -202,12 +203,12 @@ class Penjualan extends Controller
     {
         $data = [
             'nm_post' => $r->nm_post,
-            'id_akun' => '18',
+            'id_akun' => $r->id_akun,
             'no_telpon' => $r->no_telpon,
             'npwp' => $r->npwp
         ];
         DB::table('tb_post_center')->insert($data);
-        return redirect()->route("add_telur")->with('sukses', 'Data berhasil di input');
+        return Redirect::back()->with('sukses', 'Data berhasil di input');
     }
 
     public function delete(Request $r)
@@ -226,6 +227,8 @@ class Penjualan extends Controller
         WHERE a.no_nota = '$r->nota'");
 
         $nota2 = DB::selectOne("SELECT a.id_post, a.no_nota, a.urutan, a.driver, a.tgl FROM invoice_telur as a where a.no_nota = '$r->nota' group by a.no_nota");
+
+
         $data = [
             'title' => 'Edit Penjualan Telur',
             'costumer' => DB::table('tb_post_center')->where('id_akun', '18')->get(),
@@ -233,8 +236,58 @@ class Penjualan extends Controller
             'nota' => $nota,
             'nota2' => $nota2,
         ];
+        if ($r->jenis == 'kg') {
+            return view('penjualan.edit', $data);
+        } else {
+            return view('penjualan.edit_pcs', $data);
+        }
+    }
 
-        return view('penjualan/edit', $data);
+    public function edit_save_pcs(Request $r)
+    {
+        $tgl = $r->tgl;
+        $id_post = $r->id_post;
+        $driver = $r->driver;
+
+        $pcs = $r->pcs;
+        $kg_jual = $r->kg_jual;
+        $rupiah = $r->rupiah;
+        $rp_kg = $r->rp_kg;
+        $id_jenis_telur = $r->id_jenis_telur;
+        $id_telur = $r->id_telur;
+        $id_post2 = $r->id_post2;
+        $no_nota = $r->no_nota;
+
+
+        if ($id_post == $id_post2) {
+            $urutan = $r->urutan;
+        } else {
+            $rutan = DB::selectOne("SELECT max(a.urutan) as urutan FROM invoice_telur as a where a.id_post = '$id_post'");
+            if (empty($rutan->urutan)) {
+                $urutan = '1';
+            } else {
+                $urutan = $rutan->urutan + 1;
+            }
+        }
+
+        for ($x = 0; $x < count($pcs); $x++) {
+            $data = [
+                'tgl' => $tgl,
+                'id_post' => $id_post,
+                'driver' => $driver,
+                'no_nota' => $no_nota,
+                'pcs' => $pcs[$x],
+                'kg_jual' => $kg_jual[$x],
+                'rupiah' => $rupiah[$x],
+                'rp_kg' => $rp_kg[$x],
+                'urutan' => $urutan,
+                'id_jenis_telur' => $id_jenis_telur[$x],
+                'jenis_penjualan' => 'pcs',
+                'lunas' => 'Y'
+            ];
+            DB::table('invoice_telur')->where('id_invoice_telur', $id_telur[$x])->update($data);
+        }
+        return redirect()->route("nota", ['nota' => $no_nota])->with('sukses', 'Data berhasil di input');
     }
 
     public function edit_kg(Request $r)
@@ -296,11 +349,10 @@ class Penjualan extends Controller
             'isi_nota' => DB::table('invoice_telur as a')->join('tb_jenis_telur as b', 'a.id_jenis_telur', 'b.id')->where('no_nota', $r->nota)->get(),
             'akun' => DB::table('tb_akun')->where('id_akun', '31')->first(),
             'akun2' => DB::table('tb_akun as a')->join('tb_permission_akun as b', 'a.id_akun', 'b.id_akun')->where('id_sub_menu_akun', '28')->get()
-
-
         ];
 
-        return view('penjualan/nota2', $data);
+
+        return view('penjualan.nota2', $data);
     }
 
     public function save_jurnal2(Request $r)
@@ -373,5 +425,58 @@ class Penjualan extends Controller
             'akun2' => DB::table('tb_akun as a')->join('tb_permission_akun as b', 'a.id_akun', 'b.id_akun')->where('id_sub_menu_akun', '28')->get()
         ];
         return view('penjualan/tambah', $data);
+    }
+
+    public function export_invoice(Request $r)
+    {
+        if (empty($r->tgl1)) {
+            $tgl1 = date('Y-m-01');
+            $tgl2 = date('Y-m-d');
+        } else {
+            $tgl1 = $r->tgl1;
+            $tgl2 = $r->tgl2;
+        }
+
+        $invoice = DB::select("SELECT a.tgl, a.no_nota,  b.nm_post , a.urutan, b.npwp, b.no_telpon, SUM(a.rp_kg) AS rupiah, a.lunas,
+        c.nm_akun,e.nota_setor, e.tgl AS tgl_setor
+        FROM invoice_telur AS a
+        LEFT JOIN tb_post_center AS b ON b.id_post = a.id_post
+        LEFT JOIN (
+        SELECT c.no_nota, d.nm_akun, c.debit
+        FROM tb_jurnal AS c
+        LEFT JOIN tb_akun AS d ON d.id_akun = c.id_akun
+        WHERE c.kredit = 0 AND c.id_buku = '1' AND d.id_kategori = '1'
+        ) AS c ON c.no_nota  = concat('T-', a.no_nota)
+
+        LEFT JOIN setoran_telur AS e ON e.no_nota = concat('T-', a.no_nota)
+        WHERE a.tgl BETWEEN '$tgl1' AND '$tgl2'
+        GROUP BY a.no_nota");
+        $data = [
+            'title' => 'Export Invoice',
+            'invoice' => $invoice,
+            'jenis' => DB::table('tb_jenis_telur')->get()
+        ];
+        return view('penjualan/export_invoice', $data);
+    }
+
+    public function export_telur(Request $r)
+    {
+        if (empty($r->tgl1)) {
+            $tgl1 = date('Y-m-01');
+            $tgl2 = date('Y-m-d');
+        } else {
+            $tgl1 = $r->tgl1;
+            $tgl2 = $r->tgl2;
+        }
+        $data = [
+            'telur' => DB::select("SELECT a.tgl
+            FROM tb_telur AS a
+            where a.tgl between '$tgl1' and '$tgl2'
+            GROUP BY a.tgl"),
+            'jenis' => DB::table('tb_jenis_telur')->get(),
+            'tgl1' => $tgl1,
+            'tgl2' => $tgl2,
+        ];
+        return view('penjualan/export_telur', $data);
     }
 }
